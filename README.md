@@ -3,7 +3,7 @@ title: ILAB TEMPLATE - Data Science
 purpose: Template for python projects tailored to scientific applications (e.g., machine learning)
 ---
 
-# ilab-template-python-data-science - 12/30/24 ;)s
+# ilab-template-python-data-science - 12/30/24 ;)s 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   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
 
 Template for python projects tailored to scientific applications (e.g., machine learning)
 
