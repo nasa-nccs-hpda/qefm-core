@@ -8,6 +8,7 @@ __pycache__/
 *.nc
 *.ckpt
 *.zip
+*.npz
 
 # C extensions
 *.so
