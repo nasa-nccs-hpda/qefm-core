@@ -4,13 +4,20 @@ Python framework for evaluating Foundation Models (FM).
 
 ## Documentation
 
-- Latest: [https://nasa-nccs-hpda.github.io/pytorch-caney/latest](https://github.com/nasa-nccs-hpda/qefm-core/edit/main/README.md)
+- Latest: https://github.com/nasa-nccs-hpda/qefm-core/blob/main/README.md
 
 # qefm-core
 
-This framework consists of a container that hosts the dependencies required for an extendable collection of Models.  Snapshots of model source code are captured along with supporting inference scripts.  Configuration files that
+This framework consists of a container that hosts the dependencies required for an extendable collection of Models.  Snapshots of model source code are also captured along with supporting inference scripts.  Configuration files that specify runtime parameters such as data paths and model tunings are also included.  Example runs illustrate how to invoke scripts that execute model inferences.
 
-[![DOI](https://zenodo.org/badge/472450059.svg)](https://zenodo.org/badge/latestdoi/472450059)
+NOTE:  The initial version of this project is deployed with restrictions:
+1) The Docker container can be deployed on any platform; however, associated model checkpoints and statistics file are not included.
+2) In order to run the canned scripts, the user must log into the Discover cluster and execute the runtime scripts described below.
+3) All paths reflect a static Discover enviroment, referencing both fully-specified and relative paths to the input data.
+4) To change default parameters, a copy of the runtime scripts should be made by the user and modified accordingly.
+5) Scripts and configuration files, which are hard-coded with parameters that invoke a very specific Discover invocation, have typically originated in the the separate Model projects and tweaked to run in this environment.
+6) Each FM is entirely independent and has a unique runtime signature.
+7) Output formats vary across FMs
 
 ## Objectives
 - Library to process remote sensing imagery using GPU and CPU parallelization.
