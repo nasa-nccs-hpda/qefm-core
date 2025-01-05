@@ -50,11 +50,6 @@ The following library is intended to be used to accelerate the development of da
 module load singularity # if a module needs to be loaded
 singularity build --sandbox pytorch-caney-container docker://nasanccs/pytorch-caney:latest
 ```
-
-## Why Caney?
-
-"Caney" means longhouse in Taíno.
-
 ## Contributors
 
 - **Jordan Alexis Caraballo-Vega**: [jordan.a.caraballo-vega@nasa.gov](mailto:jordan.a.caraballo-vega@nasa.gov)
