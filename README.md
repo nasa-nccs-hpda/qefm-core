@@ -20,11 +20,25 @@ NOTE:  The initial version of this project is deployed with restrictions:
 7) Output formats vary across FMs
 
 ## Objectives
-- Library to process remote sensing imagery using GPU and CPU parallelization.
-- Machine Learning and Deep Learning image classification and regression.
-- Agnostic array and vector-like data structures.
-- User interface environments via Notebooks for easy-to-use AI/ML projects.
-- Example notebooks for a quick AI/ML start with your own data.
+
+- Library to process FMs using GPU and CPU parallelization.
+- Machine Learning and Deep Learning inference applications.
+- Example scripts for a quick AI/ML start with your own data.
+
+## Strategy
+
+- Identify the pool of vision FMs to test​
+	* Develop a playbook for pulling the needed information to build use case​
+ 	* Develop unit tests for straightforward implementation of the models​
+
+- Peer review panel to define “golden” use cases​
+	* These use cases will be built for each model​
+ 	* Use cases will have “expected” results so that the model predictions can be​ compared quantitatively to the expected and to the other models​
+	* Review panel will also evaluate/recommend new models to test based on​ literature review​
+
+- Recommend FM for scientists to use in different types of tasks​
+	* Potentially recommend generation of new FM to fill a gap​
+ 	* Recruited scientists to assist 
 
 ## Installation
 
@@ -44,7 +58,7 @@ singularity build --sandbox pytorch-caney-container docker://nasanccs/pytorch-ca
 ## Contributors
 
 - **Jordan Alexis Caraballo-Vega**: [jordan.a.caraballo-vega@nasa.gov](mailto:jordan.a.caraballo-vega@nasa.gov)
-- **Caleb Spradlin**: [caleb.s.spradlin@nasa.gov](mailto:caleb.s.spradlin@nasa.gov)
+- **Glenn Tamkin**: [glenn.s.tamkin@nasa.gov](mailto:glenn.s.tamkin@nasa.gov)
 - **Jian Li**: [jian.li@nasa.gov](mailto:jian.li@nasa.gov)
 
 ## Contributing
