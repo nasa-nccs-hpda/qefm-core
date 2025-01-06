@@ -338,9 +338,11 @@ if __name__ == '__main__':
     params['resuming'] = False
     params['local_rank'] = 0
 
-    logging_utils.log_to_file(logger_name=None, log_filename=os.path.join(expDir, 'inference_out.log'))
-    logging_utils.log_versions()
-    params.log()
+    log = False
+    if log:
+        logging_utils.log_to_file(logger_name=None, log_filename=os.path.join(expDir, 'inference_out.log'))
+        logging_utils.log_versions()
+        params.log()
 
     n_ics = params['n_initial_conditions']
 
@@ -377,7 +379,7 @@ if __name__ == '__main__':
                 ics.append(int(hours_since_jan_01_epoch/6))
         n_ics = len(ics)
 
-    logging.info("Inference for {} initial conditions".format(n_ics))
+    if log: logging.info("Inference for {} initial conditions".format(n_ics))
     try:
       autoregressive_inference_filetag = params["inference_file_tag"]
     except:
@@ -406,7 +408,7 @@ if __name__ == '__main__':
 
     #run autoregressive inference for multiple initial conditions
     for i, ic in enumerate(ics):
-      logging.info("Initial condition {} of {}".format(i+1, n_ics))
+      if log: logging.info("Initial condition {} of {}".format(i+1, n_ics))
       sr, sp, vl, a, au, vc, ac, acu, accland, accsea = autoregressive_inference(params, ic, valid_data_full, model)
 
       if i ==0 or len(valid_loss) == 0:
@@ -439,7 +441,7 @@ if __name__ == '__main__':
 
     #save predictions and loss
     if params.log_to_screen:
-      logging.info("Saving files at {}".format(os.path.join(params['experiment_dir'], 'autoregressive_predictions' + autoregressive_inference_filetag + '.h5')))
+      if log: logging.info("Saving files at {}".format(os.path.join(params['experiment_dir'], 'autoregressive_predictions' + autoregressive_inference_filetag + '.h5')))
     with h5py.File(os.path.join(params['experiment_dir'], 'autoregressive_predictions'+ autoregressive_inference_filetag +'.h5'), 'a') as f:
       if vis:
         try:

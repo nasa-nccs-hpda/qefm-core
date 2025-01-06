@@ -1,7 +1,15 @@
 echo "FourCastNet":
 module load singularity
 cd /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet
-echo 'cd /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet'
+#echo 'cd /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet'
+#git config --global --add safe.directory '*'
+#echo "git config --global --add safe.directory '*'"
+#
+#git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core
+#echo 'git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core'
+#
+#git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet
+#echo "git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet"
 
 #cd /discover/nobackup/projects/QEFM/qefm-core
 #echo 'cd /discover/nobackup/projects/QEFM/qefm-core'
