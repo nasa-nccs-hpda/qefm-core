@@ -26,31 +26,6 @@ NOTE:  The initial version of this project is deployed with restrictions:
 - Machine Learning and Deep Learning inference applications.
 - Example scripts for a quick AI/ML start with your own data.
 
-## Strategy
-
-- Identify the pool of vision FMs to test​
-	* Develop a playbook for pulling the needed information to build use case​
- 	* Develop unit tests for straightforward implementation of the models​
-
-- Peer review panel to define “golden” use cases​
-	* These use cases will be built for each model​
- 	* Use cases will have “expected” results so that the model predictions can be​ compared quantitatively to the expected and to the other models​
-	* Review panel will also evaluate/recommend new models to test based on​ literature review​
-
-- Recommend FM for scientists to use in different types of tasks​
-	* Potentially recommend generation of new FM to fill a gap​
- 	* Recruited scientists to assist 
-
-## Installation
-
-The following library is intended to be used to accelerate the development of data science products for remote sensing satellite imagery, or other applications. `pytorch-caney` can be installed by itself, but instructions for installing the full environments are listed under the `requirements` directory so projects, examples, and notebooks can be run.
-
-**Note:** PIP installations do not include CUDA libraries for GPU support. Make sure NVIDIA libraries are installed locally in the system if not using conda/mamba.
-
-```bash
-module load singularity # if a module needs to be loaded
-singularity build --sandbox pytorch-caney-container docker://nasanccs/pytorch-caney:latest
-```
 ## Contributors
 
 - **Jordan Alexis Caraballo-Vega**: [jordan.a.caraballo-vega@nasa.gov](mailto:jordan.a.caraballo-vega@nasa.gov)
@@ -60,7 +35,9 @@ singularity build --sandbox pytorch-caney-container docker://nasanccs/pytorch-ca
 ---
 # <b> User Guide </b>
 
-##  1. <b> SatVision-TOA </b>
+This User Guide reflects instructions for running inference scripts on Discover only.
+
+##  1. <b> FM Ensemble </b>
 
 |Name|Pretrain|Resolution|Channels | Parameters|
 |---|---|---|---|---|
@@ -74,15 +51,16 @@ Model Repository: [HuggingFace](https://huggingface.co/nasa-cisto-data-science-
 
 1. Load `git-lfs`:
 ```bash
-  module load git-lfs
+  $ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
+  $ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
 ```
 ```bash
   git lfs install
 ```
 
-2. Clone the repository:
+2. Run the Ensemble:
 ```bash
-	git clone git@hf.co:nasa-cisto-data-science-group/satvision-toa-giant-patch8-window8-128
+  $ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
 ```
 
 <b> Note: Using SSH authentication </b>
@@ -156,3 +134,13 @@ Singularity> python pytorch-caney/pytorch_caney/ptc_cli.py --config-path pytorch
 ```
 
 ---
+## Installation
+
+The following library is intended to be used to accelerate the development of data science products for remote sensing satellite imagery, or other applications. `pytorch-caney` can be installed by itself, but instructions for installing the full environments are listed under the `requirements` directory so projects, examples, and notebooks can be run.
+
+**Note:** PIP installations do not include CUDA libraries for GPU support. Make sure NVIDIA libraries are installed locally in the system if not using conda/mamba.
+
+```bash
+module load singularity # if a module needs to be loaded
+singularity build --sandbox pytorch-caney-container docker://nasanccs/pytorch-caney:latest
+```
