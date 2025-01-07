@@ -15,7 +15,7 @@ NOTE:  The initial version of this project is deployed with restrictions:
 3) In order to run the canned Python/Bash scripts, the user must log into the Discover cluster and execute the runtime scripts described below.
 4) All paths reflect a static Discover enviroment, referencing both fully-specified and relative paths to the input data.
 5) To change default parameters, a copy of the runtime scripts should be made by the user and modified accordingly.
-6) Scripts and configuration files, which are hard-coded with parameters that invoke a very specific Discover invocation, have typically originated in the the separate Model projects and tweaked to run in this environment.
+6) Scripts and configuration files, which are hard-coded with parameters that invoke a very specific Discover invocation, have typically originated in the separate Model projects and tweaked to run in this environment.
 7) Each FM is entirely independent and has a unique runtime signature.
 8) Output formats vary across FMs.
 9) Runtime assistance can be nominally supported by the development team, but FM model architecture expertise is not provided.
