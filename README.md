@@ -52,7 +52,7 @@ Model Repository: [HuggingFace](https://huggingface.co/nasa-cisto-data-science-
 1. Load `git-lfs`:
 ```bash
   $ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
-  $ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
+  $ /explore/nobackup/projects/ilab/projects/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
 ```
 ```bash
   git lfs install
@@ -60,7 +60,7 @@ Model Repository: [HuggingFace](https://huggingface.co/nasa-cisto-data-science-
 
 2. Run the Ensemble:
 ```bash
-  $ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
+  $ /explore/nobackup/projects/ilab/projects/qefm-core/tests/fm-ensemble.sh  qefm-core-20241229-sandbox
 ```
 
 <b> Note: Using SSH authentication </b>
