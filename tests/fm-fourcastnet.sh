@@ -1,18 +1,18 @@
-echo "FourCastNet":
-module load singularity
-cd /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet
-#echo 'cd /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet'
-#git config --global --add safe.directory '*'
-#echo "git config --global --add safe.directory '*'"
-#
-#git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core
-#echo 'git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core'
-#
-#git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet
-#echo "git config --global --add safe.directory /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet"
 
-#cd /discover/nobackup/projects/QEFM/qefm-core
-#echo 'cd /discover/nobackup/projects/QEFM/qefm-core'
-cmd="time singularity exec --nv -B /discover/nobackup/projects/QEFM/qefm-core /discover/nobackup/projects/QEFM/containers/"$1" python -u -m torch.distributed.run /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet/inference/inference.py --config=afno_backbone --run_num=0 --weights /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/FMFourCastNet/ccai_demo/model_weights/FCN_weights_v0/backbone.ckpt --override ./out/20240103_1555 --vis"
-echo $cmd
+fm="FourCastNet"
+container="$1"/containers/"$2"
+cd "$1"/qefm/models/src/FMFourCastNet/FourCastNet
+current_dir=$(pwd)
+if [[ ! -z "${PYTHONPATH}" ]]; then
+    echo "PYTHONPATH: "$PYTHONPATH""
+fi
+
+# echo "FourCastNet":
+# module load singularity
+# cd /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet
+
+module load singularity
+cmd="time singularity exec --nv -B "$1"/qefm  "$1"/containers/"$2" python -u -m torch.distributed.run /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet/inference/inference.py --config=afno_backbone --run_num=0 --weights /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/checkpoints/FMFourCastNet/ccai_demo/model_weights/FCN_weights_v0/backbone.ckpt --override ./out/20240108_1649 --vis"
+# cmd="time singularity exec --nv -B /explore/nobackup/projects/ilab/projects/qefm-core /explore/nobackup/projects/ilab/projects/qefm-core/containers/"$1" python -u -m torch.distributed.run /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/src/FMFourCastNet/FourCastNet/inference/inference.py --config=afno_backbone --run_num=0 --weights /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/checkpoints/FMFourCastNet/ccai_demo/model_weights/FCN_weights_v0/backbone.ckpt --override ./out/20240103_1555 --vis"
+echo $fm: $cmd
 $cmd

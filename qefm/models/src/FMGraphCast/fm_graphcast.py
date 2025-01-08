@@ -133,7 +133,7 @@ print("absolute_path:\n", absolute_path, "\n")
 #     ckpt = checkpoint.load(f, graphcast.CheckPoint)
 
 #params_file='../../checkpoints/graphcast/checkpoints/graphcast/params_GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz'
-#params_file='/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/graphcast/params_GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz'
+#params_file='/explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/checkpoints/graphcast/params_GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz'
 params_file = absolute_path
 with open(params_file, "rb") as f:
   ckpt = checkpoint.load(f, graphcast.CheckPoint)

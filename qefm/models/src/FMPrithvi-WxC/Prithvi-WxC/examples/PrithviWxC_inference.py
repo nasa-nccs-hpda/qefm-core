@@ -15,6 +15,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+# GST - stub download methods to avoid outbound calls (unsupported by GPU)
 #from huggingface_hub import hf_hub_download, snapshot_download
 def hf_hub_download( repo_id: str, filename: str, local_dir: str ):
     print("hf_hub_download stub: ", filename)
@@ -24,7 +25,7 @@ def snapshot_download( repo_id: str, allow_patterns: str, local_dir: str ):
 import os, sys
 sys.path.insert(0, "../Prithvi-WxC")
 #sys.path.insert(0, "/discover/nobackup/projects/QEFM/dev/models/FMPrithvi-WxC")
-#sys.path.insert(0, "/panfs/ccds02/nobackup/people/gtamkin/dev/foundation-models/FMPrithvi-WxC")
+#sys.path.insert(0, "/panfs/ccds02/nobackup/people/gtamkin/dev/foundation-models/FMPrithvi-WxC")ls ../../..
 sys.path.append("../")
 
 # We now configure the backends and torch states, including setting the seeds for the RNGs.

@@ -1,10 +1,12 @@
 date
 START=$(date +%s)
-time /discover/nobackup/projects/QEFM/qefm-core/tests/fm-aurora.sh $1
-time /discover/nobackup/projects/QEFM/qefm-core/tests/fm-fourcastnet.sh $1
-time /discover/nobackup/projects/QEFM/qefm-core/tests/fm-graphcast.sh $1
-time /discover/nobackup/projects/QEFM/qefm-core/tests/fm-pangu.sh $1
-time /discover/nobackup/projects/QEFM/qefm-core/tests/fm-privthi.sh $1
+path=$1
+container=$2
+time ./tests/fm-aurora.sh $path $container
+time ./tests/fm-fourcastnet.sh $path $container
+time ./tests/fm-graphcast.sh $path $container
+time ./tests/fm-pangu.sh $path $container
+time ./tests/fm-privthi.sh $path $container
 date
 END=$(date +%s)
 DIFF=$(( $END - $START ))
