@@ -9,7 +9,7 @@ __pycache__/
 *.ckpt
 *.zip
 *.npz
-
+.idea
 # C extensions
 *.so
 
