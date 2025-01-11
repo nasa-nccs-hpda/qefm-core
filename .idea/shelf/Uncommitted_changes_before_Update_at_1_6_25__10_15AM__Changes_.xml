@@ -1,8 +1,0 @@
-<changelist name="Uncommitted_changes_before_Update_at_1_6_25,_10_15 AM_[Changes]" date="1736176535795" recycled="false" toDelete="true">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_6_25,_10_15 AM_[Changes]/shelved.patch" />
-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 1/6/25, 10:15 AM [Changes]" />
-  <binary>
-    <option name="AFTER_PATH" value="qefm/models/src/FMGraphCast/model/params/params_GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_6_25,_10_15 AM_[Changes]/params_GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz" />
-  </binary>
-</changelist>
