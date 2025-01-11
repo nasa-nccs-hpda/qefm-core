@@ -1,7 +1,5 @@
 fm="GraphCast"
 container="$1"/../containers/"$2"
-cd /explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/src/FMGraphCast
-export PYTHONPATH=/explore/nobackup/projects/ilab/projects/qefm-core/qefm/models/src/FMGraphCast/graphcast
 
 cd "$1"/qefm/models/src/FMGraphCast
 current_dir=$(pwd)
