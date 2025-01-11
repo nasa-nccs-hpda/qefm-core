@@ -48,21 +48,23 @@ Allocate a GPU before running the inference scripts:
 
 ### <b> Command-Line Interface (CLI) </b>
 
-To run all of the Foundation Model tasks with **qefm-core** in one script, use the following command:
+To run all of the Foundation Model tasks with **qefm-core** in one script, change directories to the qefm-core root directory and run the inference ensemble script:
 
 ```bash
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh <Container name>
+$ cd <Root directory>
+$ ./tests/fm-inference.sh <Container name> ensemble
 ```
 
 To run a specific Foundation Model task with **qefm-core**, use the following command:
 
 ```bash
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-<Foundation model name>.sh <Container name>
+$ ./tests/fm-inference.sh <Container name> <Foundation model name> 
 ```
 
 ### <b> Common CLI Arguments </b>
 | Command-line-argument | Description                                         |Required/Optional/Flag | Default  | Example                  |
 | --------------------- |:----------------------------------------------------|:---------|:---------|:--------------------------------------|
+| `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      |`/discover/nobackup/projects/QEFM/qefm-core`         |
 | `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      |`qefm-core.sif`         |
 | `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      |`ensemble`, `aurora`, `fourcastnet`, `graphcast`, `pangu`,`privthi`  |
 
@@ -70,25 +72,25 @@ $ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-<Foundation model name>.sh
 
 **Run Inference for **All** Foundation Models**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-ensemble.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif ensemble
 ```
 **Run Inference for Aurora Foundation Model**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-aurora.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif aurora
 ```
 **Run Inference for Fourcastnet Foundation Model**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-fourcastnet.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif fourcastnet
 ```
 **Run Inference for GraphCast Foundation Model**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-graphcast.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif graphcast
 ```
 **Run Inference for Pangu Foundation Model**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-pangu.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif pangu
 ```
 **Run Inference for Privthi Foundation Model**:
 ```shell
-$ /discover/nobackup/projects/QEFM/qefm-core/tests/fm-privthi.sh qefm-core.sif
+$ ./tests/fm-inference.sh qefm-core.sif privthi
 ```
