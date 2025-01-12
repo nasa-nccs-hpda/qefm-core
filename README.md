@@ -70,33 +70,31 @@ $ ./tests/fm-inference.sh <Container name> <Foundation model name>
 
 ### <b> Examples </b>
 
-**Run Inference for **All** Foundation Models**:
+**Navigate to Root directory on Discover**:
 ```shell
 $ cd /discover/nobackup/projects/QEFM/qefm-core
+```
+**Run Inference for **All** Foundation Models**:
+```shell
 $ ./tests/fm-inference.sh qefm-core.sif ensemble
 ```
 **Run Inference for Aurora Foundation Model**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
 $ ./tests/fm-inference.sh qefm-core.sif aurora
 ```
 **Run Inference for Fourcastnet Foundation Model**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
 $ ./tests/fm-inference.sh qefm-core.sif fourcastnet
 ```
 **Run Inference for GraphCast Foundation Model**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
 $ ./tests/fm-inference.sh qefm-core.sif graphcast
 ```
 **Run Inference for Pangu Foundation Model**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
 $ ./tests/fm-inference.sh qefm-core.sif pangu
 ```
 **Run Inference for Privthi Foundation Model**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
 $ ./tests/fm-inference.sh qefm-core.sif privthi
 ```
