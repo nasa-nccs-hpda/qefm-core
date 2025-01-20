@@ -136,7 +136,6 @@ dmypy.json
 .pyre/
 /venv/
 /qefm/models/checkpoints/
-/qefm/models/checkpoints/
 /qefm/models/src/fcn/
 /qefm/models/src/FMGraphCast/._statement_12_31_2022.pdf
 /qefm/models/src/FMGraphCast/statement_12_31_2022.pdf
@@ -157,3 +156,5 @@ dmypy.json
 /qefm/models/src/FMPangu/Pangu-Weather-pytorch/pangu_weather_6.onnx
 /qefm/models/src/FMPangu/Pangu-Weather-pytorch/pangu_weather_24.onnx
 /containers/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/
+/qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/
