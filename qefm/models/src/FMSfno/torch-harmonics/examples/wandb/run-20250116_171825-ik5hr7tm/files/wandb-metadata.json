@@ -1,0 +1,32 @@
+{
+  "os": "Linux-4.12.14-122.173-default-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "startedAt": "2025-01-16T22:18:25.611168Z",
+  "program": "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMSfno/torch-harmonics/examples/train_sfno.py",
+  "codePath": "examples/train_sfno.py",
+  "git": {
+    "remote": "https://github.com/NVIDIA/torch-harmonics.git",
+    "commit": "41293968f6ccf50471081279d651ca46b70b2a76"
+  },
+  "email": "glenn.s.tamkin@nasa.gov",
+  "root": "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMSfno/torch-harmonics/examples",
+  "host": "discover13",
+  "username": "gtamkin",
+  "executable": "/usr/bin/python",
+  "codePathLocal": "train_sfno.py",
+  "cpu_count": 48,
+  "cpu_count_logical": 48,
+  "disk": {
+    "/": {
+      "total": "16777216",
+      "used": "12288"
+    }
+  },
+  "memory": {
+    "total": "403819421696"
+  },
+  "cpu": {
+    "count": 48,
+    "countLogical": 48
+  }
+}
