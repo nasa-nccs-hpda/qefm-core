@@ -157,3 +157,12 @@ dmypy.json
 /qefm/models/src/FMPangu/Pangu-Weather-pytorch/pangu_weather_24.onnx
 /containers/
 
+/qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/latest-run/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/run-20250116_171825-ik5hr7tm/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/run-20250116_234226-tdfqfq9m/
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/debug.log
+/qefm/models/src/FMSfno/torch-harmonics/examples/wandb/debug-internal.log
+/qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/lsno_sc2_layers4_e32_morlet/
+/qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/sfno_sc2_layers4_e32/
