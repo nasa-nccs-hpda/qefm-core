@@ -158,3 +158,5 @@ dmypy.json
 /containers/
 /qefm/models/src/FMSfno/torch-harmonics/examples/wandb/
 /qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/
+/qefm/models/src/FMSfno/train_sfno_gt.py
+/qefm/models/src/FMSfno/train_sfno_gt.py.orig
