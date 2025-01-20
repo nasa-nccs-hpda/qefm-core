@@ -43,22 +43,22 @@ Allocate a GPU before running the inference scripts:
 ### <b> GPU Allocation (CLI) </b>
 
 ```bash
-  $ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
+salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
 ```
 
 ### <b> Command-Line Interface (CLI) </b>
 
-To run all of the Foundation Model tasks with **qefm-core** in one script, change directories to the qefm-core root directory and run the inference ensemble script:
+To run each of the Foundation Model tasks with **qefm-core** in one script, change directories to the qefm-core root directory and run the inference ensemble script:
 
 ```bash
-$ cd <Root directory>
-$ ./tests/fm-inference.sh <Container name> ensemble
+cd <Root directory>
+./tests/fm-inference.sh <Container name> ensemble
 ```
 
 To run a specific Foundation Model task with **qefm-core**, use the following command:
 
 ```bash
-$ ./tests/fm-inference.sh <Container name> <Foundation model name> 
+./tests/fm-inference.sh <Container name> <Foundation model name> 
 ```
 
 ### <b> Common CLI Arguments </b>
@@ -72,29 +72,34 @@ $ ./tests/fm-inference.sh <Container name> <Foundation model name>
 
 **Navigate to Root directory on Discover**:
 ```shell
-$ cd /discover/nobackup/projects/QEFM/qefm-core
+cd /discover/nobackup/projects/QEFM/qefm-core
 ```
 **Run Inference for **All** Foundation Models**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif ensemble
+./tests/fm-inference.sh qefm-core.sif ensemble
 ```
 **Run Inference for Aurora Foundation Model**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif aurora
+./tests/fm-inference.sh qefm-core.sif aurora
 ```
 **Run Inference for Fourcastnet Foundation Model**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif fourcastnet
+./tests/fm-inference.sh qefm-core.sif fourcastnet
 ```
 **Run Inference for GraphCast Foundation Model**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif graphcast
+./tests/fm-inference.sh qefm-core.sif graphcast
 ```
 **Run Inference for Pangu Foundation Model**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif pangu
+./tests/fm-inference.sh qefm-core.sif pangu
 ```
 **Run Inference for Privthi Foundation Model**:
 ```shell
-$ ./tests/fm-inference.sh qefm-core.sif privthi
+./tests/fm-inference.sh qefm-core.sif privthi
 ```
+**Run Inference for SFNO Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core.sif sfno
+```
+
