@@ -1,0 +1,14 @@
+# Arguments to pass to the image
+ARG VERSION_DATE=latest
+ARG FROM_IMAGE=nasanccs/qefm-core
+
+# Import NVIDIA Modulus container as the BASE Image (Modulus base image)
+FROM ${FROM_IMAGE}:${VERSION_DATE}
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+# GenCast dependencies
+pip install tree_math
+pip install xarray_tensorstore
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]
