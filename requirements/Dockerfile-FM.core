@@ -10,7 +10,9 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 pip install tree_math
 pip install xarray_tensorstore
 
+WORKDIR /app
 RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
+CMD ["/bin/bash"]
