@@ -7,7 +7,7 @@ FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # GenCast dependencies
-RUN pip --no-cache-dir --no-deps install \
+RUN pip install --no-cache-dir --no-deps \
     tree_math \
     tensorstore \
     xarray_tensorstore
