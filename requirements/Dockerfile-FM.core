@@ -7,8 +7,10 @@ FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # GenCast dependencies
-RUN pip install tree_math
-RUN pip install xarray_tensorstore
+RUN pip --no-cache-dir --no-deps install \
+    tree_math \
+    tensorstore \
+    xarray_tensorstore
 
 WORKDIR /app
 RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git
