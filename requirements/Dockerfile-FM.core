@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir --no-deps \
     xarray_tensorstore
 
 WORKDIR /app
-RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git
+# Only do git clone once, already exists
+#RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
