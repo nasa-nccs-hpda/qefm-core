@@ -102,4 +102,8 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core.sif sfno
 ```
+**Run Inference for GenCast Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core.sif gencast
+```
 
