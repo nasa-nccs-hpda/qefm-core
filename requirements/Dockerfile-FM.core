@@ -1,0 +1,21 @@
+# Arguments to pass to the image
+ARG VERSION_DATE=latest
+ARG FROM_IMAGE=nasanccs/qefm-core
+
+# Import NVIDIA Modulus container as the BASE Image (Modulus base image)
+FROM ${FROM_IMAGE}:${VERSION_DATE}
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+# GenCast dependencies
+RUN pip install --no-cache-dir --no-deps \
+    tree_math \
+    tensorstore \
+    xarray_tensorstore
+
+WORKDIR /app
+# Only do git clone once, already exists
+#RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]
+CMD ["/bin/bash"]
