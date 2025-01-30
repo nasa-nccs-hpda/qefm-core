@@ -62,11 +62,11 @@ To run a specific Foundation Model task with **qefm-core**, use the following c
 ```
 
 ### <b> Common CLI Arguments </b>
-| Command-line-argument | Description                                         |Required/Optional/Flag | Default  | Example                                                                       |
-| --------------------- |:----------------------------------------------------|:---------|:---------|:------------------------------------------------------------------------------|
-| `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      | `/discover/nobackup/projects/QEFM/qefm-core`                                  |
-| `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core.sif`                                                               |
-| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `ensemble`, `aurora`, `fourcastnet`, `graphcast`, `pangu`, `privthi` , `sfno` |
+| Command-line-argument | Description                                         |Required/Optional/Flag | Default  | Example                                                                                  |
+| --------------------- |:----------------------------------------------------|:---------|:---------|:-----------------------------------------------------------------------------------------|
+| `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      | `/discover/nobackup/projects/QEFM/qefm-core`                                             |
+| `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core.sif`                                                                          |
+| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `ensemble`, `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi` , `sfno` |
 
 ### <b> Examples </b>
 
