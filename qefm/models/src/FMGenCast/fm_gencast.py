@@ -48,9 +48,17 @@
 # In[ ]:
 
 print("\n====================================")
-print("NOTE: These need to be installed in the container:")
-print("---> pip install tree_math")
-print("---> pip install xarray_tensorstore")
+print("---> chmod a+r -R /discover/nobackup/projects/QEFM/.local/")
+print("NOTE: GenCast dependencies:")
+print("---> RUN pip install --no-cache-dir --no-deps \ ")
+print("--->     tree_math \ ")
+print("--->     tensorstore \ ")
+print("--->     xarray_tensorstore")
+
+print("---> WORKDIR /app")
+print("--->     # Only do git clone once, already exists")
+print("--->     #RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git")
+
 print("====================================\n")
 #%pip install tree_math
 
