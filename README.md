@@ -51,6 +51,7 @@ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=r
 To run each of the Foundation Model tasks with **qefm-core** in one script, change directories to the qefm-core root directory and run the inference ensemble script:
 
 ```bash
+module load singularity
 cd <Root directory>
 ./tests/fm-inference.sh <Container name> ensemble
 ```
