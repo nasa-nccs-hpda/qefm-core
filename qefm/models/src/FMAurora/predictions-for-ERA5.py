@@ -1,10 +1,12 @@
+'''
 #https://microsoft.github.io/aurora/example_era5.html#loading-and-running-the-model
 from pathlib import Path
 
 import cdsapi
 
 # Data will be downloaded here.
-download_path = Path(".")
+#download_path = Path(".")
+download_path = Path("/gpfsm/dnb34/jli30/data/Aurora")
 #download_path = Path("~/downloads")
 
 #c = cdsapi.Client()
@@ -23,7 +25,7 @@ if not (download_path / "static.nc").exists():
                 "land_sea_mask",
                 "soil_type",
             ],
-            "year": "2023",
+            "year": "2025",
             "month": "01",
             "day": "01",
             "time": "00:00",
@@ -34,7 +36,7 @@ if not (download_path / "static.nc").exists():
 print("Static variables downloaded!")
 
 # Download the surface-level variables.
-if not (download_path / "2023-01-01-surface-level.nc").exists():
+if not (download_path / "2025-01-01-surface-level.nc").exists():
     c.retrieve(
         "reanalysis-era5-single-levels",
         {
@@ -45,18 +47,18 @@ if not (download_path / "2023-01-01-surface-level.nc").exists():
                 "10m_v_component_of_wind",
                 "mean_sea_level_pressure",
             ],
-            "year": "2023",
+            "year": "2025",
             "month": "01",
             "day": "01",
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },
-        str(download_path / "2023-01-01-surface-level.nc"),
+        str(download_path / "2025-01-01-surface-level.nc"),
     )
 print("Surface-level variables downloaded!")
 
 # Download the atmospheric variables.
-if not (download_path / "2023-01-01-atmospheric.nc").exists():
+if not (download_path / "2025-01-01-atmospheric.nc").exists():
     c.retrieve(
         "reanalysis-era5-pressure-levels",
         {
@@ -83,16 +85,16 @@ if not (download_path / "2023-01-01-atmospheric.nc").exists():
                 "925",
                 "1000",
             ],
-            "year": "2023",
+            "year": "2025",
             "month": "01",
             "day": "01",
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },
-        str(download_path / "2023-01-01-atmospheric.nc"),
+        str(download_path / "2025-01-01-atmospheric.nc"),
     )
 print("Atmospheric variables downloaded!")
-
+'''
 
 print("Preparing a Batch")
 import torch
@@ -101,8 +103,9 @@ import xarray as xr
 from aurora import Batch, Metadata
 
 static_vars_ds = xr.open_dataset(download_path / "static.nc", engine="netcdf4")
-surf_vars_ds = xr.open_dataset(download_path / "2023-01-01-surface-level.nc", engine="netcdf4")
-atmos_vars_ds = xr.open_dataset(download_path / "2023-01-01-atmospheric.nc", engine="netcdf4")
+surf_vars_ds = xr.open_dataset(download_path / "2025-01-01-surface-level.nc", engine="netcdf4")
+atmos_vars_ds = xr.open_dataset(download_path / "2025-01-01-atmospheric.nc", engine="netcdf4")
+print(static_vars_ds)
 
 i = 1  # Select this time index in the downloaded data.
 
@@ -152,19 +155,24 @@ model = model.to("cuda")
 with torch.inference_mode():
     preds = [pred.to("cpu") for pred in rollout(model, batch, steps=2)]
 
+print(preds)
+print(dir(preds))
 model = model.to("cpu")
 
-print("model = " + str(model))
 
-print("Plot the results ")
-import matplotlib.pyplot as plt
+#Write prediction to NetCDF file
+for i in range(len(preds)):
+    pred = preds[i]
+    pred.to_netcdf(f"pred_{i}.nc")
 
+'''
 fig, ax = plt.subplots(2, 2, figsize=(12, 6.5))
 
 for i in range(ax.shape[0]):
     pred = preds[i]
     print("pred = " + str(i) + " " + str(pred))
-
+    
+    
     ax[i, 0].imshow(pred.surf_vars["2t"][0, 0].numpy() - 273.15, vmin=-50, vmax=50)
     ax[i, 0].set_ylabel(str(pred.metadata.time[0]))
     if i == 0:
@@ -179,3 +187,4 @@ for i in range(ax.shape[0]):
     ax[i, 1].set_yticks([])
 
 plt.tight_layout()
+'''

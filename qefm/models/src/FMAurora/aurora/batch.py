@@ -3,7 +3,8 @@
 import dataclasses
 from datetime import datetime
 from functools import partial
-from typing import Callable
+from pathlib import Path
+from typing import Callable, List
 
 import numpy as np
 import torch
@@ -220,6 +221,43 @@ class Batch:
             ),
         )
 
+    def to_netcdf(self, path: str | Path) -> None:
+        """Write the batch to a file.
+
+        This requires `xarray` and `netcdf4` to be installed.
+        """
+        try:
+            import xarray as xr
+        except ImportError as e:
+            raise RuntimeError("`xarray` must be installed.") from e
+
+        ds = xr.Dataset(
+            {
+                **{
+                    f"surf_{k}": (("batch", "history", "latitude", "longitude"), _np(v))
+                    for k, v in self.surf_vars.items()
+                },
+                **{
+                    f"static_{k}": (("latitude", "longitude"), _np(v))
+                    for k, v in self.static_vars.items()
+                },
+                **{
+                    f"atmos_{k}": (("batch", "history", "level", "latitude", "longitude"), _np(v))
+                    for k, v in self.atmos_vars.items()
+                },
+            },
+            coords={
+                "latitude": _np(self.metadata.lat),
+                "longitude": _np(self.metadata.lon),
+                "time": list(self.metadata.time),
+                "level": list(self.metadata.atmos_levels),
+                "rollout_step": self.metadata.rollout_step,
+            },
+        )
+        ds.to_netcdf(path)
+
+def _np(x: torch.Tensor) -> np.ndarray:
+    return x.detach().cpu().numpy()
 
 def interpolate(
     v: torch.Tensor,
