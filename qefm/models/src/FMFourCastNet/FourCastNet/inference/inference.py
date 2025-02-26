@@ -73,7 +73,7 @@ import glob
 from datetime import datetime
 
 
-fld = "2m_temperature" # diff flds have diff decor times and hence differnt ics
+fld = "z500" # diff flds have diff decor times and hence differnt ics
 if fld == "z500" or fld == "2m_temperature" or fld == "t850":
     DECORRELATION_TIME = 36 # 9 days (36) for z500, 2 (8 steps) days for u10, v10
 else:
@@ -338,7 +338,7 @@ if __name__ == '__main__':
     params['resuming'] = False
     params['local_rank'] = 0
 
-    log = False
+    log = True 
     if log:
         logging_utils.log_to_file(logger_name=None, log_filename=os.path.join(expDir, 'inference_out.log'))
         logging_utils.log_versions()
