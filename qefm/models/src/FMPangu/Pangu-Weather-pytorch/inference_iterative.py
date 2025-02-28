@@ -51,7 +51,7 @@ assert np.allclose(input, input2)
 
 # Load the surface numpy arrays
 input_surface = np.load(os.path.join(input_data_dir, 'input_surface.npy')).astype(np.float32)
-input_surface2 = load_input_surface(input_data_dir, '2024-12-01-surface.nc', tidx=0)
+input_surface2 = load_input_surface(input_data_dir, '2024-12-01-surface-level.nc', tidx=0)
 assert np.allclose(input_surface, input_surface2)
 
 exit()
