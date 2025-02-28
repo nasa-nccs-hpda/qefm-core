@@ -2,7 +2,26 @@ import os
 import numpy as np
 import onnx
 import onnxruntime as ort
+import xarray as xr
+from pathlib import Path
 
+def load_input_upper(input_data_dir: str, input_file: str, tidx:int = 0) -> np.ndarray:
+    data_root = Path(input_data_dir)
+    if not (data_root / input_file).exists():
+        raise FileNotFoundError(f'{input_file} not found in {input_data_dir}') 
+    ds = xr.open_dataset(data_root / input_file)
+    variables = ['z', 'q', 't', 'u', 'v']
+    data = np.stack([ds[var].isel(valid_time=tidx).values for var in variables], axis=1)
+    return data
+
+def load_input_surface(input_data_dir: str, input_file: str, tidx:int = 0) -> np.ndarray:
+    data_root = Path(input_data_dir)
+    if not (data_root / input_file).exists():
+        raise FileNotFoundError(f'{input_file} not found in {input_data_dir}') 
+    ds = xr.open_dataset(data_root / input_file)
+    variables = ['msl', 'u10', 'v10', 't2m']
+    data = np.stack([ds[var].isel(valid_time=tidx).values for var in variables], axis=1)
+    return data 
 
 # The directory of your input and output data
 input_data_dir = 'input_data'
@@ -27,6 +46,9 @@ ort_session_6 = ort.InferenceSession('pangu_weather_6.onnx', sess_options=option
 
 # Load the upper-air numpy arrays
 input = np.load(os.path.join(input_data_dir, 'input_upper.npy')).astype(np.float32)
+input2 = load_input_upper(input_data_dir, 'input_upper.nc', tidx=0)
+assert np.allclose(input, input2)
+exit()
 # Load the surface numpy arrays
 input_surface = np.load(os.path.join(input_data_dir, 'input_surface.npy')).astype(np.float32)
 
