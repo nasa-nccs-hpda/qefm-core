@@ -48,10 +48,13 @@ ort_session_6 = ort.InferenceSession('pangu_weather_6.onnx', sess_options=option
 input = np.load(os.path.join(input_data_dir, 'input_upper.npy')).astype(np.float32)
 input2 = load_input_upper(input_data_dir, '2024-12-01-atmospheric.nc', tidx=0)
 assert np.allclose(input, input2)
-exit()
+
 # Load the surface numpy arrays
 input_surface = np.load(os.path.join(input_data_dir, 'input_surface.npy')).astype(np.float32)
+input_surface2 = load_input_surface(input_data_dir, '2024-12-01-surface.nc', tidx=0)
+assert np.allclose(input_surface, input_surface2)
 
+exit()
 # Run the inference session
 input_24, input_surface_24 = input, input_surface
 for i in range(60):
