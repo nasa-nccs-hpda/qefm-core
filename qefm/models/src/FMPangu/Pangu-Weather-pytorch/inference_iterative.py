@@ -32,11 +32,16 @@ input_surface = np.load(os.path.join(input_data_dir, 'input_surface.npy')).astyp
 
 # Run the inference session
 input_24, input_surface_24 = input, input_surface
-for i in range(28):
+for i in range(60):
   if (i+1) % 4 == 0:
     output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
     input_24, input_surface_24 = output, output_surface
+    np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
+    np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
   else:
     output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
-  input, input_surface = output, output_surface
-  # Your can save the results here
+    input, input_surface = output, output_surface
+    # Your can save the results here
+    # Save the results
+    np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
+    np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
