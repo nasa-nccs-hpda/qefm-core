@@ -63,7 +63,8 @@ if __name__ == '__main__':
 
     # The directory of your input and output data
     input_data_dir = args.input_data_dir
-    output_data_dir = args.output_data_dir
+    output_data_dir = Path(args.output_data_dir)
+    output_data_dir.mkdir(parents=True, exist_ok=True)
     
     # The start time of the inference  
     # & the number of inference steps
@@ -101,23 +102,23 @@ if __name__ == '__main__':
 
     # Run the inference session
     
-    time_values = pd.date_range(start=start_time, periods=nsteps, freq='6h')
+    time_values = pd.date_range(start=start_time, periods=nsteps+1, freq='6h')
     input_24, input_surface_24 = input, input_surface
     
     for i in range(nsteps):
       if (i+1) % 4 == 0:
         output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
         ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
-        datasets_surface.append(ds_tmp)
+        ds_tmp.to_netcdf((output_data_dir / f'output_{i+1:02d}.nc'))
+        # update the input for the next time step
         input_24, input_surface_24 = output, output_surface
-        np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
-        np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
+        #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
+        #np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
       else:
         output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
         ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
-        ds_tmp.to_netcdf(os.path.join(output_data_dir, f'output_{i+1:02d}.nc'))
-        print(ds_tmp)
-        exit()
+        ds_tmp.to_netcdf((output_data_dir / f'output_{i+1:02d}.nc'))
+        # update the input for the next time step
         input, input_surface = output, output_surface
         # Your can save the results here
         # Save the results
