@@ -25,20 +25,27 @@ def load_input_surface(input_data_dir: str, input_file: str, tidx:int = 0) -> np
     data = np.stack([ds[var].isel(valid_time=tidx).values for var in variables], axis=0)
     return data
 
-def surface_to_ds(arr: np.ndarray, time_value: np.datetime64) -> xr.Dataset:
-    # Add time dimension
-    if arr.ndim == 2:
-        arr = arr[np.newaxis, ...]
+def pred_to_ds(surface: np.ndarray, atmos: np.ndarray, time_value: np.datetime64) -> xr.Dataset:
+    assert surface.shape == (4, 721, 1440)
+    assert atmos.shape == (5, 13, 721, 1440)
+    levels = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
+
     # Save the surface numpy arrays to xarray dataset
     ds = xr.Dataset(
         {
-            'msl': (('time', 'lat', 'lon'), arr[0,0,...]),
-            'u10': (('time', 'lat', 'lon'), arr[0,1,...]),
-            'v10': (('time', 'lat', 'lon'), arr[0,2,...]),
-            't2m': (('time', 'lat', 'lon'), arr[0,3,...]),
+            'msl': (('time', 'lat', 'lon'), surface[0:1]),
+            'u10': (('time', 'lat', 'lon'), surface[1:2]),
+            'v10': (('time', 'lat', 'lon'), surface[2:3]),
+            't2m': (('time', 'lat', 'lon'), surface[3:4]),
+            'z': (('time', 'level', 'lat', 'lon'), atmos[0:1]),
+            'q': (('time', 'level', 'lat', 'lon'), atmos[1:2]),
+            't': (('time', 'level', 'lat', 'lon'), atmos[2:3]), 
+            'u': (('time', 'level', 'lat', 'lon'), atmos[3:4]),
+            'v': (('time', 'level', 'lat', 'lon'), atmos[4:5]),
         },
         coords={
             'time': [time_value],
+            'level': levels,
             'lat': np.linspace(90, -90, 721),
             'lon': np.linspace(0, 359.75, 1440),
         },
@@ -94,23 +101,22 @@ if __name__ == '__main__':
 
     # Run the inference session
     
-    time_values = pd.date_range(start=start_time, periods=nsteps, freq='6H')
+    time_values = pd.date_range(start=start_time, periods=nsteps, freq='6h')
     input_24, input_surface_24 = input, input_surface
     
-    datasets_surface = []
     for i in range(nsteps):
       if (i+1) % 4 == 0:
         output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
-        ds_tmp = surface_to_ds(output_surface, time_values[i+1])
+        ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
         datasets_surface.append(ds_tmp)
         input_24, input_surface_24 = output, output_surface
         np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
         np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
       else:
         output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
-        ds_tmp = surface_to_ds(output_surface, time_values[i+1])
+        ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
+        ds_tmp.to_netcdf(os.path.join(output_data_dir, f'output_{i+1:02d}.nc'))
         print(ds_tmp)
-        datasets_surface.append(ds_tmp)
         exit()
         input, input_surface = output, output_surface
         # Your can save the results here
