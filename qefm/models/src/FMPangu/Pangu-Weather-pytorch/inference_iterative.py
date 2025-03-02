@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     # The directory of your input and output data
     input_data_dir = args.input_data_dir
-    output_data_dir = Path(args.output_data_dir)
+    output_data_dir = Path(args.output_data_dir) / args.start_time[:10]
     output_data_dir.mkdir(parents=True, exist_ok=True)
     
     # The start time of the inference  
