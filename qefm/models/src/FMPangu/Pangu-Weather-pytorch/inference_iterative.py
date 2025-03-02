@@ -109,7 +109,7 @@ if __name__ == '__main__':
       if (i+1) % 4 == 0:
         output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
         ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
-        ds_tmp.to_netcdf((output_data_dir / f'output_{i+1:02d}.nc'))
+        ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
         # update the input for the next time step
         input_24, input_surface_24 = output, output_surface
         #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
@@ -117,7 +117,7 @@ if __name__ == '__main__':
       else:
         output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
         ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
-        ds_tmp.to_netcdf((output_data_dir / f'output_{i+1:02d}.nc'))
+        ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
         # update the input for the next time step
         input, input_surface = output, output_surface
         # Your can save the results here
