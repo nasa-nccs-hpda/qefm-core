@@ -105,8 +105,8 @@ from aurora import Batch, Metadata
 download_path = Path("/discover/nobackup/jli30/data/Aurora")
 print((download_path / "static.nc").exists())
 static_vars_ds = xr.open_dataset(download_path / "static.nc", engine="netcdf4")
-surf_vars_ds = xr.open_dataset(download_path / "2024-12-01-surface-level.nc", engine="netcdf4")
-atmos_vars_ds = xr.open_dataset(download_path / "2024-12-01-atmospheric.nc", engine="netcdf4")
+surf_vars_ds = xr.open_dataset(download_path / "2020-01-01-surface-level.nc", engine="netcdf4")
+atmos_vars_ds = xr.open_dataset(download_path / "2020-01-01-atmospheric.nc", engine="netcdf4")
 print(static_vars_ds)
 
 i = 0  # Select this time index in the downloaded data.
@@ -155,7 +155,7 @@ model.eval()
 model = model.to("cuda")
 
 with torch.inference_mode():
-    preds = [pred.to("cpu") for pred in rollout(model, batch, steps=60)]
+    preds = [pred.to("cpu") for pred in rollout(model, batch, steps=10)]
 
 print(preds)
 print(dir(preds))
@@ -165,7 +165,7 @@ model = model.to("cpu")
 #Write prediction to NetCDF file
 for i in range(len(preds)):
     pred = preds[i]
-    pred.to_netcdf(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora/pred_{i:02d}.nc")
+    pred.to_netcdf(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora/2020-01-01/pred_{i:02d}.nc")
 
 '''
 fig, ax = plt.subplots(2, 2, figsize=(12, 6.5))
