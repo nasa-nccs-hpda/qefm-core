@@ -39,8 +39,8 @@ def writetofile(src, dest, channel_idx, varslist, src_idx=0, frmt='nc'):
         # Ensure 'fields' dataset exists
             if "fields" not in fdest:
                 print("Creating 'fields' dataset in destination file...")
-                shape = (var_data.shape[0], 21, var_data.shape[1], var_data.shape[2])  # Adjust as needed
-                maxshape = (None, 21, var_data.shape[1], var_data.shape[2])  # Allow unlimited growth along axis 0
+                shape = (var_data.shape[0], 20, var_data.shape[1], var_data.shape[2])  # Adjust as needed
+                maxshape = (None, 20, var_data.shape[1], var_data.shape[2])  # Allow unlimited growth along axis 0
                 fdest.create_dataset("fields", shape=shape, maxshape=maxshape, dtype=var_data.dtype)
             
             fdest['fields'][:, channel_idx, :, :] = var_data
