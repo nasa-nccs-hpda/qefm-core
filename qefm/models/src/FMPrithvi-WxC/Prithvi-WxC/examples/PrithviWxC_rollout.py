@@ -9,21 +9,19 @@
 # autoregressive rollout, a common strategy to increase accuracy and stability of
 # models when applied to forecasting-type tasks. 
 
-# In[1]:
-
 
 import random
 from pathlib import Path
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 import torch
 #from huggingface_hub import hf_hub_download, snapshot_download
 
-def hf_hub_download( repo_id: str, filename: str, local_dir: str ):
-    print("hf_hub_download stub: ", filename)
-def snapshot_download( repo_id: str, allow_patterns: str, local_dir: str ):
-    print("snapshot_download stub: ", allow_patterns)
+# def hf_hub_download( repo_id: str, filename: str, local_dir: str ):
+#     print("hf_hub_download stub: ", filename)
+# def snapshot_download( repo_id: str, allow_patterns: str, local_dir: str ):
+#     print("snapshot_download stub: ", allow_patterns)
 
 # Set backend etc.
 torch.jit.enable_onednn_fusion(True)
@@ -98,11 +96,9 @@ padding = {"level": [0, 0], "lat": [0, -1], "lon": [0, 0]}
 # The `lead_time` flag still lets the target time for the model, however now it
 # only a single value and must be a positive integer multiple of the `-input_time`. 
 
-# In[2]:
 
-
-lead_time = 12  # This variable can be change to change the task
-input_time = -6  # This variable can be change to change the task
+lead_time = 3  # This variable can be change to change the task
+input_time = -3  # This variable can be change to change the task
 
 
 # ### Data file
@@ -113,24 +109,22 @@ input_time = -6  # This variable can be change to change the task
 # search for the relevant data that falls within the provided time range.
 # 
 
-# In[3]:
+time_range = ("2024-12-01T00:00:00", "2024-12-01T23:59:59")
 
+surf_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
+# surf_dir = Path("../../../../checkpoints/FMPrithvi-WxC/merra-2")
+# snapshot_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     allow_patterns="merra-2/MERRA2_sfc_2020010[1].nc",
+#     local_dir=".",
+# )
 
-time_range = ("2020-01-01T00:00:00", "2020-01-01T23:59:59")
-
-surf_dir = Path("../../../../checkpoints/FMPrithvi-WxC/merra-2")
-snapshot_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    allow_patterns="merra-2/MERRA2_sfc_2020010[1].nc",
-    local_dir=".",
-)
-
-vert_dir = Path("../../../../checkpoints/FMPrithvi-WxC/merra-2")
-snapshot_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    allow_patterns="merra-2/MERRA_pres_2020010[1].nc",
-    local_dir=".",
-)
+vert_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
+# snapshot_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     allow_patterns="merra-2/MERRA_pres_2020010[1].nc",
+#     local_dir=".",
+# )
 
 
 # ### Climatology
@@ -142,25 +136,19 @@ snapshot_download(
 #  we have to provide the dataloader with the path of the
 #  climatology data.
 
-# In[4]:
+surf_clim_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology")
+# snapshot_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     allow_patterns="climatology/climate_surface_doy00[1]*.nc",
+#     local_dir=".",
+# )
 
-
-surf_clim_dir = Path("../../../../checkpoints/FMPrithvi-WxC/climatology")
-snapshot_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    allow_patterns="climatology/climate_surface_doy00[1]*.nc",
-    local_dir=".",
-)
-
-vert_clim_dir = Path("../../../../checkpoints/FMPrithvi-WxC/climatology")
-snapshot_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    allow_patterns="climatology/climate_vertical_doy00[1]*.nc",
-    local_dir=".",
-)
-
-
-# In[5]:
+vert_clim_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology")
+# snapshot_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     allow_patterns="climatology/climate_vertical_doy00[1]*.nc",
+#     local_dir=".",
+# )
 
 
 positional_encoding = "fourier"
@@ -169,19 +157,12 @@ positional_encoding = "fourier"
 # ### Dataloader init
 # We are now ready to instantiate the dataloader.
 
-# In[6]:
-
 
 import os, sys
 sys.path.insert(0, "../Prithvi-WxC")
 #sys.path.insert(0, "/discover/nobackup/projects/QEFM/dev/models/FMPrithvi-WxC")
 #sys.path.insert(0, "/panfs/ccds02/nobackup/people/gtamkin/dev/foundation-models/FMPrithvi-WxC")
 sys.path.append("../")
-
-
-# In[7]:
-
-
 from PrithviWxC.dataloaders.merra2_rollout import Merra2RolloutDataset
 
 dataset = Merra2RolloutDataset(
@@ -205,8 +186,6 @@ assert len(dataset) > 0, "There doesn't seem to be any valid data."
 # ### Scalers and other hyperparameters
 # Again, this setup is similar as before.
 
-# In[8]:
-
 
 from PrithviWxC.dataloaders.merra2 import (
     input_scalers,
@@ -214,39 +193,39 @@ from PrithviWxC.dataloaders.merra2 import (
     static_input_scalers,
 )
 
-surf_in_scal_path = Path("../../../../checkpoints/FMPrithvi-WxC/climatology/musigma_surface.nc")
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    filename=f"climatology/{surf_in_scal_path.name}",
-    local_dir=".",
-)
+surf_in_scal_path = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology/musigma_surface.nc")
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     filename=f"climatology/{surf_in_scal_path.name}",
+#     local_dir=".",
+# )
 
-vert_in_scal_path = Path("../../../../checkpoints/FMPrithvi-WxC/climatology/musigma_vertical.nc")
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    filename=f"climatology/{vert_in_scal_path.name}",
-    local_dir=".",
-)
+vert_in_scal_path = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology/musigma_vertical.nc")
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     filename=f"climatology/{vert_in_scal_path.name}",
+#     local_dir=".",
+# )
 
-surf_out_scal_path = Path("../../../../checkpoints/FMPrithvi-WxC/climatology/anomaly_variance_surface.nc")
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    filename=f"climatology/{surf_out_scal_path.name}",
-    local_dir=".",
-)
+surf_out_scal_path = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology/anomaly_variance_surface.nc")
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     filename=f"climatology/{surf_out_scal_path.name}",
+#     local_dir=".",
+# )
 
-vert_out_scal_path = Path("../../../../checkpoints/FMPrithvi-WxC/climatology/anomaly_variance_vertical.nc")
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
-    filename=f"climatology/{vert_out_scal_path.name}",
-    local_dir=".",
-)
+vert_out_scal_path = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climatology/anomaly_variance_vertical.nc")
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.2300m.v1",
+#     filename=f"climatology/{vert_out_scal_path.name}",
+#     local_dir=".",
+# )
 
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.rollout.2300m.v1",
-    filename="config.yaml",
-    local_dir=".",
-)
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.rollout.2300m.v1",
+#     filename="config.yaml",
+#     local_dir=".",
+# )
 
 in_mu, in_sig = input_scalers(
     surface_vars,
@@ -282,15 +261,12 @@ masking_ratio = 0.99
 # In[9]:
 
 
-weights_path = Path("../../../../checkpoints/FMPrithvi-WxC/weights/prithvi.wxc.rollout.2300m.v1.pt")
-hf_hub_download(
-    repo_id="Prithvi-WxC/prithvi.wxc.rollout.2300m.v1",
-    filename=weights_path.name,
-    local_dir="./weights",
-)
-
-
-# In[10]:
+weights_path = Path("/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/FMPrithvi-WxC/weights/prithvi.wxc.rollout.2300m.v1.pt")
+# hf_hub_download(
+#     repo_id="Prithvi-WxC/prithvi.wxc.rollout.2300m.v1",
+#     filename=weights_path.name,
+#     local_dir="./weights",
+# )
 
 
 import yaml
@@ -374,19 +350,15 @@ with torch.no_grad():
     out = rollout_iter(dataset.nsteps, model, batch)
 
 
-# ## Plotting
-
-# In[12]:
-
 
 t2m = out[0, 12].cpu().numpy()
 
-lat = np.linspace(-90, 90, out.shape[-2])
-lon = np.linspace(-180, 180, out.shape[-1])
-X, Y = np.meshgrid(lon, lat)
+# lat = np.linspace(-90, 90, out.shape[-2])
+# lon = np.linspace(-180, 180, out.shape[-1])
+# X, Y = np.meshgrid(lon, lat)
 
-plt.contourf(X, Y, t2m, 100)
-plt.gca().set_aspect("equal")
-plt.show()
+# plt.contourf(X, Y, t2m, 100)
+# plt.gca().set_aspect("equal")
+# plt.show()
 
 print("Finished rollout, and this is t2m: ", str(t2m))
