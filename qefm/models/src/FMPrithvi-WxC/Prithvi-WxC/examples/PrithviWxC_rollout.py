@@ -350,10 +350,10 @@ for k, v in batch.items():
 rng_state_1 = torch.get_rng_state()
 with torch.no_grad():
     model.eval()
-    out = rollout_iter(dataset.nsteps, model, batch)
+    out,olist = rollout_iter(dataset.nsteps, model, batch)
 
 
-
+print(len(olist))
 t2m = out[0, 12].cpu().numpy()
 
 # lat = np.linspace(-90, 90, out.shape[-2])

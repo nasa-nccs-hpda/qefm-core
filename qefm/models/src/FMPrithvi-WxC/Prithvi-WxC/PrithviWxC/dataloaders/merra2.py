@@ -756,7 +756,7 @@ class Merra2Dataset(Dataset):
         v_files = [os.path.basename(f) for f in v_glob]
 
         s_re = re.compile(r"MERRA2_sfc_(\d{8}).nc\Z")
-        v_re = re.compile(r"MERRA22_pres_(\d{8}).nc\Z")
+        v_re = re.compile(r"MERRA2_pres_(\d{8}).nc\Z")
         fmt = "%Y%m%d"
 
         s_times = {
