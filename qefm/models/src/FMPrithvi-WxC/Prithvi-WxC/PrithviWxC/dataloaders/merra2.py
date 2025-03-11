@@ -367,7 +367,7 @@ class Merra2Dataset(Dataset):
     Note:
         Data is assumed to be in NetCDF files containing daily data at 3-hourly
         intervals. These follow the naming patterns
-        MERRA2_sfc_YYYYMMHH.nc and MERRA_pres_YYYYMMHH.nc and can be located in
+        MERRA2_sfc_YYYYMMHH.nc and MERRA22_pres_YYYYMMHH.nc and can be located in
         two different locations. Optional climatology data comes from files
         climate_surface_doyDOY_hourHOD.nc and
         climate_vertical_doyDOY_hourHOD.nc.
@@ -613,7 +613,7 @@ class Merra2Dataset(Dataset):
         Returns:
             Path: constructed path
         """
-        pattern = "MERRA_pres_%Y%m%d.nc"
+        pattern = "MERRA2_pres_%Y%m%d.nc"
         data_file = self._data_path_vertical / timestamp.strftime(pattern)
         return data_file
 
@@ -752,11 +752,11 @@ class Merra2Dataset(Dataset):
 
         s_glob = self._data_path_surface.glob("MERRA2_sfc_????????.nc")
         s_files = [os.path.basename(f) for f in s_glob]
-        v_glob = self._data_path_surface.glob("MERRA_pres_????????.nc")
+        v_glob = self._data_path_surface.glob("MERRA2_pres_????????.nc")
         v_files = [os.path.basename(f) for f in v_glob]
 
         s_re = re.compile(r"MERRA2_sfc_(\d{8}).nc\Z")
-        v_re = re.compile(r"MERRA_pres_(\d{8}).nc\Z")
+        v_re = re.compile(r"MERRA22_pres_(\d{8}).nc\Z")
         fmt = "%Y%m%d"
 
         s_times = {
