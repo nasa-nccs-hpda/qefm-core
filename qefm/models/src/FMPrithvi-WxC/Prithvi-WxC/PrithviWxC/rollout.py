@@ -22,7 +22,8 @@ def rollout_iter(
     """
     if nsteps < 1:
         raise ValueError("'nsteps' shouold be a positive int.")
-
+    
+    out_list=[]
     xlast = batch["x"][:, 1]
     batch["lead_time"] = batch["lead_time"][..., 0]
 
@@ -42,8 +43,9 @@ def rollout_iter(
 
         batch["x"] = torch.cat((xlast[:, None], out[:, None]), dim=1)
         xlast = out
+        out_list.append(out)
 
     # Restore the masking ratio
     model.mask_ratio_inputs = mask_ratio_tmp
 
-    return xlast
+    return xlast, out_list

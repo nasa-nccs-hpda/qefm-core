@@ -97,7 +97,7 @@ padding = {"level": [0, 0], "lat": [0, -1], "lon": [0, 0]}
 # only a single value and must be a positive integer multiple of the `-input_time`. 
 
 
-lead_time = 3  # This variable can be change to change the task
+lead_time = 12  # This variable can be change to change the task
 input_time = -3  # This variable can be change to change the task
 
 
@@ -159,7 +159,7 @@ positional_encoding = "fourier"
 
 
 import os, sys
-sys.path.insert(0, "../Prithvi-WxC")
+sys.path.insert(0, "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/src/FMPrithvi-WxC/Prithvi-WxC")
 #sys.path.insert(0, "/discover/nobackup/projects/QEFM/dev/models/FMPrithvi-WxC")
 #sys.path.insert(0, "/panfs/ccds02/nobackup/people/gtamkin/dev/foundation-models/FMPrithvi-WxC")
 sys.path.append("../")
@@ -179,6 +179,7 @@ dataset = Merra2RolloutDataset(
     levels=levels,
     positional_encoding=positional_encoding,
 )
+print(len(dataset))
 assert len(dataset) > 0, "There doesn't seem to be any valid data."
 
 
@@ -338,6 +339,8 @@ from PrithviWxC.dataloaders.merra2_rollout import preproc
 from PrithviWxC.rollout import rollout_iter
 
 data = next(iter(dataset))
+print(data.keys())
+print(data['sur_tars'][12,0])
 batch = preproc([data], padding)
 
 for k, v in batch.items():
