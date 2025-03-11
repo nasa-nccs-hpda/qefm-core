@@ -245,7 +245,7 @@ def autoregressive_inference(params, ic, valid_data_full, model):
           seq_pred[n_history+i+1] = future_pred
           seq_real[n_history+i+1] = future
           history_stack = seq_pred[i+1:i+2+n_history]
-
+        
         future_pred = history_stack
       
         #Compute metrics 
@@ -260,6 +260,8 @@ def autoregressive_inference(params, ic, valid_data_full, model):
 
         pred = torch.unsqueeze(seq_pred[i], 0)
         tar = torch.unsqueeze(seq_real[i], 0)
+        print(f"Predcition idx {i} :: ", pred)
+        print(f"Target idx {i} :: ", tar)
         valid_loss[i] = weighted_rmse_torch_channels(pred, tar) * std
         acc[i] = weighted_acc_torch_channels(pred-clim, tar-clim)
         acc_unweighted[i] = unweighted_acc_torch_channels(pred-clim, tar-clim)
