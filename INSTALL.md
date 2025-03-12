@@ -7,7 +7,7 @@ Python framework for evaluating Foundation Models (FM).
 - Discover node (e.g,. Discover14) is needed for outbound access and setup rather than GPU
 - Requires 12G to install the FM container (can take over 40 minutes to download)
 - Instructions assume Singularity as container host
-- Usage leverages existing FM artifacts on Discover (e.g., checkpoints, statistics files)
+- Leverages existing FM artifacts on Discover (e.g., checkpoints, statistics files)
 - Tested using a100 GPUs with 60G memory
 
 ```bash
@@ -94,6 +94,7 @@ qefm-core_latest.sif
 
 ### Test Aurora with container on GPU:
 <user>@discover12:/home/gtamkin$ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
+
 <user>@warpa003:<install_dir>/qefm-core$ ./tests/fm-inference.sh  qefm-core_latest.sif aurora
 Inference: /discover/nobackup/projects/QEFM/qefm-core/tests/fm-aurora.sh /discover/nobackup/projects/QEFM/qefm-core qefm-core-sandbox
 Aurora: time singularity exec --nv -B /discover/nobackup/projects/QEFM/qefm-core/qefm /discover/nobackup/projects/QEFM/qefm-core/../containers/qefm-core-sandbox python -u -m torch.distributed.run /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/predictions-for-ERA5.py
