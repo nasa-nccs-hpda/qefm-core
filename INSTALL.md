@@ -5,19 +5,19 @@ Python framework for evaluating Foundation Models (FM).
 ## Installation
 
 - Discover node (e.g,. Discover14) is needed for outbound access and setup rather than GPU
-- Requires 12G to install the FM container
-- Instructions reflect use of Singularity as container host
-- Usage assumes use of existing FM artifacts on Discover (e.g., checkpoints, statistics files)
+- Requires 12G to install the FM container (can take over 40 minutes to download)
+- Instructions assume Singularity as container host
+- Usage leverages existing FM artifacts on Discover (e.g., checkpoints, statistics files)
 - Tested using a100 GPUs with 60G memory
 
 ```bash
 module load singularity
-cd <install directory>
+cd <install_dir>
 git clone https://github.com/nasa-nccs-hpda/qefm-core.git
 cd qefm-core/qefm/models
 ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints .
 
-cd <install directory>   (e.g., cd ../../../.. )
+cd <install_dir>   (e.g., cd ../../../.. )
 mkdir containers
 cd containers
 singularity pull docker://nasanccs/qefm-core:latest
@@ -27,10 +27,10 @@ singularity pull docker://nasanccs/qefm-core:latest
 
 - See User Guide to run QEFM inference with default data for multiple FMs: https://github.com/nasa-nccs-hpda/qefm-core/blob/main/README.md
 
-Shortcut to run Aurora FM with default inputs:
+- Shortcut to run Aurora FM with default inputs:
 
 ```bash
-cd <install directory/qefm-core>   
+cd <install_dir/qefm-core>   
 ./tests/fm-inference.sh qefm-core_latest.sif aurora
 ```
 
