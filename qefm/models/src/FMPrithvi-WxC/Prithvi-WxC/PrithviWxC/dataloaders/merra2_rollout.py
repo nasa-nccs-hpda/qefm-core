@@ -433,7 +433,7 @@ class Merra2RolloutDataset(Merra2Dataset):
         for data_files, times in stat_file_map.items():
             for time in times:
                 hod, doy = time.hour, time.dayofyear
-                stat[time] = self._read_static_data(data_files[0], hod, doy)
+                stat[time] = self._read_static_data(data_files[0], doy, hod)
 
         # Combine times
         sample_data = {}

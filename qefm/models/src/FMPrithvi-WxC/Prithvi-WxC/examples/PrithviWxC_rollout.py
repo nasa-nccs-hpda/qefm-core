@@ -259,8 +259,6 @@ masking_ratio = 0.99
 # We can now build and load the pretrained weights, note that you should use the
 # rollout version of the weights.
 
-# In[9]:
-
 
 weights_path = Path("/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/FMPrithvi-WxC/weights/prithvi.wxc.rollout.2300m.v1.pt")
 # hf_hub_download(
