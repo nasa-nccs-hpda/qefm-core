@@ -65,7 +65,6 @@ CONTRIBUTING.md  data  docs  INSTALL.md  LICENSE  notebooks  packages.txt  qefm 
 aurora-0.25-pretrained.ckpt
 
 ### Return to install_directory and create container dir:
-
 <user>@discover14:<install_dir>/qefm-core/qefm/models/checkpoints$ cd ../../../..
 <user>@discover14:<install_dir>$ mkdir containers
 <user>@discover14:<install_dir>$ cd containers/
@@ -93,7 +92,7 @@ qefm-core_latest.sif
 12G	qefm-core_latest.sif
 <user>@discover14:<install_dir>/containers$ cd ../qefm-core
 
-Test Aurora with container on GPU:
+### Test Aurora with container on GPU:
 <user>@discover12:/home/gtamkin$ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
 <user>@warpa003:<install_dir>/qefm-core$ ./tests/fm-inference.sh  qefm-core_latest.sif aurora
 Inference: /discover/nobackup/projects/QEFM/qefm-core/tests/fm-aurora.sh /discover/nobackup/projects/QEFM/qefm-core qefm-core-sandbox
