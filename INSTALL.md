@@ -17,7 +17,7 @@ git clone https://github.com/nasa-nccs-hpda/qefm-core.git
 cd qefm-core/qefm/models
 ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints .
 
-cd <install_dir>   (e.g., cd ../../../.. )
+cd <install_dir>   (e.g., cd ../../../..)
 mkdir containers
 cd containers
 singularity pull docker://nasanccs/qefm-core:latest
@@ -36,7 +36,7 @@ cd <install_dir/qefm-core>
 
 ## Sample Session
 ```bash
-Create installation directory and retrieve FM support code:
+### Create installation directory and retrieve FM support code:
 
 <user>@discover14:/home/gtamkin$ mkdir <install_dir>
 <user>@discover14:/home/gtamkin$ cd <install_dir>
@@ -58,19 +58,19 @@ drwx------ 19 gtamkin ilab 330 Mar 12 03:48 ..
 <user>@discover14:<install_dir>$ ls qefm-core/
 CONTRIBUTING.md  data  docs  INSTALL.md  LICENSE  notebooks  packages.txt  qefm  README.md  requirements  tests
 
-Link to QEFM artifacts:
+### Link to QEFM artifacts:
 <user>@discover14:<install_dir>$ cd qefm-core/qefm/models
 <user>@discover14:<install_dir>/qefm-core/qefm/models$ ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints .
 <user>@discover14:<install_dir>/qefm-core/qefm/models$ ls  checkpoints/aurora/
 aurora-0.25-pretrained.ckpt
 
-Return to install_directory and create container dir:
+### Return to install_directory and create container dir:
 
 <user>@discover14:<install_dir>/qefm-core/qefm/models/checkpoints$ cd ../../../..
 <user>@discover14:<install_dir>$ mkdir containers
 <user>@discover14:<install_dir>$ cd containers/
 
-Pull container:
+### Pull container:
 <user>@discover14:<install_dir>$ time singularity pull docker://nasanccs/qefm-core:latest
 INFO:    Converting OCI blobs to SIF format
 WARNING: 'nodev' mount option set on /lscratch, it could be a source of failure during build process
