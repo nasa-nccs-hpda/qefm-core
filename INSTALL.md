@@ -27,10 +27,13 @@ singularity pull docker://nasanccs/qefm-core:latest
 
 - See User Guide to run QEFM inference with default data for multiple FMs: https://github.com/nasa-nccs-hpda/qefm-core/blob/main/README.md
 
-- Shortcut to run Aurora FM with default inputs:
+- Shortcut to run Aurora FM with default inputs (See sample session below for runtime details):
 
 ```bash
-cd <install_dir/qefm-core>   
+cd <install_dir>/qefm-core/qefm/models/src/FMAurora
+ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints .
+ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/*.nc .
+cd <install_dir>/qefm-core> 
 ./tests/fm-inference.sh qefm-core_latest.sif aurora
 ```
 
@@ -95,6 +98,20 @@ qefm-core_latest.sif
 ### Test Aurora with container on GPU:
 <user>@discover12:/home/gtamkin$ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=rome --ntasks-per-node=1 --cpus-per-task=10
 
+## Link artifacts to avoid needing to download again
+<user>@warpa003:<install_dir>/containers$ cd ../qefm-core/qefm/models/src/FMAurora
+<user>@warpa003:<install_dir>/qefm-core/qefm/models/src/FMAurora$ ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/*.ckpt .
+<user>@warpa003:<install_dir>/qefm-core/qefm/models/src/FMAurora$ ls -alt *.ckpt
+lrwxrwxrwx 1 gtamkin ilab 95 Mar 12 06:17 aurora-0.25-pretrained.ckpt -> /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/aurora-0.25-pretrained.ckpt
+
+<user>@warpa003:<install_dir>/qefm-core/qefm/models/src/FMAurora$ ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/*.nc .
+<user>@warpa003:<install_dir>/qefm-core/qefm/models/src/FMAurora$ ls -alt *.nc
+lrwxrwxrwx 1 gtamkin ilab 93 Mar 12 06:17 2023-01-01-atmospheric.nc -> /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/2023-01-01-atmospheric.nc
+lrwxrwxrwx 1 gtamkin ilab 95 Mar 12 06:17 2023-01-01-surface-level.nc -> /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/2023-01-01-surface-level.nc
+lrwxrwxrwx 1 gtamkin ilab 77 Mar 12 06:17 static.nc -> /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/static.nc
+<user>@warpa003:<install_dir>/qefm-core/qefm/models/src/FMAurora$ cd ../../../../
+
+## Run default inference 
 <user>@warpa003:<install_dir>/qefm-core$ ./tests/fm-inference.sh  qefm-core_latest.sif aurora
 Inference: /discover/nobackup/projects/QEFM/qefm-core/tests/fm-aurora.sh /discover/nobackup/projects/QEFM/qefm-core qefm-core-sandbox
 Aurora: time singularity exec --nv -B /discover/nobackup/projects/QEFM/qefm-core/qefm /discover/nobackup/projects/QEFM/qefm-core/../containers/qefm-core-sandbox python -u -m torch.distributed.run /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/predictions-for-ERA5.py
