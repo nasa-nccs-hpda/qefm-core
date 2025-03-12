@@ -31,11 +31,13 @@ singularity pull docker://nasanccs/qefm-core:latest
 
 ```bash
 cd <install_dir>/qefm-core/qefm/models/src/FMAurora
-ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints .
+ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/*.ckpt .
 ln -sf /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMAurora/*.nc .
 cd <install_dir>/qefm-core> 
 ./tests/fm-inference.sh qefm-core_latest.sif aurora
 ```
+**NOTE:  To run Aurora with custom data, change paths here:  https://github.com/nasa-nccs-hpda/qefm-core/blob/main/qefm/models/src/FMAurora/predictions-for-ERA5.py**
+
 
 ## Sample Session
 ```bash
