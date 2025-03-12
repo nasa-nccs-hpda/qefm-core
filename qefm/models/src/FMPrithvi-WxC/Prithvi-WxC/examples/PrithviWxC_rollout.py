@@ -335,10 +335,9 @@ if (hasattr(model, "device") and model.device != device) or not hasattr(
 
 from PrithviWxC.dataloaders.merra2_rollout import preproc
 from PrithviWxC.rollout import rollout_iter
+from PrithviWxC.np2nc import write_to_netcdf
 
 data = next(iter(dataset))
-print(data.keys())
-print(data['sur_tars'][12,0])
 batch = preproc([data], padding)
 
 for k, v in batch.items():
@@ -354,6 +353,8 @@ with torch.no_grad():
 print(len(olist))
 t2m = out[0, 12].cpu().numpy()
 
+out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMPrithvi-WxC")
+write_to_netcdf(olist, surf_dir, out_path, '20241201')
 # lat = np.linspace(-90, 90, out.shape[-2])
 # lon = np.linspace(-180, 180, out.shape[-1])
 # X, Y = np.meshgrid(lon, lat)

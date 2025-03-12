@@ -77,7 +77,7 @@ def arr_to_ds(data, template, time_value, var_names, surf=True):
 
 def write_to_netcdf(outputs: list[np.ndarray], m2_path: str, out_root: str, init_time: str):
     # Create the output directory
-    out_dir = Path(out_path) / f"Y{init_time[:4]}/M{init_time[4:6]}/D{init_time[6:8]}"
+    out_dir = Path(out_root) / f"Y{init_time[:4]}/M{init_time[4:6]}/D{init_time[6:8]}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Create the time array
