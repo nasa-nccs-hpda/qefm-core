@@ -9,6 +9,7 @@
 # autoregressive rollout, a common strategy to increase accuracy and stability of
 # models when applied to forecasting-type tasks. 
 
+import xarray as xr
 
 import random
 from pathlib import Path
@@ -41,6 +42,7 @@ if torch.cuda.is_available():
     device = torch.device("cuda")
 else:
     device = torch.device("cpu")
+
 
 # Set variables
 surface_vars = [
@@ -86,6 +88,7 @@ levels = [
 padding = {"level": [0, 0], "lat": [0, -1], "lon": [0, 0]}
 
 
+#print('003', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 # ### Lead time
 # When performing auto-regressive rollout, the intermediate steps require the
 # static data at those times and---if using `residual=climate`---the intermediate
@@ -109,6 +112,7 @@ input_time = -3  # This variable can be change to change the task
 # search for the relevant data that falls within the provided time range.
 # 
 
+#print('002', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 time_range = ("2024-12-01T00:00:00", "2024-12-01T23:59:59")
 
 surf_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
@@ -125,7 +129,6 @@ vert_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
 #     allow_patterns="merra-2/MERRA_pres_2020010[1].nc",
 #     local_dir=".",
 # )
-
 
 # ### Climatology
 # The PrithviWxC model was trained to calculate the output by
@@ -153,6 +156,7 @@ vert_clim_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climat
 
 positional_encoding = "fourier"
 
+print('001', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 
 # ### Dataloader init
 # We are now ready to instantiate the dataloader.
@@ -164,6 +168,13 @@ sys.path.insert(0, "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/src/FMPr
 #sys.path.insert(0, "/panfs/ccds02/nobackup/people/gtamkin/dev/foundation-models/FMPrithvi-WxC")
 sys.path.append("../")
 from PrithviWxC.dataloaders.merra2_rollout import Merra2RolloutDataset
+from PrithviWxC.np2nc import get_surf_template
+from PrithviWxC.np2nc import * 
+print('000', xr.open_dataset('MERRA2_sfc_20241201.nc'))
+
+ds = get_surf_template('./', '20241201')
+print('111', ds)
+ds.close()
 
 dataset = Merra2RolloutDataset(
     time_range=time_range,
@@ -182,7 +193,8 @@ dataset = Merra2RolloutDataset(
 print(len(dataset))
 assert len(dataset) > 0, "There doesn't seem to be any valid data."
 
-
+ds = get_surf_template('./', '20241201')
+print('2222', ds)
 # ## Model
 # ### Scalers and other hyperparameters
 # Again, this setup is similar as before.
@@ -354,7 +366,7 @@ print(len(olist))
 t2m = out[0, 12].cpu().numpy()
 
 out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMPrithvi-WxC")
-write_to_netcdf(olist, surf_dir, out_path, '20241201')
+write_to_netcdf(olist, str(surf_dir), out_path, '20241201')
 # lat = np.linspace(-90, 90, out.shape[-2])
 # lon = np.linspace(-180, 180, out.shape[-1])
 # X, Y = np.meshgrid(lon, lat)

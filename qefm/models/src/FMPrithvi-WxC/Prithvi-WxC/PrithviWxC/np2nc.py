@@ -49,19 +49,24 @@ levels = [
     71.0,
     72.0,
 ]
+
 def get_surf_template(m2_path: str, init_time: str):
     surf_file = Path(m2_path) / f"MERRA2_sfc_{init_time}.nc"
+    print(surf_file.exists())
+    print(surf_file)
+    print(xr.open_dataset(surf_file))    
     if not surf_file.exists():
         raise FileNotFoundError(f"The surface file {surf_file} does not exist.")
-    m2 = xr.open_dataset(surf_file)
-    return m2.isel(time=0, lat=slice(None, -1))
+    #ds = xr.open_dataset(surf_file, engine="netcdf4")
+    ds = xr.open_dataset("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2/MERRA2_sfc_20241201.nc")
+    return ds.isel(time=0, lat=slice(None, -1))
 
 def get_pres_template(m2_path: str, init_time: str):
     pres_file = Path(m2_path) / f"MERRA2_pres_{init_time}.nc"
     if not pres_file.exists():
         raise FileNotFoundError(f"The pressure file {pres_file} does not exist.")
-    m2 = xr.open_dataset(pres_file) 
-    return m2.isel(time=0, lat=slice(None, -1), lev=slice(None, None, -1))
+    ds = xr.open_dataset(pres_file, engine="netcdf4") 
+    return ds.isel(time=0, lat=slice(None, -1), lev=slice(None, None, -1))
 
 def arr_to_ds(data, template, time_value, var_names, surf=True):
     template = template.assign_coords(time=time_value)
@@ -90,9 +95,11 @@ def write_to_netcdf(outputs: list[np.ndarray], m2_path: str, out_root: str, init
     # Write the output at each time step
     for i, output in enumerate(outputs):
         time = time_stamps[i]
-        output = output.squeeze()
-        surf_ds = arr_to_ds(output, surf_template, time, surface_vars)
-        pres_ds = arr_to_ds(output, pres_template, time, vertical_vars, surf=False)
+        odata = output.detach().cpu().numpy() if hasattr(output, "detach") else np.array(output)
+        odata = odata.squeeze()
+        print(odata.shape)
+        surf_ds = arr_to_ds(odata, surf_template, time, surface_vars)
+        pres_ds = arr_to_ds(odata, pres_template, time, vertical_vars, surf=False)
         ds = xr.merge([surf_ds, pres_ds])
         
         fn = f"pred_prithvi_{time.strftime('%Y%m%d')}_{time.strftime('%H')}z.nc"
