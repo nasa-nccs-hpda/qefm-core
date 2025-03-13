@@ -2,6 +2,15 @@ import cdsapi
 from pathlib import Path
 from datetime import datetime, timedelta
 import xarray as xr
+import logging
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename='era5_download.log',  
+    filemode='a'  
+)
 
 def get_ear5_vars(root_path):
     """Get the list of variables in the ERA5 dataset."""
@@ -140,18 +149,22 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
 
 if __name__ == "__main__":
     era5_dir = Path("/css/era5")
-    surf_lst, atmos_lst = get_ear5_vars(era5_dir)
-
     pred_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora")
-    end_date = datetime.today() - timedelta(days=10).date()
+    end_date = (datetime.today().replace(hour=0.0) - timedelta(days=10)).date()
+    logging.info(f"Downloading ERA5 data from {end_date}")
+
     YYYY = end_date.strftime("%Y")
     MM = end_date.strftime("%m")
     DD = end_date.strftime("%d")
 
     last_date = get_latest_date_in_month(pred_dir, YYYY, MM)
+    logging.info(f"Last date of ERA5 in {YYYY}-{MM} is {last_date}")
+
     date = last_date +timedelta(days=1)
     if date < end_date:
         if check_avail_data(date.strftime("%Y%m%d")):
+            logging.info(f"Downloading ERA5 data from {date}")
+            surf_lst, atmos_lst = get_ear5_vars(era5_dir)
             download_data(pred_dir, date, surf_lst=surf_lst, atmos_lst=atmos_lst)
             date += timedelta(days=1)
 
