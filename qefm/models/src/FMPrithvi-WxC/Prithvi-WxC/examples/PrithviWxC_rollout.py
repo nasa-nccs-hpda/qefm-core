@@ -88,7 +88,7 @@ levels = [
 padding = {"level": [0, 0], "lat": [0, -1], "lon": [0, 0]}
 
 
-#print('003', xr.open_dataset('MERRA2_sfc_20241201.nc'))
+print('003', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 # ### Lead time
 # When performing auto-regressive rollout, the intermediate steps require the
 # static data at those times and---if using `residual=climate`---the intermediate
@@ -100,7 +100,7 @@ padding = {"level": [0, 0], "lat": [0, -1], "lon": [0, 0]}
 # only a single value and must be a positive integer multiple of the `-input_time`. 
 
 
-lead_time = 12  # This variable can be change to change the task
+lead_time = 120  # This variable can be change to change the task
 input_time = -3  # This variable can be change to change the task
 
 
@@ -113,7 +113,7 @@ input_time = -3  # This variable can be change to change the task
 # 
 
 #print('002', xr.open_dataset('MERRA2_sfc_20241201.nc'))
-time_range = ("2024-12-01T00:00:00", "2024-12-01T23:59:59")
+time_range = ("2024-12-01T00:00:00", "2024-12-31T23:59:59")
 
 surf_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
 # surf_dir = Path("../../../../checkpoints/FMPrithvi-WxC/merra-2")
@@ -156,7 +156,7 @@ vert_clim_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/climat
 
 positional_encoding = "fourier"
 
-print('001', xr.open_dataset('MERRA2_sfc_20241201.nc'))
+#print('001', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 
 # ### Dataloader init
 # We are now ready to instantiate the dataloader.
@@ -170,11 +170,11 @@ sys.path.append("../")
 from PrithviWxC.dataloaders.merra2_rollout import Merra2RolloutDataset
 from PrithviWxC.np2nc import get_surf_template
 from PrithviWxC.np2nc import * 
-print('000', xr.open_dataset('MERRA2_sfc_20241201.nc'))
+#print('000', xr.open_dataset('MERRA2_sfc_20241201.nc'))
 
-ds = get_surf_template('./', '20241201')
-print('111', ds)
-ds.close()
+#ds = get_surf_template('./', '20241201')
+#print('111', ds)
+#ds.close()
 
 dataset = Merra2RolloutDataset(
     time_range=time_range,
@@ -193,8 +193,8 @@ dataset = Merra2RolloutDataset(
 print(len(dataset))
 assert len(dataset) > 0, "There doesn't seem to be any valid data."
 
-ds = get_surf_template('./', '20241201')
-print('2222', ds)
+#ds = get_surf_template('./', '20241201')
+#print('2222', ds)
 # ## Model
 # ### Scalers and other hyperparameters
 # Again, this setup is similar as before.

@@ -52,9 +52,6 @@ levels = [
 
 def get_surf_template(m2_path: str, init_time: str):
     surf_file = Path(m2_path) / f"MERRA2_sfc_{init_time}.nc"
-    print(surf_file.exists())
-    print(surf_file)
-    print(xr.open_dataset(surf_file))    
     if not surf_file.exists():
         raise FileNotFoundError(f"The surface file {surf_file} does not exist.")
     #ds = xr.open_dataset(surf_file, engine="netcdf4")
