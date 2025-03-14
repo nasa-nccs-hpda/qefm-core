@@ -1,4 +1,5 @@
 import cdsapi
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 import xarray as xr
@@ -13,17 +14,15 @@ logging.basicConfig(
     filemode='a'  
 )
 
-def get_ear5_vars(root_path):
+def get_ear5_vars(root_path="./"):
     """Get the list of variables in the ERA5 dataset."""
-    surf_file = Path(root_path) / "surface_hourly" / "inst" / "Y2024" / "M01" / "era5_surface-inst_allvar_20240101_00z.nc"
-    ds = xr.open_dataset(surf_file)
-    surf_vars = list(ds.data_vars)
-    ds.close()
+    surf_file = Path(root_path) / "era5_surf_variables.json"
+    with open(surf_file, "r") as f:
+        surf_vars = json.load(f)
 
-    atmos_file = Path(root_path) / "pressure_hourly" / "inst" / "Y2024" / "M01" / "era5_atmos-inst_allvar_20240101_00z.nc"
-    ds = xr.open_dataset(atmos_file)
-    atmos_vars = list(ds.data_vars)
-    ds.close()  
+    atmos_file = Path(root_path) / "era5_atmos_variables.json"
+    with open(atmos_file, "r") as f:
+        atmos_vars = json.load(f)
     return surf_vars, atmos_vars
 
 def get_latest_date_in_month(root_path: str, year: str, month: str) -> datetime | None:
