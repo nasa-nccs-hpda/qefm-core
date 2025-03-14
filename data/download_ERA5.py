@@ -25,13 +25,13 @@ def get_ear5_vars(root_path="./"):
         atmos_vars = json.load(f)
     return surf_vars, atmos_vars
 
-def get_latest_date_in_month(root_path: str, year: str, month: str) -> datetime | None:
+def get_latest_date_in_month(root_path: str, year: str, month: str) -> datetime:
     """Find the latest date in a specific /year/month/day folder."""
     month_path = Path(root_path) / f"Y{year}" / f"M{month}"
     dates = []
 
     if not month_path.exists() or not month_path.is_dir():
-        return f"No data for {year}-{month}"
+        return datetime(int(year), int(month), 1, 0, 0)-timedelta(days=1)
 
     for day_dir in month_path.iterdir():
         if day_dir.is_dir() and day_dir.name.startswith("D"):  # Check if day folder
@@ -83,69 +83,70 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
     surf_file_path = surf_dir_path / surf_file_name  
     print('[]---------',surf_file_path)
     
-    try:
-        c.retrieve(
-            'reanalysis-era5-single-levels',
-            {
-                'product_type': 'reanalysis',
-                'variable': surf_lst,
-                'year': str(current_date.year),
-                'month': f"{current_date.month:02d}",
-                'day': f"{current_date.day:02d}",
-                'time': f"{current_date.hour:02d}:00",
-                'format': 'netcdf'
-            },
-            str(surf_file_path)
-        )
-        print(f"Saved: {surf_file_path}")
-    except Exception as e:
-        print(f"Failed to download SURFACE data for {current_date}: {e}")
+    while current_date.hour < 19:
+        try:
+            c.retrieve(
+                'reanalysis-era5-single-levels',
+                {
+                    'product_type': 'reanalysis',
+                    'variable': surf_lst,
+                    'year': str(current_date.year),
+                    'month': f"{current_date.month:02d}",
+                    'day': f"{current_date.day:02d}",
+                    'time': f"{current_date.hour:02d}:00",
+                    'format': 'netcdf'
+                },
+                str(surf_file_path)
+            )
+            print(f"Saved: {surf_file_path}")
+        except Exception as e:
+            print(f"Failed to download SURFACE data for {current_date}: {e}")
 
-    
-    # get atmospheric data for each time step
-    # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
-    
-    atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
-    atmos_dir_path.mkdir(parents=True, exist_ok=True)
-    
-    atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
-    atmos_file_path = atmos_dir_path / atmos_file_name 
-    print('[]--------------',atmos_file_path) 
-    
-    try:
-        c.retrieve(
-            'reanalysis-era5-pressure-levels',
-            {
-                'product_type': 'reanalysis',
-                'variable': atmos_lst,
-                'year': str(current_date.year),
-                'month': f"{current_date.month:02d}",
-                'day': f"{current_date.day:02d}",
-                'time': f"{current_date.hour:02d}:00",
-                'pressure_level': [
-                                    "1", "2", "3",
-                                    "5", "7", "10",
-                                    "20", "30", "50",
-                                    "70", "100", "125",
-                                    "150", "175", "200",
-                                    "225", "250", "300",
-                                    "350", "400", "450",
-                                    "500", "550", "600",
-                                    "650", "700", "750",
-                                    "775", "800", "825",
-                                    "850", "875", "900",
-                                    "925", "950", "975",
-                                    "1000"
-                                    ],
-                'format': 'netcdf'
-            },
-            str(atmos_file_path)
-        )
-        print(f"Saved: {atmos_file_path}")
-    except Exception as e:
-        print(f"Failed to download ATMOS data for {current_date}: {e}")
-    
-    current_date += timedelta(hours=6)
+        
+        # get atmospheric data for each time step
+        # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
+        
+        atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
+        atmos_dir_path.mkdir(parents=True, exist_ok=True)
+        
+        atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
+        atmos_file_path = atmos_dir_path / atmos_file_name 
+        print('[]--------------',atmos_file_path) 
+        
+        try:
+            c.retrieve(
+                'reanalysis-era5-pressure-levels',
+                {
+                    'product_type': 'reanalysis',
+                    'variable': atmos_lst,
+                    'year': str(current_date.year),
+                    'month': f"{current_date.month:02d}",
+                    'day': f"{current_date.day:02d}",
+                    'time': f"{current_date.hour:02d}:00",
+                    'pressure_level': [
+                                        "1", "2", "3",
+                                        "5", "7", "10",
+                                        "20", "30", "50",
+                                        "70", "100", "125",
+                                        "150", "175", "200",
+                                        "225", "250", "300",
+                                        "350", "400", "450",
+                                        "500", "550", "600",
+                                        "650", "700", "750",
+                                        "775", "800", "825",
+                                        "850", "875", "900",
+                                        "925", "950", "975",
+                                        "1000"
+                                        ],
+                    'format': 'netcdf'
+                },
+                str(atmos_file_path)
+            )
+            print(f"Saved: {atmos_file_path}")
+        except Exception as e:
+            print(f"Failed to download ATMOS data for {current_date}: {e}")
+        
+        current_date += timedelta(hours=6)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download ERA5 data")
