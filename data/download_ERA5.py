@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import xarray as xr
 import logging
+import argparse
 
 # Set up logging
 logging.basicConfig(
@@ -148,10 +149,19 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
     current_date += timedelta(hours=6)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Download ERA5 data")
+    parser.add_argument("--year", "-y", type=str, help="Year to download data for")
+    parser.add_argument("--month", "-m", type=str, help="Month to download data for")
+    args = parser.parse_args()
+    
+    if args.year and args.month:
+        end_date = datetime(int(args.year), int(args.month), 25, 0, 0)
+    else:
+        end_date = (datetime.today().replace(hour=0.0) - timedelta(days=10)).date()
+    logging.info(f"Downloading ERA5 data up to {end_date}")   
+   
     era5_dir = Path("/css/era5")
     pred_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora")
-    end_date = (datetime.today().replace(hour=0.0) - timedelta(days=10)).date()
-    logging.info(f"Downloading ERA5 data from {end_date}")
 
     YYYY = end_date.strftime("%Y")
     MM = end_date.strftime("%m")
