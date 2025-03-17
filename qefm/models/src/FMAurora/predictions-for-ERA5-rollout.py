@@ -38,86 +38,86 @@ surf_vars = ["2m_temperature", "10m_u_component_of_wind", "10m_v_component_of_wi
 atmos_vars = ["temperature", "u_component_of_wind", "v_component_of_wind", "specific_humidity", "geopotential"]
 '''
 
-def download_data(root_dir, start_date, end_date, stat_lst, surf_lst, atmos_lst):
-    c = cdsapi.Client()
-    current_date = start_date
-    year = f"Y{current_date.year}"
-    month = f"M{current_date.month:02d}"
+# def download_data(root_dir, start_date, end_date, stat_lst, surf_lst, atmos_lst):
+#     c = cdsapi.Client()
+#     current_date = start_date
+#     year = f"Y{current_date.year}"
+#     month = f"M{current_date.month:02d}"
 
-    # get surface data for each time step
-    # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
-    while current_date <= end_date:
+#     # get surface data for each time step
+#     # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
+#     while current_date <= end_date:
           
-        surf_dir_path = Path(root_dir) / "surface_hourly" / "inst" / year / month
-        surf_dir_path.mkdir(parents=True, exist_ok=True)
+#         surf_dir_path = Path(root_dir) / "surface_hourly" / "inst" / year / month
+#         surf_dir_path.mkdir(parents=True, exist_ok=True)
         
-        surf_file_name = f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
-        surf_file_path = surf_dir_path / surf_file_name  
-        print('[]---------',surf_file_path)
+#         surf_file_name = f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
+#         surf_file_path = surf_dir_path / surf_file_name  
+#         print('[]---------',surf_file_path)
         
-        try:
-            c.retrieve(
-                'reanalysis-era5-single-levels',
-                {
-                    'product_type': 'reanalysis',
-                    'variable': surf_lst,
-                    'year': str(current_date.year),
-                    'month': f"{current_date.month:02d}",
-                    'day': f"{current_date.day:02d}",
-                    'time': f"{current_date.hour:02d}:00",
-                    'format': 'netcdf'
-                },
-                str(surf_file_path)
-            )
-            print(f"Saved: {surf_file_path}")
-        except Exception as e:
-            print(f"Failed to download SURFACE data for {current_date}: {e}")
+#         try:
+#             c.retrieve(
+#                 'reanalysis-era5-single-levels',
+#                 {
+#                     'product_type': 'reanalysis',
+#                     'variable': surf_lst,
+#                     'year': str(current_date.year),
+#                     'month': f"{current_date.month:02d}",
+#                     'day': f"{current_date.day:02d}",
+#                     'time': f"{current_date.hour:02d}:00",
+#                     'format': 'netcdf'
+#                 },
+#                 str(surf_file_path)
+#             )
+#             print(f"Saved: {surf_file_path}")
+#         except Exception as e:
+#             print(f"Failed to download SURFACE data for {current_date}: {e}")
     
         
-        # get atmospheric data for each time step
-        # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
+#         # get atmospheric data for each time step
+#         # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
         
-        atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
-        atmos_dir_path.mkdir(parents=True, exist_ok=True)
+#         atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
+#         atmos_dir_path.mkdir(parents=True, exist_ok=True)
         
-        atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
-        atmos_file_path = atmos_dir_path / atmos_file_name 
-        print('[]--------------',atmos_file_path) 
+#         atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
+#         atmos_file_path = atmos_dir_path / atmos_file_name 
+#         print('[]--------------',atmos_file_path) 
         
-        try:
-            c.retrieve(
-                'reanalysis-era5-pressure-levels',
-                {
-                    'product_type': 'reanalysis',
-                    'variable': atmos_lst,
-                    'year': str(current_date.year),
-                    'month': f"{current_date.month:02d}",
-                    'day': f"{current_date.day:02d}",
-                    'time': f"{current_date.hour:02d}:00",
-                    'pressure_level': [
-                                      "1", "2", "3",
-                                      "5", "7", "10",
-                                      "20", "30", "50",
-                                      "70", "100", "125",
-                                      "150", "175", "200",
-                                      "225", "250", "300",
-                                      "350", "400", "450",
-                                      "500", "550", "600",
-                                      "650", "700", "750",
-                                      "775", "800", "825",
-                                      "850", "875", "900",
-                                      "925", "950", "975",
-                                      "1000"
-                                      ],
-                    'format': 'netcdf'
-                },
-                str(atmos_file_path)
-            )
-            print(f"Saved: {atmos_file_path}")
-        except Exception as e:
-            print(f"Failed to download ATMOS data for {current_date}: {e}")
+#         try:
+#             c.retrieve(
+#                 'reanalysis-era5-pressure-levels',
+#                 {
+#                     'product_type': 'reanalysis',
+#                     'variable': atmos_lst,
+#                     'year': str(current_date.year),
+#                     'month': f"{current_date.month:02d}",
+#                     'day': f"{current_date.day:02d}",
+#                     'time': f"{current_date.hour:02d}:00",
+#                     'pressure_level': [
+#                                       "1", "2", "3",
+#                                       "5", "7", "10",
+#                                       "20", "30", "50",
+#                                       "70", "100", "125",
+#                                       "150", "175", "200",
+#                                       "225", "250", "300",
+#                                       "350", "400", "450",
+#                                       "500", "550", "600",
+#                                       "650", "700", "750",
+#                                       "775", "800", "825",
+#                                       "850", "875", "900",
+#                                       "925", "950", "975",
+#                                       "1000"
+#                                       ],
+#                     'format': 'netcdf'
+#                 },
+#                 str(atmos_file_path)
+#             )
+#             print(f"Saved: {atmos_file_path}")
+#         except Exception as e:
+#             print(f"Failed to download ATMOS data for {current_date}: {e}")
         
-        current_date += timedelta(hours=6)
+#         current_date += timedelta(hours=6)
 
 fill_value = 1.e+15
 surf_var_dict = {
@@ -280,6 +280,8 @@ while current_date <= end_date:
 
     static_filename = f"era5_static-allvar.nc"
     stat_file_path = data_path / "static" / static_filename
+    if not stat_file_path.exists():
+         raise FileNotFoundError(f"File not found: {stat_file_path}")
     static_vars_ds = xr.open_dataset(stat_file_path, engine="netcdf4")[static_vars]#.squeeze()
     #stat_file_path = data_path / "static.nc"
     #static_vars_ds = xr.open_dataset(stat_file_path, engine="netcdf4")
@@ -289,8 +291,8 @@ while current_date <= end_date:
     f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
     surf_file_path = data_path / "surface_hourly" / "inst" / year / month / surf_filename
     if not surf_file_path.exists():
-        download_data("./", current_date, start_date+timedelta(days=1), static_lst, surface_lst, atmospheric_lst)
-        surf_file_path = Path(".") / surf_filename 
+         raise FileNotFoundError(f"File not found: {surf_file_path}")
+ 
     surf_file_list = glob.glob(str(surf_file_path))
     #print('[]----surf_file_list',surf_file_list)
     surf_vars_ds = xr.open_mfdataset(surf_file_list, engine="netcdf4")[surf_vars]#.squeeze()
@@ -300,6 +302,9 @@ while current_date <= end_date:
     
     atmos_filename = f"era5_atmos-inst_allvar_{yyyy}{mm}{dd}_*.nc"
     atmos_file_path = data_path / "pressure_hourly" / "inst" / year / month / atmos_filename
+    if not atmos_file_path.exists():
+         raise FileNotFoundError(f"File not found: {atmos_file_path}")
+    
     atmos_file_list = glob.glob(str(atmos_file_path))
     atmos_vars_ds = xr.open_mfdataset(atmos_file_list, engine="netcdf4")[atmos_vars].sel(pressure_level=plevs)#.squeeze()
     #atmos_file_path = data_path / f"{yyyy}-{mm}-{dd}-atmospheric.nc"
