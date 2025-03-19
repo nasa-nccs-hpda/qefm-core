@@ -174,7 +174,7 @@ if __name__ == "__main__":
     if date < end_date:
         if check_avail_data(date.strftime("%Y%m%d")):
             logging.info(f"Downloading ERA5 data from {date}")
-            surf_lst, atmos_lst = get_ear5_vars(era5_dir)
-            download_data(pred_dir, date, surf_lst=surf_lst, atmos_lst=atmos_lst)
+            surf_lst, atmos_lst = get_ear5_vars()
+            download_data(era5_dir, date, surf_lst=surf_lst, atmos_lst=atmos_lst)
             date += timedelta(days=1)
 
