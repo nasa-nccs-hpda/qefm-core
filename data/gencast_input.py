@@ -50,5 +50,6 @@ ds = ds.rename({
     "latitude": "lat",
     "longitude": "lon",
 })
-print(ds)
+
+ds.to_netcdf(f"sample-{date_str}.nc")
 
