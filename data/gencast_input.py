@@ -8,7 +8,7 @@ import datetime
 date_str = "2021-08-01"
 
 start_time = f"{date_str}T00:00"
-time_steps = pd.date_range(start=start_time, periods=3, freq="12H")
+time_steps = pd.date_range(start=start_time, periods=3, freq="12h")
 
 levs = np.array(
     [50,  100,  150,  200,  250,  \
@@ -42,5 +42,13 @@ ds = xr.open_dataset(
     storage_options={"token": None}  # Public dataset, so no authentication needed
 )[var_list].sel(time=time_steps, level=levs)
 
+# coarsen the data & reverse the latitude
+ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4))
+
+# change dimension names
+ds = ds.rename({
+    "latitude": "lat",
+    "longitude": "lon",
+})
 print(ds)
 
