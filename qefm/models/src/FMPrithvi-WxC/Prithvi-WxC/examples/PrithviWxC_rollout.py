@@ -113,7 +113,7 @@ input_time = -3  # This variable can be change to change the task
 # 
 
 #print('002', xr.open_dataset('MERRA2_sfc_20241201.nc'))
-time_range = ("2024-12-01T00:00:00", "2024-12-31T23:59:59")
+time_range = ("2024-12-07T00:00:00", "2024-12-31T23:59:59")
 
 surf_dir = Path("/discover/nobackup/projects/QEFM/data/FMPrithvi-WxC/merra-2")
 # surf_dir = Path("../../../../checkpoints/FMPrithvi-WxC/merra-2")
@@ -366,7 +366,7 @@ print(len(olist))
 t2m = out[0, 12].cpu().numpy()
 
 out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMPrithvi-WxC")
-write_to_netcdf(olist, str(surf_dir), out_path, '20241201')
+write_to_netcdf(olist, str(surf_dir), out_path, '20241207')
 # lat = np.linspace(-90, 90, out.shape[-2])
 # lon = np.linspace(-180, 180, out.shape[-1])
 # X, Y = np.meshgrid(lon, lat)
