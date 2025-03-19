@@ -72,18 +72,28 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
     current_date = date
     year = f"Y{current_date.year}"
     month = f"M{current_date.month:02d}"
-
-    # get surface data for each time step
-    # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
-          
+         
     surf_dir_path = Path(root_dir) / "surface_hourly" / "inst" / year / month
     surf_dir_path.mkdir(parents=True, exist_ok=True)
-    
-    surf_file_name = f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
-    surf_file_path = surf_dir_path / surf_file_name  
-    print('[]---------',surf_file_path)
+
+    atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
+    atmos_dir_path.mkdir(parents=True, exist_ok=True)
     
     while current_date.hour < 19:
+
+        surf_file_name = f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
+        surf_file_path = surf_dir_path / surf_file_name  
+
+        atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
+        atmos_file_path = atmos_dir_path / atmos_file_name
+
+        if surf_file_path.exists() and atmos_file_path.exists():
+            print(f"Skipping {current_date}")
+            current_date += timedelta(hours=6)
+            continue 
+
+        # get surface data for each time step
+        # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
         try:
             c.retrieve(
                 'reanalysis-era5-single-levels',
@@ -102,17 +112,8 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
         except Exception as e:
             print(f"Failed to download SURFACE data for {current_date}: {e}")
 
-        
         # get atmospheric data for each time step
-        # instantaneous surface data (as opposed to mean/max/min, column integrated, etc) 
-        
-        atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
-        atmos_dir_path.mkdir(parents=True, exist_ok=True)
-        
-        atmos_file_name = f"era5_atmos-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
-        atmos_file_path = atmos_dir_path / atmos_file_name 
-        print('[]--------------',atmos_file_path) 
-        
+        # instantaneous surface data (as opposed to mean/max/min, column integrated, etc)    
         try:
             c.retrieve(
                 'reanalysis-era5-pressure-levels',
