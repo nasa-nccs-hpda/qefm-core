@@ -1,0 +1,46 @@
+import xarray as xr
+import numpy as np
+import pandas as pd
+import os
+import sys
+import datetime
+
+date_str = "2021-08-01"
+
+start_time = f"{date_str}T00:00"
+time_steps = pd.date_range(start=start_time, periods=3, freq="12H")
+
+levs = np.array(
+    [50,  100,  150,  200,  250,  \
+     300,  400,  500,  600,  700, \
+     850,  925,  1000])
+
+static = ["land_sea_mask",
+          "geopotential_at_surface",]
+
+var_2d = ["2m_temperature",
+          "sea_surface_temperature",
+          "mean_sea_level_pressure",
+          "10m_u_component_of_wind",
+          "10m_v_component_of_wind",
+          "total_precipitation",]
+
+var_3d = ["temperature",
+          "specific_humidity",
+          "u_component_of_wind",
+          "v_component_of_wind",
+          "vertical_velocity",
+          "geopotential",]
+
+var_list = static + var_2d + var_3d
+
+# get ear5 from gs
+ds = xr.open_dataset(
+    "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
+    engine="zarr",
+    #chunks={},
+    storage_options={"token": None}  # Public dataset, so no authentication needed
+)[var_list].sel(time=time_steps, level=levs)
+
+print(ds)
+
