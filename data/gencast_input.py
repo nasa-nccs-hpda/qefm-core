@@ -51,9 +51,12 @@ ds = ds.rename({
     "longitude": "lon",
 })
 
-# change time to timedelta
+# change time coordinate to timedelta
 ds['time']=ds['time']-ds['time'][0]
-ds['time']=ds['time']/np.timedelta64(1, 's')
-
+#ds['time']=ds['time']/np.timedelta64(1, 's')
 ds.to_netcdf(f"sample-{date_str}.nc")
+
+# drop the time dimension for land_sea_mask and geopotential_at_surface
+ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_dims("time")
+ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_dims("time")
 
