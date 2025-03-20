@@ -51,5 +51,9 @@ ds = ds.rename({
     "longitude": "lon",
 })
 
+# change time to timedelta
+ds['time']=ds['time']-ds['time'][0]
+ds['time']=ds['time']/np.timedelta64(1, 's')
+
 ds.to_netcdf(f"sample-{date_str}.nc")
 
