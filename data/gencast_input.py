@@ -51,6 +51,8 @@ ds = ds.rename({
     "longitude": "lon",
 })
 
+ds = ds.assign_coords(datetime=ds["time"])
+
 # change time coordinate to timedelta
 ds['time']=ds['time']-ds['time'].isel(time=0)
 #ds['time']=ds['time']/np.timedelta64(1, 's')
@@ -60,7 +62,7 @@ ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
 
 # expand the dimensions 
-for var in var_2d + var_3d:
+for var in var_2d + var_3d + ['datetime']:
     ds[var] = ds[var].expand_dims("batch")
     
 # writing to netcdf
