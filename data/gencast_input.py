@@ -5,7 +5,7 @@ import os
 import sys
 import datetime
 
-date_str = "2021-08-01"
+date_str = "2019-03-29"
 
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=3, freq="12h")
