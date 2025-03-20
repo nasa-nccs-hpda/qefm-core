@@ -64,7 +64,11 @@ ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_
 # expand the dimensions 
 for var in var_2d + var_3d + ['datetime']:
     ds[var] = ds[var].expand_dims("batch")
-    
+
+# rename the precipitation variable
+ds = ds.rename({
+    "total_precipitation": "total_precipitation_12hr",
+})      
 # writing to netcdf
 ds.to_netcdf(f"sample-{date_str}.nc")
 
