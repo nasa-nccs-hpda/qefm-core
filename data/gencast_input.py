@@ -57,6 +57,6 @@ ds['time']=ds['time']-ds['time'][0]
 ds.to_netcdf(f"sample-{date_str}.nc")
 
 # drop the time dimension for land_sea_mask and geopotential_at_surface
-ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_dims("time")
-ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_dims("time")
+ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
+ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
 
