@@ -59,7 +59,10 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
 
-
+# expand the dimensions 
+for var in var_2d + var_3d:
+    ds[var] = ds[var].expand_dims("batch")
+    
 # writing to netcdf
 ds.to_netcdf(f"sample-{date_str}.nc")
 
