@@ -70,6 +70,6 @@ ds = ds.rename({
     "total_precipitation": "total_precipitation_12hr",
 })      
 # writing to netcdf
-ds.to_netcdf(f"sample-{date_str}.nc")
+ds.to_netcdf(f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-01.nc")
 
 
