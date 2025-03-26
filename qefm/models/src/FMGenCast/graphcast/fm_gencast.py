@@ -29,24 +29,6 @@
 
 # # Installation and Initialization
 
-# In[ ]:
-
-
-# @title Upgrade packages (kernel needs to be restarted after running this cell).
-
-#%pip install -U importlib_metadata
-
-
-# In[ ]:
-
-
-# @title Pip install repo and dependencies
-
-#%pip install --upgrade https://github.com/deepmind/graphcast/archive/master.zip
-
-
-# In[ ]:
-
 print("\n====================================")
 print("---> chmod a+r -R /discover/nobackup/projects/QEFM/.local/")
 print("NOTE: GenCast dependencies:")
@@ -60,35 +42,21 @@ print("--->     # Only do git clone once, already exists")
 print("--->     #RUN git clone --branch main https://github.com/neuralgcm/dinosaur.git")
 
 print("====================================\n")
-#%pip install tree_math
-
-
-# In[ ]:
-
-
-#%pip install xarray_tensorstore
-
-
-# In[1]:
-
 
 # @title Imports
 
 import dataclasses
 import datetime
 import math
-#from google.cloud import storage
 from typing import Optional
 import haiku as hk
-#from IPython.display import HTML
-#from IPython import display
-# import ipywidgets as widgets
 import jax
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
 import xarray
+import argparse
 
 from graphcast import rollout
 from graphcast import xarray_jax
@@ -99,144 +67,20 @@ from graphcast import xarray_tree
 from graphcast import gencast
 from graphcast import denoiser
 from graphcast import nan_cleaning
-
-
-
-# In[2]:
-
-
-# @title Plotting functions
-
-def select(
-    data: xarray.Dataset,
-    variable: str,
-    level: Optional[int] = None,
-    max_steps: Optional[int] = None
-    ) -> xarray.Dataset:
-  data = data[variable]
-  if "batch" in data.dims:
-    data = data.isel(batch=0)
-  if max_steps is not None and "time" in data.sizes and max_steps < data.sizes["time"]:
-    data = data.isel(time=range(0, max_steps))
-  if level is not None and "level" in data.coords:
-    data = data.sel(level=level)
-  return data
-
-def scale(
-    data: xarray.Dataset,
-    center: Optional[float] = None,
-    robust: bool = False,
-    ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
-  vmin = np.nanpercentile(data, (2 if robust else 0))
-  vmax = np.nanpercentile(data, (98 if robust else 100))
-  if center is not None:
-    diff = max(vmax - center, center - vmin)
-    vmin = center - diff
-    vmax = center + diff
-  return (data, matplotlib.colors.Normalize(vmin, vmax),
-          ("RdBu_r" if center is not None else "viridis"))
-
-def plot_data(
-    data: dict[str, xarray.Dataset],
-    fig_title: str,
-    plot_size: float = 5,
-    robust: bool = False,
-    cols: int = 4
-    ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
-
-  first_data = next(iter(data.values()))[0]
-  max_steps = first_data.sizes.get("time", 1)
-  assert all(max_steps == d.sizes.get("time", 1) for d, _, _ in data.values())
-
-  cols = min(cols, len(data))
-  rows = math.ceil(len(data) / cols)
-  figure = plt.figure(figsize=(plot_size * 2 * cols,
-                               plot_size * rows))
-  figure.suptitle(fig_title, fontsize=16)
-  figure.subplots_adjust(wspace=0, hspace=0)
-  figure.tight_layout()
-
-  images = []
-  for i, (title, (plot_data, norm, cmap)) in enumerate(data.items()):
-    ax = figure.add_subplot(rows, cols, i+1)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_title(title)
-    im = ax.imshow(
-        plot_data.isel(time=0, missing_dims="ignore"), norm=norm,
-        origin="lower", cmap=cmap)
-    plt.colorbar(
-        mappable=im,
-        ax=ax,
-        orientation="vertical",
-        pad=0.02,
-        aspect=16,
-        shrink=0.75,
-        cmap=cmap,
-        extend=("both" if robust else "neither"))
-    images.append(im)
-
-  def update(frame):
-    if "time" in first_data.dims:
-      td = datetime.timedelta(microseconds=first_data["time"][frame].item() / 1000)
-      figure.suptitle(f"{fig_title}, {td}", fontsize=16)
-    else:
-      figure.suptitle(fig_title, fontsize=16)
-    for im, (plot_data, norm, cmap) in zip(images, data.values()):
-      im.set_data(plot_data.isel(time=frame, missing_dims="ignore"))
-
-  ani = animation.FuncAnimation(
-      fig=figure, func=update, frames=max_steps, interval=250)
-  plt.close(figure.number)
-  return HTML(ani.to_jshtml())
-
-
-# # Load the Data and initialize the model
-
-# In[3]:
-
 import os
+
+parser = argparse.ArgumentParser(description='GenCast Mini Demo')
+parser.add_argument('--date', type=str, default='2024-12-01', help='Date to forecast')
+args = parser.parse_args()
+date_str = args.date
+print("date_str:\n", date_str, "\n")
+
 script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
-# @title Authenticate with Google Cloud Storage
 
-# Gives you an authenticated client, in case you want to use a private bucket.
-# gcs_client = storage.Client.create_anonymous_client()
-# gcs_bucket = gcs_client.get_bucket("dm_graphcast")
 dir_prefix = "gencast/"
 
-
-# ## Load the model params
-# 
-# Choose one of the two ways of getting model params:
-# - **checkpoint**: You'll get sensible predictions, but are limited to the model architecture that it was trained with, which may not fit on your device.
-# - **random**: You'll get random predictions, but you can change the model architecture and data resolution which may run faster or fit on your device.
-# 
-# 
-
-# In[5]:
-
-
-# @title Choose the model
-
-# params_file_options = [
-#     name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix+"params/"))
-#     if (name := blob.name.removeprefix(dir_prefix+"params/"))]  # Drop empty string.
-
 latent_value_options = [int(2**i) for i in range(4, 10)]
-# random_latent_size = widgets.Dropdown(
-#     options=latent_value_options, value=512,description="Latent size:")
-# random_attention_type = widgets.Dropdown(
-#     options=["splash_mha", "triblockdiag_mha", "mha"], value="splash_mha", description="Attention:")
-# random_mesh_size = widgets.IntSlider(
-#     value=4, min=4, max=6, description="Mesh size:")
-# random_num_heads = widgets.Dropdown(
-#     options=[int(2**i) for i in range(0, 3)], value=4,description="Num heads:")
-# random_attention_k_hop = widgets.Dropdown(
-#     options=[int(2**i) for i in range(2, 5)], value=16,description="Attn k hop:")
-# random_resolution = widgets.Dropdown(
-#     options=["1p0", "0p25"], value="1p0", description="Resolution:")
-#
 
 random_latent_size = 512
 random_attention_type = "splash_mha"
@@ -260,41 +104,9 @@ def update_latent_options(*args):
       latent for latent in latent_value_options
       if _latent_valid_for_attn(attn, latent, heads)]
 
-# Observe changes to only allow for valid combinations.
-# random_attention_type.observe(update_latent_options, "value")
-# random_latent_size.observe(update_latent_options, "value")
-# random_num_heads.observe(update_latent_options, "value")
-
-# params_file = widgets.Dropdown(
-#     options=[f for f in params_file_options if "Mini" in f],
-#     description="Params file:",
-#     layout={"width": "max-content"})
-#
-# source_tab = widgets.Tab([
-#     params_file,
-#     widgets.VBox([
-#         random_attention_type,
-#         random_mesh_size,
-#         random_num_heads,
-#         random_latent_size,
-#         random_attention_k_hop,
-#         random_resolution
-#     ]),
-# ])
-# source_tab.set_title(0, "Checkpoint")
-# source_tab.set_title(1, "Random")
-# widgets.VBox([
-#     source_tab,
-#     widgets.Label(value="Run the next cell to load the model. Rerunning this cell clears your selection.")
-# ])
-
-
-# In[6]:
 
 
 # @title Load the model
-
-# source = source_tab.get_title(source_tab.selected_index)
 # GST
 source = "Checkpoint"
 if source == "Random":
@@ -324,8 +136,7 @@ else:
   print("absolute_path:\n", absolute_path, "\n")
   params_file = absolute_path
   with open(params_file, "rb") as f:
-      # with gcs_bucket.blob(dir_prefix + f"params/{params_file_value}").open("rb") as f:
-    print(f)
+    print(params_file)
     ckpt = checkpoint.load(f, gencast.CheckPoint)
   params = ckpt.params
   state = {}
@@ -344,28 +155,6 @@ else:
 
 
 # ## Load the example data
-# 
-# Example ERA5 datasets are available at 0.25 degree and 1 degree resolution.
-# 
-# Example HRES-fc0 datasets are available at 0.25 degree resolution.
-# 
-# Some transformations were done from the base datasets:
-# - We accumulated precipitation over 12 hours instead of the default 1 hour.
-# - For HRES-fc0 sea surface temperature, we assigned NaNs to grid cells in which sea surface temperature was NaN in the ERA5 dataset (this remains fixed at all times).
-# 
-# The data resolution must match the model that is loaded. Since we are running GenCast Mini, this will be 1 degree.
-# 
-# 
-
-# In[8]:
-
-
-# @title Get and filter the list of available example datasets
-
-# dataset_file_options = [
-#     name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix + "dataset/"))
-#     if (name := blob.name.removeprefix(dir_prefix+"dataset/"))]  # Drop empty string.
-
 def parse_file_parts(file_name):
   return dict(part.split("-", 1) for part in file_name.split("_"))
 
@@ -382,30 +171,14 @@ def data_valid_for_model(file_name: str, params_file_name: str):
     source_matches = not source_matches
   return res_matches and source_matches
 
-# dataset_file = widgets.Dropdown(
-#     options=[
-#         (", ".join([f"{k}: {v}" for k, v in parse_file_parts(option.removesuffix(".nc")).items()]), option)
-#         for option in dataset_file_options
-#         if data_valid_for_model(option, params_file.value)
-#     ],
-#     description="Dataset file:",
-#     layout={"width": "max-content"})
-# widgets.VBox([
-#     dataset_file,
-#     widgets.Label(value="Run the next cell to load the dataset. Rerunning this cell clears your selection and refilters the datasets that match your model.")
-# ])
-
-
-# In[9]:
-
-
 # @title Load weather data
 # dataset_file_value= "source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-dataset-source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
-dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-01.nc"
+#dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-10.nc"
-
-dataset_file = os.path.join(script_dir, dataset_file_value)
+dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
+dataset_file_value = f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+dataset_file = os.path.join(dataset_dir, dataset_file_value)
 print("dataset_file_value:\n", dataset_file_value, "\n")
 # with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
 with open(dataset_file, "rb") as f:
@@ -416,7 +189,7 @@ assert example_batch.dims["time"] >= 3  # 2 for input, >=1 for targets
 
 print(", ".join([f"{k}: {v}" for k, v in parse_file_parts(dataset_file_value.removesuffix(".nc")).items()]))
 
-print(example_batch['2m_temperature'].isel(time=0).squeeze().to_numpy())
+#print(example_batch['2m_temperature'].isel(time=0).squeeze().to_numpy())
 ##example_batch
 # @title Extract training and eval data
 
@@ -435,10 +208,6 @@ print("Train Forcings:", train_forcings.dims.mapping)
 print("Eval Inputs:   ", eval_inputs.dims.mapping)
 print("Eval Targets:  ", eval_targets.dims.mapping)
 print("Eval Forcings: ", eval_forcings.dims.mapping)
-
-
-# In[13]:
-
 
 # @title Load normalization data
 relative_diffs_file = "../../../checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
@@ -461,27 +230,6 @@ with open(stddev_file, "rb") as f:
     stddev_by_level = xarray.load_dataset(f).compute()
 with open(min_file, "rb") as f:
     min_by_level = xarray.load_dataset(f).compute()
-
-
-# In[ ]:
-
-
-# config.update("jax_platform_name", "cpu")
-
-# Set the environment variable
-# import os
-# os.environ['XLA_FLAGS'] = '--xla_force_host_platform_device_count=24'
-# # Verify it's set
-# print(f"XLA_FLAGS: {os.getenv('XLA_FLAGS')}")
-#
-# print(jax.devices())
-# jax.local_device_count(backend='cpu')
-
-
-# In[14]:
-
-
-# @title Build jitted functions, and possibly initialize random weights
 
 
 def construct_wrapped_gencast():
@@ -548,25 +296,6 @@ if params is None:
       targets=train_targets,
       forcings=train_forcings,
   )
-
-
-# loss_fn_jitted = jax.jit(
-#     lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
-# )
-
-# loss_fn_jitted = jax.jit(
-#     lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
-# , backend='cpu')
-# grads_fn_jitted = jax.jit(grads_fn, backend='cpu')
-# run_forward_jitted = jax.jit(
-#     lambda rng, i, t, f: run_forward.apply(params, state, rng, i, t, f)[0]
-# , backend='cpu')
-# # We also produce a pmapped version for running in parallel.
-# run_forward_pmap = xarray_jax.pmap(run_forward_jitted, dim="sample", backend='cpu')
-
-# run_forward_jitted = jax.jit(
-#     lambda rng, inputs, targets_template, forcings: run_forward.apply(params, state, rng, inputs, targets_template, forcings)[0]
-# )
 #GST orig below
 grads_fn_jitted = jax.jit(grads_fn)
 run_forward_jitted = jax.jit(
@@ -576,22 +305,7 @@ run_forward_jitted = jax.jit(
 run_forward_pmap = xarray_jax.pmap(run_forward_jitted, dim="sample")
 
 
-# # Run the model
-# 
-# The `chunked_prediction_generator_multiple_runs` iterates over forecast steps, where the 1 step forecast is jitted and samples are pmapped across the chips.
-# This allows us to make efficient use of all devices and parallelise generating an ensemble across them. We then combine the chunks at the end to form our final forecast.
-# 
-# Note that the `Autoregressive rollout` cell will take longer than the standard inference time to run when executed for the first time, as this will include code compilation time. This cost does not increase with the number of devices, it is a fixed-cost one time operation whose result can be reused across any number of devices.
-
-# In[15]:
-
-
-# The number of ensemble members should be a multiple of the number of devices.
 print(f"Number of local devices {len(jax.local_devices())}")
-
-
-# In[16]:
-
 
 # @title Autoregressive rollout (loop in python)
 
@@ -608,21 +322,6 @@ rngs = np.stack(
     [jax.random.fold_in(rng, i) for i in range(num_ensemble_members)], axis=0)
 
 chunks = []
-# #chex.fake_pmap
-# for chunk in rollout.chunked_prediction_generator_multiple_runs(
-#     # Use pmapped version to parallelise across devices.
-#     # predictor_fn=run_forward_pmap,
-#     predictor_fn=run_forward_jitted,
-#     rngs=rngs,
-#     inputs=eval_inputs,
-#     targets_template=eval_targets * np.nan,
-#     forcings=eval_forcings,
-#     num_steps_per_chunk = 1,
-#     num_samples = num_ensemble_members,
-#     # pmap_devices=jax.local_devices()
-#     ):
-#     chunks.append(chunk)
-# predictions = xarray.combine_by_coords(chunks)
 
 # GST
 for chunk in rollout.chunked_prediction_generator_multiple_runs(
@@ -638,10 +337,11 @@ for chunk in rollout.chunked_prediction_generator_multiple_runs(
     ):
     chunks.append(chunk)
 predictions = xarray.combine_by_coords(chunks)
-print(predictions['2m_temperature'].isel(sample=0).squeeze().to_numpy())
-predictions.to_netcdf("pred_test_1201_10step.nc")
-
-# In[17]:
+out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast"
+out_file_value = f"gencast-prediction-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+out_file = os.path.join(out_dir, out_file_value)
+predictions.to_netcdf(out_file_value)
+print("Predictions computed for 10 days out_file:\n", out_file, "\n")
 
 
 # @title Choose predictions to plot
@@ -675,10 +375,6 @@ predictions.to_netcdf("pred_test_1201_10step.nc")
 #     widgets.Label(value="Run the next cell to plot the predictions. Rerunning this cell clears your selection.")
 # ])
 
-
-# In[18]:
-
-
 # @title Plot prediction samples and diffs
 
 # plot_size = 5
@@ -697,9 +393,6 @@ predictions.to_netcdf("pred_test_1201_10step.nc")
 #                         robust=plot_pred_robust.value, center=0),
 #   }
 #   display.display(plot_data(data, fig_title + f", Sample {sample_idx}", plot_size, plot_pred_robust.value))
-
-
-# In[19]:
 
 
 # @title Plot ensemble mean and CRPS
