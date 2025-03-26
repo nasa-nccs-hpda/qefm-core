@@ -12,8 +12,8 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 
 # GenCast dependencies
 RUN pip install --no-deps https://github.com/deepmind/graphcast/archive/master.zip
-RUN pip install --upgrade xarray netCDF4 h5netcdf
-RUN pip install IPython
+#RUN pip install --upgrade xarray netCDF4 h5netcdf
+#RUN pip install IPython
 RUN pip install --upgrade "jax[cuda12]"
 
 # GraphCast dependencies
