@@ -340,7 +340,7 @@ predictions = xarray.combine_by_coords(chunks)
 out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast"
 out_file_value = f"gencast-prediction-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 out_file = os.path.join(out_dir, out_file_value)
-predictions.to_netcdf(out_file_value)
+predictions.to_netcdf(out_file)
 print("Predictions computed for 10 days out_file:\n", out_file, "\n")
 
 
