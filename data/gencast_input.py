@@ -4,11 +4,21 @@ import pandas as pd
 import os
 import sys
 import datetime
+from pathlib import Path
+import argparse
 
-date_str = "2024-12-01"
-nsteps = 22 
+parser = argparse.ArgumentParser(description="Download GenCast input data")
+parser.add_argument("--year", "-y", type=str, help="Year of the data")
+parser.add_argument("--month", "-m", type=str, help="Month of the data")
+parser.add_argument("--day", "-d", type=str, help="Day of the data")
+parser.add_argument("--nsteps", "-n", type=int, help="Number of time steps")
+
+args = parser.parse_args()
+date_str = f"{args.year}-{args.month}-{args.day}"
+nsteps = int(args.nsteps) 
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
 
 levs = np.array(
     [50,  100,  150,  200,  250,  \
@@ -70,6 +80,7 @@ ds = ds.rename({
     "total_precipitation": "total_precipitation_12hr",
 })      
 # writing to netcdf
-ds.to_netcdf(f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc")
+output_file = output_dir / f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+ds.to_netcdf(output_file)
 
 
