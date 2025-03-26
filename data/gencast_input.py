@@ -5,10 +5,10 @@ import os
 import sys
 import datetime
 
-date_str = "2019-03-29"
-
+date_str = "2024-12-01"
+nsteps = 22 
 start_time = f"{date_str}T00:00"
-time_steps = pd.date_range(start=start_time, periods=3, freq="12h")
+time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
 
 levs = np.array(
     [50,  100,  150,  200,  250,  \
@@ -70,6 +70,6 @@ ds = ds.rename({
     "total_precipitation": "total_precipitation_12hr",
 })      
 # writing to netcdf
-ds.to_netcdf(f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-01.nc")
+ds.to_netcdf(f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc")
 
 
