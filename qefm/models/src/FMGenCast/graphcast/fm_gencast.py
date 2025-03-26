@@ -70,7 +70,7 @@ from graphcast import nan_cleaning
 import os
 
 parser = argparse.ArgumentParser(description='GenCast Mini Demo')
-parser.add_argument('--date', type=str, default='2024-12-01', help='Date to forecast')
+parser.add_argument('--date', '-s', type=str, default='2024-12-01', help='Date to forecast')
 args = parser.parse_args()
 date_str = args.date
 print("date_str:\n", date_str, "\n")
