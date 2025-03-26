@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(description="Download GenCast input data")
 parser.add_argument("--year", "-y", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", type=str, help="Day of the data")
-parser.add_argument("--nsteps", "-n", type=int, help="Number of time steps")
+parser.add_argument("--nsteps", "-n", default=22, type=int, help="Number of time steps")
 
 args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
