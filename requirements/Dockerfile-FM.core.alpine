@@ -9,7 +9,7 @@ FROM ${FROM_IMAGE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # Install Python
-#RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache python3 py3-pip
 
 # GenCast dependencies
 #RUN pip3 install -U "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html 
