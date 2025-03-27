@@ -1,21 +1,23 @@
 # Arguments to pass to the image
 ARG VERSION_DATE=3.21.3
 ARG FROM_IMAGE=alpine
+ARG FROM_IMAGE=bullseye-slim
 
 # Import NVIDIA Modulus container as the BASE Image (Modulus base image)
 #FROM ${FROM_IMAGE}
 #FROM ${FROM_IMAGE}:${VERSION_DATE}
-FROM python:3.10.10-alpine
+#FROM python:3.10.10-alpine
+FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # Install Python
-RUN apk add --no-cache python3 py3-pip
+#RUN apk add --no-cache python3 py3-pip
 
 # GenCast dependencies
 #RUN pip install -U "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html 
 
 
-#RUN pip install --upgrade "jax[cuda12]"
+RUN pip install --upgrade "jax[cuda12]"
 #RUN pip install --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip
 #RUN pip3 install --no-cache-dir --upgrade "jax[cuda12]"
 #RUN pip install --no-deps https://github.com/deepmind/graphcast/archive/master.zip
