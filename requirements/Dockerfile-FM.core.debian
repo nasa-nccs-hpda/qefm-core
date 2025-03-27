@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir --no-deps https://github.com/deepmind/graphcast/a
 # GenCast dependencies
 RUN pip install --upgrade xarray netCDF4 h5netcdf
 RUN pip install IPython
+RUN pip install absl-py
 
 # Aurora dependencies
 RUN pip install cdsapi
