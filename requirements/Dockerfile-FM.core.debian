@@ -15,7 +15,7 @@ RUN pip install --upgrade "jax[cuda12]"
 # GenCast dependencies
 RUN pip install --upgrade xarray netCDF4 h5netcdf
 RUN pip install IPython
-#RUN pip install absl-py
+RUN pip install --upgrade bitsandbytes
 
 # Aurora dependencies
 RUN pip install cdsapi
