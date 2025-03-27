@@ -3,17 +3,16 @@ ARG VERSION_DATE=3.21.3
 ARG FROM_IMAGE=alpine
 
 # Import NVIDIA Modulus container as the BASE Image (Modulus base image)
-FROM ${FROM_IMAGE}
+#FROM ${FROM_IMAGE}
 #FROM ${FROM_IMAGE}:${VERSION_DATE}
-#FROM python:3.10.10-alpine
+FROM python:3.10.10-alpine
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # Install Python
 RUN apk add --no-cache python3 py3-pip
 
-RUN apk add --no-cache "jax[cuda12]"
 # GenCast dependencies
-#RUN pip3 install -U "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html 
+#RUN pip install -U "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html 
 
 
 #RUN pip install --upgrade "jax[cuda12]"
@@ -25,11 +24,11 @@ RUN apk add --no-cache "jax[cuda12]"
 #RUN pip install --no-cache-dir --upgrade "jax[cuda12]"
 
 # GraphCast dependencies
-#RUN pip install git+git://github.com/deepmind/jraph.git
-#RUN pip install jax
-#RUN pip install Cartopy
-#RUN pip install chex
-#RUN pip install dm-haiku
+RUN pip install git+git://github.com/deepmind/jraph.git
+RUN pip install jax
+RUN pip install Cartopy
+RUN pip install chex
+RUN pip install dm-haiku
 
 #RUN pip install trimesh
 #RUN pip install Rtree
