@@ -6,8 +6,8 @@ ARG FROM_IMAGE=bullseye-slim
 # Import NVIDIA Modulus container as the BASE Image (Modulus base image)
 #FROM ${FROM_IMAGE}
 #FROM ${FROM_IMAGE}:${VERSION_DATE}
-#FROM python:3.10.10-alpine
-FROM python:3.10-slim-bullseye
+FROM python:3.10.10-alpine
+#FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # Install Python
