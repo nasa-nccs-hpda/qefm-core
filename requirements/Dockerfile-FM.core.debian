@@ -20,5 +20,8 @@ RUN pip install --upgrade bitsandbytes
 # Aurora dependencies
 RUN pip install cdsapi
 
+# Just cuz....https://docs.jax.dev/en/latest/installation.html#install-nvidia-gpu
+RUN pip install --upgrade "jax[cuda12]"
+
 HEALTHCHECK NONE
 ENTRYPOINT [""]
