@@ -2,14 +2,24 @@ import xarray as xr
 import numpy as np
 import pandas as pd
 from pathlib import Path
+import argparse
+
+parser = argparse.ArgumentParser(description="Convert GenCast output to CF-compliant NetCDF")
+# parser.add_argument("input_dir", type=str, help="Path to GenCast output directory")
+# parser.add_argument("fmodel", type=str, help="Model name")
+parser.add_argument("--year", "-y", type=str, help="Year")
+parser.add_argument("--month", "-m", type=str, help="Month")
+parser.add_argument("--day", "-d", type=str, help="Day")
+args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
 fmodel = "FMGenCast"
 file_path = input_dir / fmodel
-yyyy = "2024"
-mm = "12"
-dd = "01"
-files = sorted(file_path.glob(f"*{yyyy}-{mm}*_*.nc"))
+yyyy = args.year
+mm = args.month
+dd = args.day
+
+files = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))
 file = files[0]
 
 MAPL_GRAV = 9.80665
@@ -184,26 +194,17 @@ varMap = {
 topo = ds.PHIS.values/MAPL_GRAV
 height = ds.H.values
 mask = np.where(height > topo, 1, 0)
-# chunk
-nlats = len(ds.lat)
-nlons = len(ds.lon)
-chunks_2d = {"ens": 1, "time": 1, "lat": nlats, "lon": nlons}
-chunks_3d = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
-chunks_phis = {"lat": nlats, "lon": nlons}
-chunk_sizes = {}
 for var in ds.data_vars:
     # add attributes
     ds[var].attrs = varMap[var]
-    # set chunk size
+    # mask 3d variables
     if 'lev' in ds[var].dims:
-        # also mask 3D variables
         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
-        chunk_sizes[var] = chunks_3d
-    else:
-        chunk_sizes[var] = chunks_2d
-chunk_sizes['PHIS'] = chunks_phis
 # chunk 
-ds = ds.chunk(chunk_sizes)
+nlats = len(ds.lat)
+nlons = len(ds.lon)
+chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+ds = ds.chunk(chunks_size)
 print("After variable \n", ds)
 
 ## add global attributes
