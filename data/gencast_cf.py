@@ -189,6 +189,7 @@ nlats = len(ds.lat)
 nlons = len(ds.lon)
 chunks_2d = {"ens": 1, "time": 1, "lat": nlats, "lon": nlons}
 chunks_3d = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+chunks_phis = {"lat": nlats, "lon": nlons}
 chunk_sizes = {}
 for var in ds.data_vars:
     # add attributes
@@ -199,7 +200,9 @@ for var in ds.data_vars:
         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
         chunk_sizes[var] = chunks_3d
     else:
-        chunk_sizes[var] = chunks_2d 
+        chunk_sizes[var] = chunks_2d
+chunk_sizes['PHIS'] = chunks_phis
+# chunk 
 ds = ds.chunk(chunk_sizes)
 print("After variable \n", ds)
 
