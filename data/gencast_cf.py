@@ -114,13 +114,13 @@ rename_dict = {
 ds = ds.rename(rename_dict)
 print("After rename \n ", ds)
 
-# add geopotential at surface
+# add variable geopotential at surface
 source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 ds_temp = xr.open_dataset(tmp_file)
 ds['PHIS'] = ds_temp['geopotential_at_surface']
 
-# add attributes
+# map attributes
 varMap = {
     "U10": {
         "long_name" : "10-meter_eastward_wind",
@@ -175,18 +175,32 @@ varMap = {
         "units" : "m+2 s-2",
     },
 }
-# add attributes
-for var in ds.data_vars:
-    ds[var].attrs = varMap[var]
 
-## Mask variables based on elevation
+# define chunk size for each variable
+# mask variables based on elevation
+## TODO : Need to check surface geopotential height from ERA5
+
+# topo
 topo = ds.PHIS.values/MAPL_GRAV
 height = ds.H.values
 mask = np.where(height > topo, 1, 0)
-variables_3d = [var for var in ds.data_vars if 'lev' in ds[var].dims]
-for var in variables_3d:
-    ds[var] = ds[var].where(mask == 1, FILL_VALUE)
-
+# chunk
+nlats = len(ds.lat)
+nlons = len(ds.lon)
+chunks_2d = {"ens": 1, "time": 1, "lat": nlats, "lon": nlons}
+chunks_3d = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+chunk_sizes = {}
+for var in ds.data_vars:
+    # add attributes
+    ds[var].attrs = varMap[var]
+    # set chunk size
+    if 'lev' in ds[var].dims:
+        # also mask 3D variables
+        ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+        chunk_sizes[var] = chunks_3d
+    else:
+        chunk_sizes[var] = chunks_2d 
+ds = ds.chunk(chunk_sizes)
 print("After variable \n", ds)
 
 ## add global attributes
@@ -197,5 +211,18 @@ ds.attrs = {
     "Conventions" : "CF",
     "Comment" : "NetCDF-4" 
 }
+
+## Write to NetCDF
+compression = {"zlib": True, 
+               "complevel": 1,
+               "shuffle": True,}
+encoding = {var: compression for var in ds.data_vars}
+output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/CF")
+output_dir.mkdir(parents=True, exist_ok=True)
+fname = f"{fmodel}-prediction-era5_date-{yyyy}-{mm}-{dd}_res-1.0_levels-13_steps-20.nc"
+output_file = output_dir / fname
+ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
+
+
 
 print("Finished \n", ds)
