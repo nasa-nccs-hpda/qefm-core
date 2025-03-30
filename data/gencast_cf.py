@@ -204,7 +204,7 @@ for var in ds.data_vars:
 nlats = len(ds.lat)
 nlons = len(ds.lon)
 chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
-ds = ds.chunk(chunks_size)
+#ds = ds.chunk(chunks_size)
 print("After variable \n", ds)
 
 ## add global attributes
@@ -216,6 +216,7 @@ ds.attrs = {
     "Comment" : "NetCDF-4" 
 }
 
+print(ds['T2M'].isel(ens=0, time=0).to_numpy())
 ## Write to NetCDF
 compression = {"zlib": True, 
                "complevel": 1,
