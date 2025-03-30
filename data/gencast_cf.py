@@ -5,16 +5,22 @@ from pathlib import Path
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
 fmodel = "FMGenCast"
+file_path = input_dir / fmodel
 yyyy = "2024"
 mm = "12"
 dd = "01"
-files = sorted(input_dir.glob(f"*{yyyy}-{mm}-??_*.nc"))
+files = sorted(file_path.glob(f"*{yyyy}-{mm}*_*.nc"))
 file = files[0]
+
 MAPL_GRAV = 9.80665
-FILL_VALUE = 9.969209968386869e+36
+FILL_VALUE = 1.e+15
 ds = xr.open_dataset(file)
+print("At Open : \n", ds)
 
 ## Coordinates
+# For GenCast Only, remove "batch"
+ds = ds.squeeze(dim="batch")
+
 # Time
 long_name = "time"
 begin_date = f"{yyyy}{mm}{dd}"
@@ -36,7 +42,7 @@ ds.time.attrs = {
 }
 
 # Latitude
-lats = ds['latitude'].values
+lats = ds['lat'].values
 fill_north = False
 fill_south = False
 if lats[0] > lats[-1]:
@@ -70,13 +76,13 @@ ds.lon.attrs = {
 
 # level
 ds = ds.rename({'level': 'lev'})
-levs = ds['lev'].values
+levs = ds['lev'].values.astype(np.float32)
 if levs[0] < levs[-1]:
     # Flip the level array
     ds['lev'] = levs[::-1]
     # Flip the data array
     ds = ds.sel(lev=slice(None, None, -1))
-ds.level.attrs = {
+ds.lev.attrs = {
     "long_name" : "pressure_level",
     "units" : "hPa",
 }
@@ -87,6 +93,7 @@ ds.ens.attrs = {
     "long_name" : "ensemble_member",
     "units" : " ",
 }
+print("After coord \n", ds)
 
 ## Variables
 # rename variables
@@ -96,20 +103,21 @@ rename_dict = {
     "2m_temperature": "T2M",
     "geopotential": "H",
     "mean_sea_level_pressure": "SLP",
-    "sea surface temperature": "SST",
+    "sea_surface_temperature": "SST",
     "specific_humidity": "QV",
     "temperature": "T",
-    "total_precipitation": "PRECTOT",
+    "total_precipitation_12hr": "PRECTOT",
     "u_component_of_wind": "U",
     "v_component_of_wind": "V",
     "vertical_velocity": "OMEGA",
 }
 ds = ds.rename(rename_dict)
+print("After rename \n ", ds)
 
 # add geopotential at surface
 source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
-ds_temp = xr.open_dataset(files[0])
+ds_temp = xr.open_dataset(tmp_file)
 ds['PHIS'] = ds_temp['geopotential_at_surface']
 
 # add attributes
@@ -179,15 +187,15 @@ variables_3d = [var for var in ds.data_vars if 'lev' in ds[var].dims]
 for var in variables_3d:
     ds[var] = ds[var].where(mask == 1, FILL_VALUE)
 
+print("After variable \n", ds)
+
 ## add global attributes
 ds.attrs = {
-    "title" : f"{fmodel} {yyyy}-{mm}-{dd}",
+    "title" : f"{fmodel} forecast start at {yyyy}-{mm}-{dd}T12:00:00", 
     "institution" : "NASA CISTO Data Science Group",
     "source" : f"{fmodel} model output",
-    "history" : f"created by data/geos_cf.py",
-    "references" : "https://gmao.gsfc.nasa.gov",
     "Conventions" : "CF",
     "Comment" : "NetCDF-4" 
 }
 
-
+print("Finished \n", ds)
