@@ -17,8 +17,8 @@ RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/mas
 RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
-#RUN pip install --upgrade xarray netCDF4 h5netcdf
-#RUN pip install IPython
+RUN pip install --upgrade xarray netCDF4 h5netcdf
+RUN pip install IPython
 #RUN pip install --upgrade bitsandbytes
 
 # Aurora dependencies
