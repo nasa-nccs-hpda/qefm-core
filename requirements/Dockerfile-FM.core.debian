@@ -14,7 +14,7 @@ RUN pip install nvidia-cuda-runtime-cu12
 RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
 
 # GPU dependencies
-RUN pip install --install "jax[cuda12]"
+RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
 #RUN pip install --upgrade xarray netCDF4 h5netcdf
