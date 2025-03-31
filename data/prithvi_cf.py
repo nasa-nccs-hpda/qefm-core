@@ -170,7 +170,7 @@ for file in files[:1]:
     mask = np.where(height > topo, 1, 0)
     for var in ds.data_vars:
     #     # add attributes
-    #    ds[var].attrs = varMap[var]
+        ds[var]= ds['var'].assign_coords({"time": ds.time})
     #     # mask 3d variables
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
