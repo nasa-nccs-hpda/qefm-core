@@ -23,9 +23,9 @@ files = sorted(file_path.glob("pred_idx*.nc"))
 #file = files[0]
 
 MAPL_GRAV = 9.80665
-FILL_VALUE = 1.e+15
+FILL_VALUE = np.float32(1.e+15)
 
-for file in files:
+for file in files[:3]:
     print("Processing file : ", file)
     ds = xr.open_dataset(file)
     print("At Open : \n", ds)
@@ -71,7 +71,6 @@ for file in files:
     ds['lat'] = lats
     fill_north = False
     fill_south = False
-    print(lats)
     
     if lats[0] > lats[-1]:
         # Flip the data array
@@ -187,6 +186,7 @@ for file in files:
     for var in ds.data_vars:
         # add attributes
         ds[var].attrs = varMap[var]
+        ds[var].attrs['_FillValue'] = FILL_VALUE
         # mask 3d variables
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
