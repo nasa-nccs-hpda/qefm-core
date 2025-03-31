@@ -23,7 +23,7 @@ files = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))
 file = files[0]
 
 MAPL_GRAV = 9.80665
-FILL_VALUE = 1.e+15
+FILL_VALUE = np.float32(1.e+15)
 ds = xr.open_dataset(file)
 print("At Open : \n", ds)
 
@@ -63,7 +63,7 @@ fill_north = False
 fill_south = False
 if lats[0] > lats[-1]:
     # Flip the latitude array
-    ds['lat'] = lats[::-1]
+#    ds['lat'] = lats[::-1]
     # Flip the data array
     ds = ds.sel(lat=slice(None, None, -1))
 if -90. not in ds.lat.values:
@@ -95,7 +95,7 @@ ds = ds.rename({'level': 'lev'})
 levs = ds['lev'].values.astype(np.float32)
 if levs[0] < levs[-1]:
     # Flip the level array
-    ds['lev'] = levs[::-1]
+#    ds['lev'] = levs[::-1]
     # Flip the data array
     ds = ds.sel(lev=slice(None, None, -1))
 ds.lev.attrs = {
@@ -198,13 +198,14 @@ mask = np.where(height > topo, 1, 0)
 for var in ds.data_vars:
     # add attributes
     ds[var].attrs = varMap[var]
+    ds[var].attrs['_FillValue'] = FILL_VALUE
     # mask 3d variables
-    if 'lev' in ds[var].dims:
-        ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+#    if 'lev' in ds[var].dims:
+#        ds[var] = ds[var].where(mask == 1, FILL_VALUE)
 # chunk 
-nlats = len(ds.lat)
-nlons = len(ds.lon)
-chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+#nlats = len(ds.lat)
+#nlons = len(ds.lon)
+#chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
 #ds = ds.chunk(chunks_size)
 print("After variable \n", ds)
 
