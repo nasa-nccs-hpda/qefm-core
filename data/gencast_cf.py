@@ -223,7 +223,7 @@ compression = {"zlib": True,
                "complevel": 1,
                "shuffle": True,}
 encoding = {var: compression for var in ds.data_vars}
-output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/CF")
+output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
 output_dir.mkdir(parents=True, exist_ok=True)
 fname = f"{fmodel}-prediction-era5_date-{yyyy}-{mm}-{dd}_res-1.0_levels-13_steps-20.nc"
 output_file = output_dir / fname
