@@ -25,7 +25,7 @@ files = sorted(file_path.glob("pred_idx*.nc"))
 MAPL_GRAV = 9.80665
 FILL_VALUE = 1.e+15
 
-for file in files:
+for file in files[:10]:
     print("Processing file : ", file)
     ds = xr.open_dataset(file)
     print("At Open : \n", ds)
@@ -66,12 +66,13 @@ for file in files:
     }
 
     # Latitude
-    lats = ds['lat'].values
+    lats = ds['lat'].values.astype(np.float32)
+    ds['lat'] = lats
     fill_north = False
     fill_south = False
+    print(lats)
+    
     if lats[0] > lats[-1]:
-        # Flip the latitude array
-        ds['lat'] = lats[::-1]
         # Flip the data array
         ds = ds.sel(lat=slice(None, None, -1))
     if -90. not in ds.lat.values:
@@ -87,9 +88,9 @@ for file in files:
         "long_name" : "latitude",
         "units" : "degrees_north",
     }
-
     # Longitude
-    lons = ds['lon'].values
+    lons = ds['lon'].values.astype(np.float32)
+    ds['lon'] = lons
     if min(lons) == 0:
         ds['lon'] = ((ds["lon"] + 180) % 360) - 180
         ds = ds.sortby(ds.lon)
@@ -101,6 +102,7 @@ for file in files:
     # level
     ds = ds.rename({'level': 'lev'})
     levs = ds['lev'].values.astype(np.float32)
+    ds['lev'] = levs
     if levs[0] < levs[-1]:
         # Flip the level array
         ds['lev'] = levs[::-1]
@@ -111,7 +113,6 @@ for file in files:
         "units" : "hPa",
     }
     print("After coord \n", ds)
-
     ## Variables
     # rename variables
     rename_dict = {
