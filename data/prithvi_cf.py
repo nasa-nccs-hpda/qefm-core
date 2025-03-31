@@ -170,37 +170,37 @@ for file in files[:1]:
     ones = ones.map(lambda x: xr.full_like(x, FILL_VALUE))
 
     ds_new = xr.concat([ds, ones], dim="lat")
-    print(ds_new)
-    exit() 
+    # print(ds_new)
+    # exit() 
 
-    # topo
-    topo = ds.PHIS.values/MAPL_GRAV
-    height = ds.H.values
-    mask = np.where(height > topo, 1, 0)
-    for var in ds.data_vars:
-        arr = ds[var].values
-        if len(arr.shape) == 3:
-            fll = np.full((14, 1, 576), FILL_VALUE)
-            data = np.concatenate((arr, fll), axis=1)
-        elif len(arr.shape) == 2:
-            fll = np.full((1, 576), FILL_VALUE)
-            data = np.concatenate((arr, fll), axis=0)
-        data_ex = data[None, ...]
-        ds['var'] = xr.DataArray(data_ex, 
-                                 dims=('time', 'lev', 'lat', 'lon'),
-                                 coords={'time': ds.time, 'lev': ds.lev, 'lat': [lat_values], 'lon': ds.lon},)
+    # # topo
+    # topo = ds.PHIS.values/MAPL_GRAV
+    # height = ds.H.values
+    # mask = np.where(height > topo, 1, 0)
+    # for var in ds.data_vars:
+    #     arr = ds[var].values
+    #     if len(arr.shape) == 3:
+    #         fll = np.full((14, 1, 576), FILL_VALUE)
+    #         data = np.concatenate((arr, fll), axis=1)
+    #     elif len(arr.shape) == 2:
+    #         fll = np.full((1, 576), FILL_VALUE)
+    #         data = np.concatenate((arr, fll), axis=0)
+    #     data_ex = data[None, ...]
+    #     ds['var'] = xr.DataArray(data_ex, 
+    #                              dims=('time', 'lev', 'lat', 'lon'),
+    #                              coords={'time': ds.time, 'lev': ds.lev, 'lat': [lat_values], 'lon': ds.lon},)
 
-    #     # add attributes
-        ds[var]= ds['var'].assign_coords({"time": ds.time})
-    #     # mask 3d variables
-        if 'lev' in ds[var].dims:
-            ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+    # #     # add attributes
+    #     ds[var]= ds['var'].assign_coords({"time": ds.time})
+    # #     # mask 3d variables
+    #     if 'lev' in ds[var].dims:
+    #         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # # chunk 
     # # nlats = len(ds.lat)
     # # nlons = len(ds.lon)
     # # chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
     # # ds = ds.chunk(chunks_size)
-    print("After variable \n", ds)
+    print("After variable \n", ds_new)
 
     ## add global attributes
     ds.attrs = {
@@ -220,7 +220,7 @@ for file in files[:1]:
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-prediction-merra2_date-{tstamp}_res-0.5_levels-14.nc"
     output_file = output_dir / fname
-    ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
+    ds_new.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 
 
 
