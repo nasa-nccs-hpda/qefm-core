@@ -13,7 +13,7 @@ parser.add_argument("--day", "-d", type=str, help="Day")
 args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
-fmodel = "FMPangu"
+fmodel = "FMPrithvi-WxC"
 yyyy = args.year
 mm = args.month
 dd = args.day
