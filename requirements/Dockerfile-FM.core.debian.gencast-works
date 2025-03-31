@@ -19,13 +19,13 @@ RUN pip install --upgrade "jax[cuda12]"
 # GenCast dependencies
 RUN pip install --upgrade xarray netCDF4 h5netcdf
 RUN pip install IPython
+#RUN pip install --upgrade bitsandbytes
 
-# AISF dependencies
-RUN pip install -q anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1
-RUN pip install -q earthkit-regrid ecmwf-opendata
-RUN pip install flash_attn
-RUN pip install matplotlib
-RUN pip install cartopy
+# Aurora dependencies
+#RUN pip install cdsapi
+
+# Just cuz....https://docs.jax.dev/en/latest/installation.html#install-nvidia-gpu
+#RUN pip install --upgrade "jax[cuda12]"
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
