@@ -31,6 +31,12 @@ print("At Open : \n", ds)
 # For GenCast Only, remove "batch"
 ds = ds.squeeze(dim="batch")
 
+# add variable geopotential at surface
+source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
+tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
+ds_temp = xr.open_dataset(tmp_file)
+ds['PHIS'] = ds_temp['geopotential_at_surface']
+
 # Time
 long_name = "time"
 begin_date = f"{yyyy}{mm}{dd}"
@@ -124,11 +130,6 @@ rename_dict = {
 ds = ds.rename(rename_dict)
 print("After rename \n ", ds)
 
-# add variable geopotential at surface
-source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
-tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
-ds_temp = xr.open_dataset(tmp_file)
-ds['PHIS'] = ds_temp['geopotential_at_surface']
 
 # map attributes
 varMap = {
