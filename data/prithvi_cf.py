@@ -163,12 +163,33 @@ for file in files[:1]:
     # define chunk size for each variable
     # mask variables based on elevation
     ## TODO : Need to check surface geopotential height from ERA5
+    # expand time dimension
+    ds  = ds.expand_dims(dim={"time": 1})
+    ones = ds.isel(lat=0).expand_dims(dim={"lat": 1})
+    ones['lat'] = [90.0]
+    ones = ones.map(lambda x: xr.full_like(x, FILL_VALUE))
+
+    ds_new = xr.concat([ds, ones], dim="lat")
+    print(ds_new)
+    exit() 
 
     # topo
     topo = ds.PHIS.values/MAPL_GRAV
     height = ds.H.values
     mask = np.where(height > topo, 1, 0)
     for var in ds.data_vars:
+        arr = ds[var].values
+        if len(arr.shape) == 3:
+            fll = np.full((14, 1, 576), FILL_VALUE)
+            data = np.concatenate((arr, fll), axis=1)
+        elif len(arr.shape) == 2:
+            fll = np.full((1, 576), FILL_VALUE)
+            data = np.concatenate((arr, fll), axis=0)
+        data_ex = data[None, ...]
+        ds['var'] = xr.DataArray(data_ex, 
+                                 dims=('time', 'lev', 'lat', 'lon'),
+                                 coords={'time': ds.time, 'lev': ds.lev, 'lat': [lat_values], 'lon': ds.lon},)
+
     #     # add attributes
         ds[var]= ds['var'].assign_coords({"time": ds.time})
     #     # mask 3d variables
