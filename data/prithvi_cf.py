@@ -166,7 +166,7 @@ for file in files[:1]:
     # expand time dimension
     ds  = ds.expand_dims(dim={"time": 1})
     ones = ds.isel(lat=0).expand_dims(dim={"lat": 1})
-    ones['lat'] = [90.0]
+    ones['lat'] = [np.float32(90.0)]
     ones = ones.map(lambda x: xr.full_like(x, FILL_VALUE))
 
     ds_new = xr.concat([ds, ones], dim="lat")
@@ -224,4 +224,4 @@ for file in files[:1]:
 
 
 
-    print("Finished \n", ds)
+    print("Finished \n", ds_new)
