@@ -189,10 +189,10 @@ for file in files:
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # chunk 
-    nlats = len(ds.lat)
-    nlons = len(ds.lon)
-    chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
-    ds = ds.chunk(chunks_size)
+    # nlats = len(ds.lat)
+    # nlons = len(ds.lon)
+    # chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+    # ds = ds.chunk(chunks_size)
     print("After variable \n", ds)
 
     ## add global attributes
@@ -209,7 +209,7 @@ for file in files:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/CF")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-0.25_levels-13.nc"
     output_file = output_dir / fname
