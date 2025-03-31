@@ -25,10 +25,11 @@ files = sorted(file_path.glob("pred_*.nc"))
 MAPL_GRAV = 9.80665
 FILL_VALUE = 1.e+15
 
-for file in files[:1]:
+for file in files:
     print("Processing file : ", file)
     ds = xr.open_dataset(file)
     print("At Open : \n", ds)
+    ds.attrs = {}
 
     ## Expand dimensions for time
     #ds = ds.expand_dims(time=[1])
@@ -203,7 +204,7 @@ for file in files[:1]:
     print("After variable \n", ds_new)
 
     ## add global attributes
-    ds.attrs = {
+    ds_new.attrs = {
         "title" : f"{fmodel} forecast start at {yyyy}-{mm}-{dd}T00:00:00", 
         "institution" : "NASA CISTO Data Science Group",
         "source" : f"{fmodel} model output",
