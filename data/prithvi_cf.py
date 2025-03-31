@@ -31,7 +31,7 @@ for file in files[:1]:
     print("At Open : \n", ds)
 
     ## Expand dimensions for time
-    ds = ds.expand_dims(time=[1])
+    #ds = ds.expand_dims(time=[1])
 
     ## Coordinates
     # Time
@@ -50,7 +50,7 @@ for file in files[:1]:
 
     # get time stamp for output file
     t = ds['time'].values
-    tstamp = np.datetime_as_string(t[0], unit='h')
+    tstamp = np.datetime_as_string(t, unit='h')
     print("Time stamp : ", tstamp)
 
 
@@ -72,7 +72,7 @@ for file in files[:1]:
     if 90. not in ds.lat.values:
         fill_north = True
         lat_values = np.append(ds.lat.values, 90.0)
-        ds = ds.assign_coords(lat=lat_values)
+        #ds = ds.assign_coords(lat=lat_values)
     ds['lat'] = lats
     ds.lat.attrs = {
         "long_name" : "latitude",
@@ -87,7 +87,7 @@ for file in files[:1]:
     }
 
     # level
-    ds = ds.rename({'level': 'lev'})
+    #ds = ds.rename({'level': 'lev'})
     levs = ds['lev'].values.astype(np.float32)
     ds['lev'] = levs
     if levs[0] < levs[-1]:
