@@ -66,6 +66,20 @@ def check_avail_data(date_str: str) -> bool:
     except Exception as e:
         print(f"Failed to check available data for {date_str}: {e}")
         return False
+    
+def skip_day(root_dir: Path, date) -> bool:
+    """Check if the ERA5 files for a specific date already exist."""
+    year = f"Y{date.year}"
+    month = f"M{date.month:02d}"
+    dstamp = date.strftime("%Y%m%d")
+
+    surf_dir_path = root_dir / "surface_hourly" / "inst" / year / month
+    atmos_dir_path = root_dir / "pressure_hourly" / "inst" / year / month
+
+    n_surf = len(list(surf_dir_path.glob(f"*{dstamp}*.nc")))
+    n_atmos = len(list(atmos_dir_path.glob(f"*{dstamp}*.nc")))
+
+    return n_surf == 4 and n_atmos == 4
 
 def download_data(root_dir, date, surf_lst, atmos_lst):
     
@@ -73,19 +87,11 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
     year = f"Y{current_date.year}"
     month = f"M{current_date.month:02d}"
 
-    dstamp = current_date.strftime("%Y%m%d")
-
     surf_dir_path = Path(root_dir) / "surface_hourly" / "inst" / year / month
     surf_dir_path.mkdir(parents=True, exist_ok=True)
 
     atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
     atmos_dir_path.mkdir(parents=True, exist_ok=True)
-    
-    n_surf = len(list(surf_dir_path.glob(f"*{dstamp}*.nc")))
-    n_atmos = len(list(atmos_dir_path.glob(f"*{dstamp}*.nc")))
-    if n_surf == 4  and n_atmos == 4:
-        logging.info(f"Skipping {current_date}")
-        return
     
     c = cdsapi.Client()
     while current_date.hour < 19:
@@ -186,9 +192,15 @@ if __name__ == "__main__":
 
     date = start_date
     while date < end_date:
-        if check_avail_data(date.strftime("%Y%m%d")):
+        if skip_day(era5_dir, date):
+            print(f"Skipping {date}")
+            logging.info(f"Skipping {date}")
+            date += timedelta(days=1)
+            continue
+
+        elif check_avail_data(date.strftime("%Y%m%d")):
             logging.info(f"Downloading ERA5 data from {date}")
             surf_lst, atmos_lst = get_ear5_vars()
             download_data(era5_dir, date, surf_lst=surf_lst, atmos_lst=atmos_lst)
-        date += timedelta(days=1)
+            date += timedelta(days=1)
 
