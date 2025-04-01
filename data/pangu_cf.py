@@ -185,9 +185,12 @@ for idx, file in enumerate(files):
     }
 
     # define chunk size for each variable
-    # mask variables based on elevation
+    
     ## TODO : Need to check surface geopotential height from ERA5
-
+    ## Get geopotential height 
+    ds['H'] = ds['H']/MAPL_GRAV
+    
+    ## mask variables based on elevation
     # topo
     topo = ds.PHIS.values/MAPL_GRAV
     height = ds.H.values
@@ -199,8 +202,6 @@ for idx, file in enumerate(files):
         ds[var].attrs['missing_value'] = FILL_VALUE
         ds[var].attrs['fmissing_value'] = FILL_VALUE
         # mask 3d variables
-        if var == "H":
-            ds[var] = ds[var]/MAPL_GRAV
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # chunk 
