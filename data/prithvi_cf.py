@@ -17,7 +17,7 @@ fmodel = "FMPrithvi-WxC"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel / f"Y{yyyy}" / f"M{mm}" / f"D{dd}"
+file_path = input_dir / fmodel / 'raw' / f"Y{yyyy}" / f"M{mm}" / f"D{dd}"
 
 files = sorted(file_path.glob("pred_*.nc"))
 #file = files[0]
