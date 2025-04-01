@@ -22,7 +22,7 @@ file_path = input_dir / fmodel / f"{yyyy}-{mm}-{dd}"
 files = sorted(file_path.glob("pred_idx*.nc"))
 #file = files[0]
 
-MAPL_GRAV = 9.80665
+MAPL_GRAV = np.float32(9.80665)
 FILL_VALUE = np.float32(1.e+15)
 ref_dt = pd.to_datetime(f"{yyyy}-{mm}-{dd} 00:00:00")
 t_elapsed = 6
@@ -125,8 +125,8 @@ for idx, file in enumerate(files):
     ## Variables
     # rename variables
     rename_dict = {
-        "u10": "U10",
-        "v10": "V10",
+        "u10": "U10M",
+        "v10": "V10M",
         "t2m": "T2M",
         "z": "H",
         "msl": "SLP",
@@ -142,11 +142,11 @@ for idx, file in enumerate(files):
 
     # map attributes
     varMap = {
-        "U10": {
+        "U10M": {
             "long_name" : "10-meter_eastward_wind",
             "units" : "m s-1",
         },
-        "V10": {
+        "V10M": {
             "long_name" : "10-meter_northward_wind",
             "units" : "m s-1",
         },
@@ -199,6 +199,8 @@ for idx, file in enumerate(files):
         ds[var].attrs['missing_value'] = FILL_VALUE
         ds[var].attrs['fmissing_value'] = FILL_VALUE
         # mask 3d variables
+        if var == "H":
+            ds[var] = ds[var]/MAPL_GRAV
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # chunk 
