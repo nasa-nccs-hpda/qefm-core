@@ -43,12 +43,15 @@ for idx, file in enumerate(files):
     # Time
     dt = ref_dt + pd.Timedelta((idx+1)*t_elapsed, unit='h')
     HH = dt.strftime("%H")
+    YYYY = dt.strftime("%Y")
+    MM = dt.strftime("%m")
+    DD = dt.strftime("%d")
     long_name = "time"
-    begin_date = np.int32(f"{yyyy}{mm}{dd}")
+    begin_date = np.int32(f"{YYYY}{MM}{DD}")
     begin_time = np.int32(dt.hour*10000)
     time_increment = np.int32(60000)
 
-    units = f"hours since {yyyy}-{mm}-{dd} {HH}:00:00"
+    units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
 
     # get time stamp for output file
@@ -193,6 +196,8 @@ for idx, file in enumerate(files):
         # add attributes
         ds[var].attrs = varMap[var]
         ds[var].attrs['_FillValue'] = FILL_VALUE
+        ds[var].attrs['missing_value'] = FILL_VALUE
+        ds[var].attrs['fmissing_value'] = FILL_VALUE
         # mask 3d variables
         if 'lev' in ds[var].dims:
             ds[var] = ds[var].where(mask == 1, FILL_VALUE)
