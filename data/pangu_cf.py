@@ -58,8 +58,9 @@ for idx, file in enumerate(files):
 
 
     # change value of time
-    ref_time = np.datetime64("2024-12-01T00:00:00", "ns")
-    ds['time'] = np.float32((ds['time']-ref_time)/np.timedelta64(1, 'h'))
+    # ref_time = np.datetime64("2024-12-01T00:00:00", "ns")
+    # ds['time'] = np.float32((ds['time']-ref_time)/np.timedelta64(1, 'h'))
+    ds['time'] = np.float32(0.0)
     # add attributes
     ds.time.attrs = {
         "long_name" : long_name,
