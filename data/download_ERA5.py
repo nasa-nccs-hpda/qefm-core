@@ -165,11 +165,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.date_str:
-        start_date = datetime.strptime(args.date_str, "%Y-%m-%d").date()
+        start_date = datetime.strptime(args.date_str, "%Y-%m-%d").replace(hour=0)
     else:
-        start_date = datetime.today().replace(day=1).date()
+        start_date = datetime.today().replace(day=1, hour=0)
 
-    end_date = (datetime.today().replace(hour=0) - timedelta(days=10)).date()
+    end_date = (datetime.today().replace(hour=23) - timedelta(days=10))
+    print(start_date)
+    print(end_date)
     logging.info(f"Downloading ERA5 data between {start_date} to {end_date}")   
    
     era5_dir = Path("/css/era5")
@@ -183,10 +185,10 @@ if __name__ == "__main__":
     # logging.info(f"Last date of ERA5 in {YYYY}-{MM} is {last_date}")
 
     date = start_date
-    if date < end_date:
+    while date < end_date:
         if check_avail_data(date.strftime("%Y%m%d")):
             logging.info(f"Downloading ERA5 data from {date}")
             surf_lst, atmos_lst = get_ear5_vars()
             download_data(era5_dir, date, surf_lst=surf_lst, atmos_lst=atmos_lst)
-            date += timedelta(days=1)
+        date += timedelta(days=1)
 
