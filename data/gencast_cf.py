@@ -39,17 +39,18 @@ ds['PHIS'] = ds_temp['geopotential_at_surface']
 
 # Time
 long_name = "time"
-begin_date = f"{yyyy}{mm}{dd}"
-begin_time = 120000
-time_increment = 120000
+begin_date = np.int32(f"{yyyy}{mm}{dd}")
+begin_time = np.int32(120000)
+time_increment = np.int32(120000)
 units = f"hours since {yyyy}-{mm}-{dd} 12:00:00"
 calendar = "proleptic_gregorian"
 
 
 # change value of time
-ds['time'] = ds['time'].values/np.timedelta64(1, 'h')
+ds['time'] = np.float32(ds['time'].values/np.timedelta64(1, 'h'))
 # add attributes
 ds.time.attrs = {
+    "long_name" : long_name,
     "units" : units,
     "calendar" : calendar,
     "begin_date" : begin_date,
