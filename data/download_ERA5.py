@@ -84,7 +84,7 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
     n_surf = len(list(surf_dir_path.glob(f"*{dstamp}*.nc")))
     n_atmos = len(list(atmos_dir_path.glob(f"*{dstamp}*.nc")))
     if n_surf == 4  and n_atmos == 4:
-        print(f"Skipping {current_date}")
+        logging.info(f"Skipping {current_date}")
         return
     
     c = cdsapi.Client()
