@@ -24,8 +24,9 @@ files = sorted(file_path.glob("pred_idx*.nc"))
 
 MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
-
-for file in files:
+ref_dt = pd.to_datetime(f"{yyyy}-{mm}-{dd} 00:00:00")
+t_elapsed = 6
+for idx, file in enumerate(files):
     print("Processing file : ", file)
     ds = xr.open_dataset(file)
     print("At Open : \n", ds)
@@ -40,11 +41,14 @@ for file in files:
 
     ## Coordinates
     # Time
+    dt = ref_dt + pd.Timedelta((idx+1)*t_elapsed, unit='h')
+    HH = dt.strftime("%H")
     long_name = "time"
     begin_date = np.int32(f"{yyyy}{mm}{dd}")
-    begin_time = np.int32(60000)
+    begin_time = np.int32(dt.hour*10000)
     time_increment = np.int32(60000)
-    units = f"hours since {yyyy}-{mm}-{dd} 00:00:00"
+
+    units = f"hours since {yyyy}-{mm}-{dd} {HH}:00:00"
     calendar = "proleptic_gregorian"
 
     # get time stamp for output file
