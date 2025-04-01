@@ -68,17 +68,26 @@ def check_avail_data(date_str: str) -> bool:
         return False
 
 def download_data(root_dir, date, surf_lst, atmos_lst):
-    c = cdsapi.Client()
+    
     current_date = date
     year = f"Y{current_date.year}"
     month = f"M{current_date.month:02d}"
-         
+
+    dstamp = current_date.strftime("%Y%m%d")
+
     surf_dir_path = Path(root_dir) / "surface_hourly" / "inst" / year / month
     surf_dir_path.mkdir(parents=True, exist_ok=True)
 
     atmos_dir_path = Path(root_dir) / "pressure_hourly" / "inst" / year / month
     atmos_dir_path.mkdir(parents=True, exist_ok=True)
     
+    n_surf = len(list(surf_dir_path.glob(f"*{dstamp}*.nc")))
+    n_atmos = len(list(atmos_dir_path.glob(f"*{dstamp}*.nc")))
+    if n_surf == 4  and n_atmos == 4:
+        print(f"Skipping {current_date}")
+        return
+    
+    c = cdsapi.Client()
     while current_date.hour < 19:
 
         surf_file_name = f"era5_surface-inst_allvar_{current_date.strftime('%Y%m%d_%H')}z.nc"
@@ -151,27 +160,29 @@ def download_data(root_dir, date, surf_lst, atmos_lst):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download ERA5 data")
-    parser.add_argument("--year", "-y", type=str, help="Year to download data for")
-    parser.add_argument("--month", "-m", type=str, help="Month to download data for")
+    parser.add_argument("--date_str", "-s", type=str, help="start date in form YYYY-MM-DD")
+    # parser.add_argument("--month", "-m", type=str, help="Month to download data for")
     args = parser.parse_args()
     
-    if args.year and args.month:
-        end_date = datetime(int(args.year), int(args.month), 25, 0, 0)
+    if args.date_str:
+        start_date = datetime.strptime(args.date_str, "%Y-%m-%d").date()
     else:
-        end_date = (datetime.today().replace(hour=0.0) - timedelta(days=10)).date()
-    logging.info(f"Downloading ERA5 data up to {end_date}")   
+        start_date = datetime.today().replace(day=1).date()
+
+    end_date = (datetime.today().replace(hour=0) - timedelta(days=10)).date()
+    logging.info(f"Downloading ERA5 data between {start_date} to {end_date}")   
    
     era5_dir = Path("/css/era5")
-    pred_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora")
+    # pred_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAurora")
 
-    YYYY = end_date.strftime("%Y")
-    MM = end_date.strftime("%m")
-    DD = end_date.strftime("%d")
+    # YYYY = end_date.strftime("%Y")
+    # MM = end_date.strftime("%m")
+    # DD = end_date.strftime("%d")
 
-    last_date = get_latest_date_in_month(pred_dir, YYYY, MM)
-    logging.info(f"Last date of ERA5 in {YYYY}-{MM} is {last_date}")
+    # last_date = get_latest_date_in_month(pred_dir, YYYY, MM)
+    # logging.info(f"Last date of ERA5 in {YYYY}-{MM} is {last_date}")
 
-    date = last_date +timedelta(days=1)
+    date = start_date
     if date < end_date:
         if check_avail_data(date.strftime("%Y%m%d")):
             logging.info(f"Downloading ERA5 data from {date}")
