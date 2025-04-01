@@ -25,7 +25,7 @@ files = sorted(file_path.glob("pred_idx*.nc"))
 MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
 
-for file in files[:3]:
+for file in files:
     print("Processing file : ", file)
     ds = xr.open_dataset(file)
     print("At Open : \n", ds)

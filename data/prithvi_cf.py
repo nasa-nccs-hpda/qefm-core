@@ -23,7 +23,7 @@ files = sorted(file_path.glob("pred_*.nc"))
 #file = files[0]
 
 MAPL_GRAV = 9.80665
-FILL_VALUE = 1.e+15
+FILL_VALUE = np.float32(1.e+15)
 
 for file in files:
     print("Processing file : ", file)
