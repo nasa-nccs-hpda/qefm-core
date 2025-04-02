@@ -200,7 +200,7 @@ for file in files:
             "vmin" : -FILL_VALUE,
             "valid_range" : [-FILL_VALUE, FILL_VALUE],
         },
-        "LEGAB": {
+        "LWGAB": {
             "long_name" : "surface_absorbed_longwave_radiation",
             "units" : "W m-2",
             "fmissing_value" : FILL_VALUE,
@@ -255,7 +255,7 @@ for file in files:
     # topo = ds.PHIS.values/MAPL_GRAV
     # height = ds.H.values
     # mask = np.where(height > topo, 1, 0)
-    add_vars_attrs = ["GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LEGAB", "LWTUP", "SWGNT", "SWTNT", ]
+    add_vars_attrs = ["GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LWGAB", "LWTUP", "SWGNT", "SWTNT", ]
     for var in ds_new.data_vars:
         ds_new[var].attrs['missing_value'] = FILL_VALUE
         if var in add_vars_attrs:
