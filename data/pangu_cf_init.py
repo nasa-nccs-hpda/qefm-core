@@ -13,11 +13,11 @@ parser.add_argument("--day", "-d", type=str, help="Day")
 args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/")
-fmodel = "FMAurora"
+fmodel = "FMPangu"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel 
+file_path = input_dir / "FMAurora" 
 
 files = sorted(file_path.glob(f"{yyyy}-{mm}-{dd}*.nc"))
 #file = files[0]
@@ -25,10 +25,13 @@ if len(files) != 2:
     raise ValueError("There should be 2 files for each day")
 else:
     ds1 = xr.open_dataset(files[0])
+    print(ds1)
     ds2 = xr.open_dataset(files[1])
-    ds = xr.merge([ds1, ds2])
+    print(ds2)
+    ds = xr.merge([ds1, ds2], compat='override')
 
-ds = ds.rename({'valid_time': 'time', 'pressuer_level': 'lev', 'latitude': 'lat', 'longitude': 'lon'})
+ds = ds.rename({'valid_time': 'time', 'pressure_level': 'lev', 'latitude': 'lat', 'longitude': 'lon'})
+ds = ds.isel(time=0).expand_dims('time')
 
 MAPL_GRAV = np.float32(9.80665)
 FILL_VALUE = np.float32(1.e+15)
@@ -216,6 +219,7 @@ for var in ds.data_vars:
 # ds = ds.chunk(chunks_size)
 print("After variable \n", ds)
 
+ds = ds.drop_vars(['expver', 'number'])
 ## add global attributes
 ds.attrs = {
     "title" : f"{fmodel} initial input at {YYYY}-{MM}-{DD}T{HH}:00:00", 
