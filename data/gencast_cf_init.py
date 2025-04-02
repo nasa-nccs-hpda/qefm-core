@@ -26,7 +26,7 @@ MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
 ds_org = xr.open_dataset(file)
 print("At Open : \n", ds_org)
-#ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T12:00:00")
+ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T00:00:00")
 
 ## Coordinates
 # For GenCast Only, remove "batch"
@@ -40,7 +40,7 @@ ds_org = ds_org.squeeze(dim="batch")
 
 for ctime in ds_org.time.values[:2]:
     ds = ds_org.sel(time=ctime).expand_dims("time")
-    dt = pd.to_datetime(ctime)
+    dt = pd.to_datetime(ctime+ref_date)
     HH = dt.strftime("%H")
     YYYY = dt.strftime("%Y")
     MM = dt.strftime("%m")
