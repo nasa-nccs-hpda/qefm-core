@@ -42,22 +42,27 @@ for file in files:
     dt = np.datetime64(f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}T{hour_str}:00:00", "ns")
     ds['time'] = dt
 
+    datetime = pd.to_datetime(dt)
+    HH = datetime.strftime("%H")
+    DD = datetime.strftime("%d")
+    MM = datetime.strftime("%m")
+    YYYY = datetime.strftime("%Y")
+
     long_name = "time"
-    begin_date = np.int32(f"{yyyy}{mm}{dd}")
-    begin_time = np.int32(30000)
+    begin_date = np.int32(f"{YYYY}{MM}{DD}")
+    begin_time = np.int32(datetime.hour * 10000)
     time_increment = np.int32(30000)
-    units = f"hours since {yyyy}-{mm}-{dd} 00:00:00"
+    units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
 
     # get time stamp for output file
-    t = ds['time'].values
-    tstamp = np.datetime_as_string(t, unit='h')
+    tstamp = datetime.strftime("%Y-%m-%dT%H")
     print("Time stamp : ", tstamp)
 
 
     # change value of time
-    ref_time = np.datetime64("2024-12-01T00:00:00", "ns")
-    ds['time'] = np.float32((ds['time']-ref_time)/np.timedelta64(1, 'h'))
+    #ref_time = np.datetime64("2024-12-01T00:00:00", "ns")
+    ds['time'] = np.float32((ds['time']-ds['time'])/np.timedelta64(1, 'h'))
     # add attributes
     ds.time.attrs = {
         "long_name" : long_name,
@@ -119,7 +124,7 @@ for file in files:
 
 
     # # map attributes
-    # varMap = {
+    varMap = {
     #     "U10": {
     #         "long_name" : "10-meter_eastward_wind",
     #         "units" : "m s-1",
@@ -132,35 +137,106 @@ for file in files:
     #         "long_name" : "2-meter_air_temperature",
     #         "units" : "K",
     #     },
-    #     "H": {
-    #         "long_name" : "height",
-    #         "units" : "m",
-    #     },
-    #     "SLP": {
-    #         "long_name" : "sea_level_pressure",
-    #         "units" : "Pa",
-    #     },
-    #     "QV": {
-    #         "long_name" : "specific_humidity",
-    #         "units" : "kg kg-1",
-    #     },
-    #     "T": {
-    #         "long_name" : "air_temperature",
-    #         "units" : "K",
-    #     },
-    #     "U": {
-    #         "long_name" : "eastward_wind",
-    #         "units" : "m s-1",
-    #     },
-    #     "V": {
-    #         "long_name" : "northward_wind",
-    #         "units" : "m s-1",
-    #     },
-    #     "PHIS": {
-    #         "long_name" : "surface_geopotential_height",
-    #         "units" : "m+2 s-2",
-    #     },
-    # }
+        "GWETROOT": {
+            "long_name" : "root_zone_soil_wetness",
+            "units" : 1,
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "root_zone_soil_wetness",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "LAI": {
+            "long_name" : "leaf_area_index",
+            "units" : 1,
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "leaf_area_index",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "EFLUX": {
+            "long_name" : "total_latent_energy_flux",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "total_latent_energy_flux",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "HFLUX": {
+            "long_name" : "sensible_heat_flux_from_turbulence",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "sensible_heat_flux_from_turbulence",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "Z0M": {
+            "long_name" : "surface_roughness",
+            "units" : "m",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "surface_roughness",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "PRECTOT": {
+            "long_name" : "total_precipitation",
+            "units" : "kg m-2 s-1",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "total_precipitation",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "LWGEM": {
+            "long_name" : "longwave_flux_emitted_from_surface",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "longwave_flux_emitted_from_surface",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "LEGAB": {
+            "long_name" : "surface_absorbed_longwave_radiation",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "surface_absorbed_longwave_radiation",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "LWTUP": {
+            "long_name" : "upwelling_longwave_flux_at_toa",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "upwelling_longwave_flux_at_toa",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "SWGNT": {
+            "long_name" : "surface_net_downward_shortwave_flux",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "surface_net_downward_shortwave_flux",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },
+        "SWTNT": {
+            "long_name" : "toa_net_downward_shortwave_flux",
+            "units" : "W m-2",
+            "fmissing_value" : FILL_VALUE,
+            "standard_name" : "toa_net_downward_shortwave_flux",
+            "vmax" : FILL_VALUE,
+            "vmin" : -FILL_VALUE,
+            "valid_range" : [-FILL_VALUE, FILL_VALUE],
+        },     
+    }
 
     # define chunk size for each variable
     # mask variables based on elevation
@@ -179,7 +255,11 @@ for file in files:
     # topo = ds.PHIS.values/MAPL_GRAV
     # height = ds.H.values
     # mask = np.where(height > topo, 1, 0)
-    # for var in ds.data_vars:
+    add_vars_attrs = ["H", "GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LEGAB", "LWTUP", "SWGNT", "SWTNT", ]
+    for var in ds_new.data_vars:
+        ds[var].attrs['missing_value'] = FILL_VALUE
+        if var in add_vars_attrs:
+                ds[var].attrs = varMap[var]
     #     arr = ds[var].values
     #     if len(arr.shape) == 3:
     #         fll = np.full((14, 1, 576), FILL_VALUE)
