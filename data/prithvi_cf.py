@@ -255,11 +255,12 @@ for file in files:
     # topo = ds.PHIS.values/MAPL_GRAV
     # height = ds.H.values
     # mask = np.where(height > topo, 1, 0)
-    add_vars_attrs = ["H", "GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LEGAB", "LWTUP", "SWGNT", "SWTNT", ]
+    add_vars_attrs = ["GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LEGAB", "LWTUP", "SWGNT", "SWTNT", ]
     for var in ds_new.data_vars:
         ds[var].attrs['missing_value'] = FILL_VALUE
         if var in add_vars_attrs:
-                ds[var].attrs = varMap[var]
+            for key, value in varMap[var].items():
+                ds[var].attrs[key] = value
         if var == "H":
             ds[var].attrs["long_name"] = "height"
     #     arr = ds[var].values
