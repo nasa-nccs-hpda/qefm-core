@@ -260,6 +260,8 @@ for file in files:
         ds[var].attrs['missing_value'] = FILL_VALUE
         if var in add_vars_attrs:
                 ds[var].attrs = varMap[var]
+        if var == "H":
+            ds[var].attrs["long_name"] = "height"
     #     arr = ds[var].values
     #     if len(arr.shape) == 3:
     #         fll = np.full((14, 1, 576), FILL_VALUE)
