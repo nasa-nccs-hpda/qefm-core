@@ -257,12 +257,12 @@ for file in files:
     # mask = np.where(height > topo, 1, 0)
     add_vars_attrs = ["GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LEGAB", "LWTUP", "SWGNT", "SWTNT", ]
     for var in ds_new.data_vars:
-        ds[var].attrs['missing_value'] = FILL_VALUE
+        ds_new[var].attrs['missing_value'] = FILL_VALUE
         if var in add_vars_attrs:
             for key, value in varMap[var].items():
-                ds[var].attrs[key] = value
+                ds_new[var].attrs[key] = value
         if var == "H":
-            ds[var].attrs["long_name"] = "height"
+            ds_new[var].attrs["long_name"] = "height"
     #     arr = ds[var].values
     #     if len(arr.shape) == 3:
     #         fll = np.full((14, 1, 576), FILL_VALUE)
