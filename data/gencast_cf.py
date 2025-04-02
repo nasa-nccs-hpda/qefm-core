@@ -39,14 +39,14 @@ ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
 
 for ctime in ds_org.time.values:
-    ds = ds_org.sel(time=ctime)
-    dt = ref_date + ctime
+    ds = ds_org.sel(time=ctime).expand_dims("time")
+    dt = pd.to_datetime(ref_date + ctime)
     HH = dt.strftime("%H")
     YYYY = dt.strftime("%Y")
     MM = dt.strftime("%m")
     DD = dt.strftime("%d")
 
-    tstamp = np.datetime_as_string(dt, unit='h')
+    tstamp = dt.strftime("%Y-%m-%dT%H") 
 
     # Time
     long_name = "time"
