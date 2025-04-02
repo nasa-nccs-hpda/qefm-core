@@ -140,6 +140,9 @@ for ctime in ds_org.time.values[:2]:
         "vertical_velocity": "OMEGA",
         "geopotential_at_surface": "PHIS",
     }
+    var_list = list(rename_dict.keys())
+    ds = ds[var_list]
+    
     ds = ds.rename(rename_dict)
     print("After rename \n ", ds)
 
