@@ -17,9 +17,9 @@ fmodel = "FMPrithvi-WxC"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel / 'merra2' 
+file_path = input_dir / fmodel / 'merra-2' 
 
-files = sorted(file_path.glob("MERRA2_*_{yyyy}{mm}{dd}.nc"))
+files = sorted(file_path.glob(f"MERRA2_*_{yyyy}{mm}{dd}.nc"))
 if len(files) != 2:
     raise ValueError("Need two files for each day")
 else:
@@ -31,7 +31,7 @@ else:
 MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
 
-for idt in ds.time.values[:2]:
+for idt in ds_org.time.values[:2]:
     ds = ds_org.sel(time=idt).expand_dims(dim={"time": 1})
     # print("Processing file : ", file)
     # ds = xr.open_dataset(file)
