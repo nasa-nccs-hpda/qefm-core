@@ -17,7 +17,7 @@ fmodel = "FMPangu"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel / f"{yyyy}-{mm}-{dd}"
+file_path = input_dir / fmodel / 'raw' / f"{yyyy}-{mm}-{dd}"
 
 files = sorted(file_path.glob("pred_idx*.nc"))
 #file = files[0]
