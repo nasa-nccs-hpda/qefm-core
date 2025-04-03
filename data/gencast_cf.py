@@ -37,6 +37,7 @@ source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
+ens_mean = True
 
 for ctime in ds_org.time.values:
     ds = ds_org.sel(time=ctime).expand_dims("time")
@@ -122,6 +123,10 @@ for ctime in ds_org.time.values:
         "units" : " ",
     }
     print("After coord \n", ds)
+
+    ## Calculate ensemble mean
+    if ens_mean:
+        ds = ds.mean(dim="ens")
 
     ## Variables
     # rename variables
@@ -242,7 +247,7 @@ for ctime in ds_org.time.values:
     encoding = {var: compression for var in ds.data_vars}
     output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-1.0_levels-13.nc"
+    fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-1.0_levels-13_ens-mean.nc"
     output_file = output_dir / fname
     ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 
