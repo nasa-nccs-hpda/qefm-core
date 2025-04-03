@@ -36,28 +36,36 @@ if "__name__" == "__main__":
     PARAM_PL = ["gh", "t", "u", "v", "w", "q"]
     LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 
-    fields = {}
+    
     c = Client()
     DATE = c.latest()
     print("Latest date is", DATE)
+    folder_name = DATE.strftime("%Y%m%dT%H")
 
-    out_path = Path("/discover/nobackup/projects/QEFM/data/FMAifs/ifs_scda")
+    out_path = Path(f"/discover/nobackup/projects/QEFM/data/FMAifs/ifs_scda/{folder_name}")
     out_path.mkdir(parents=True, exist_ok=True)
-    # Check if the file already exists
-    if (out_path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz").exists():
-        print("File already exists, skipping")
-        exit()
 
-    # Get the data for the current date and the previous date
-    fields.update(get_open_data(param=PARAM_SFC, cdate=DATE))
-    fields.update(get_open_data(param=PARAM_PL, cdate=DATE, levelist=LEVELS))
+    for step in range(8):
+        date_step = DATE - datetime.timedelta(hours=step*6)
+        file_name = out_path / f"IFS_{date_step.strftime('%Y%m%dT%H')}.npz"
+        if file_name.exists():
+            print(f"File {file_name} already exists, skipping")
+            continue
+        print(f"Processing file {file_name}")
+        
+        # Get the data for the current date and the previous date
+        fields = {}
+        fields.update(get_open_data(param=PARAM_SFC, cdate=DATE))
+        fields.update(get_open_data(param=PARAM_PL, cdate=DATE, levelist=LEVELS))
 
-    # Transform GH to Z
-    for level in LEVELS:
-        gh = fields.pop(f"gh_{level}")
-        fields[f"z_{level}"] = gh * 9.80665
+        # Transform GH to Z
+        for level in LEVELS:
+            gh = fields.pop(f"gh_{level}")
+            fields[f"z_{level}"] = gh * 9.80665
 
-    # Save the data to a file
-    np.savez(out_path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz", **fields)
+        # Save the data to a file
+        np.savez(file_name, **fields)
+ 
+
 
 
