@@ -106,6 +106,7 @@ for ctime in ds_org.time.values:
     # level
     ds = ds.rename({'level': 'lev'})
     levs = ds['lev'].values.astype(np.float32)
+    ds['lev'] = levs
     if levs[0] < levs[-1]:
         # Flip the level array
     #    ds['lev'] = levs[::-1]
