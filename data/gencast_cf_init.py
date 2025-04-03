@@ -229,6 +229,8 @@ for ctime in ds_org.time.values[:2]:
     #chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
     #ds = ds.chunk(chunks_size)
     print("After variable \n", ds)
+    ##drop extra variale
+    ds = ds.drop_vars("datetime")
 
     ## add global attributes
     ds.attrs = {
