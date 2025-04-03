@@ -58,10 +58,14 @@ if "__name__" == "__main__":
         fields.update(get_open_data(param=PARAM_SFC, cdate=DATE))
         fields.update(get_open_data(param=PARAM_PL, cdate=DATE, levelist=LEVELS))
 
-        # Transform GH to Z
+        # Transform GH to Z safely
         for level in LEVELS:
-            gh = fields.pop(f"gh_{level}")
-            fields[f"z_{level}"] = gh * 9.80665
+            gh_key = f"gh_{level}"
+            if gh_key in fields:
+                gh = fields.pop(gh_key)
+                fields[f"z_{level}"] = gh * 9.80665
+            else:
+                print(f"Warning: {gh_key} not found for {date_step}, skipping transformation.")
 
         # Save the data to a file
         np.savez(file_name, **fields)
