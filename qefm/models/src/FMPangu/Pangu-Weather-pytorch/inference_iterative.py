@@ -13,7 +13,8 @@ def load_input_upper(input_data_dir: str, input_file: str, tidx:int = 0) -> np.n
         raise FileNotFoundError(f'{input_file} not found in {input_data_dir}') 
     ds = xr.open_dataset(data_root / input_file)
     variables = ['z', 'q', 't', 'u', 'v']
-    data = np.stack([ds[var].isel(valid_time=tidx).values for var in variables], axis=0)
+    levels = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
+    data = np.stack([ds[var].isel(valid_time=tidx).sel(pressure_level=xr.DataArray(levels, dims='pressure_level')).values for var in variables], axis=0)
     return data
 
 def load_input_surface(input_data_dir: str, input_file: str, tidx:int = 0) -> np.ndarray:
@@ -22,8 +23,8 @@ def load_input_surface(input_data_dir: str, input_file: str, tidx:int = 0) -> np
         raise FileNotFoundError(f'{input_file} not found in {input_data_dir}') 
     ds = xr.open_dataset(data_root / input_file)
     variables = ['msl', 'u10', 'v10', 't2m']
-    levels = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
-    data = np.stack([ds[var].isel(valid_time=tidx).sel(pressure_level=levels).values for var in variables], axis=0)
+    
+    data = np.stack([ds[var].isel(valid_time=tidx).values for var in variables], axis=0)
     return data
 
 def pred_to_ds(surface: np.ndarray, atmos: np.ndarray, time_value: np.datetime64) -> xr.Dataset:
