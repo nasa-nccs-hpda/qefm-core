@@ -69,6 +69,7 @@ if "__name__" == "__main__":
 
         # Save the data to a file
         np.savez(file_name, **fields)
+        print(f"Saved: {file_name}")
  
 
 
