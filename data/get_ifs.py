@@ -53,6 +53,6 @@ if "__name__" == "__main__":
     # Save the data to a file
     path = Path("/discover/nobackup/projects/QEFM/data/FMAifs/ifs_scda")
     path.mkdir(parents=True, exist_ok=True)
-    np.savez(path / f"IFS_{DATE.strftime('%Y%m%d')}.npz", **fields)
+    np.savez(path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz", **fields)
 
 
