@@ -76,6 +76,16 @@ if __name__ == '__main__':
     MM = f"{init_datetime.month:02d}"
     DD = f"{init_datetime.day:02d}"
     HH = f"{init_datetime.hour:02d}"
+
+    # Load the upper-air variables
+    input_upper_dir = input_data_dir / 'pressure_hourly' / 'inst' / f"Y{YYYY}" / f"M{MM}"
+    input = load_input_upper(input_upper_dir, f'era5_atmos-inst_allvar_{YYYY}{MM}{DD}_{HH}z.nc', tidx=0)
+
+    # Load the surface variables
+    input_surface_dir = input_data_dir / 'surface_hourly' / 'inst' / f"Y{YYYY}" / f"M{MM}"
+    input_surface = load_input_surface(input_surface_dir, f'era5_surface-inst_allvar_{YYYY}{MM}{DD}_{HH}z.nc', tidx=0)
+    print(input.shape, input_surface.shape)
+
     # Load the pre-trained Pangu-Weather models
     pangu_weather_24 = Path(args.ckpt_path) / 'pangu_weather_24.onnx'
     pangu_weather_6 = Path(args.ckpt_path) / 'pangu_weather_6.onnx'
@@ -99,15 +109,7 @@ if __name__ == '__main__':
     ort_session_24 = ort.InferenceSession(str(pangu_weather_24), sess_options=options, providers=[('CUDAExecutionProvider', cuda_provider_options)])
     ort_session_6 = ort.InferenceSession(str(pangu_weather_6), sess_options=options, providers=[('CUDAExecutionProvider', cuda_provider_options)])
 
-    # Load the upper-air variables
-    input_upper_dir = input_data_dir / 'presssure_hourly' / 'inst' / f"Y{YYYY}" / f"M{MM}"
-    input = load_input_upper(input_upper_dir, f'era5_atmos-inst_allvar_{YYYY}{MM}{DD}_{HH}z.nc', tidx=0)
-
-    # Load the surface variables
-    input_surface_dir = input_data_dir / 'surface_hourly' / 'inst' / f"Y{YYYY}" / f"M{MM}"
-    input_surface = load_input_surface(input_surface_dir, f'era5_surface-inst_allvar_{YYYY}{MM}{DD}_{HH}z.nc', tidx=0)
-    print(input.shape, input_surface.shape)
-    exit()
+  
 
 
     # Run the inference session
