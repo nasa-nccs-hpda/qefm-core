@@ -41,6 +41,13 @@ if "__name__" == "__main__":
     DATE = c.latest()
     print("Latest date is", DATE)
 
+    out_path = Path("/discover/nobackup/projects/QEFM/data/FMAifs/ifs_scda")
+    out_path.mkdir(parents=True, exist_ok=True)
+    # Check if the file already exists
+    if (out_path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz").exists():
+        print("File already exists, skipping")
+        exit()
+
     # Get the data for the current date and the previous date
     fields.update(get_open_data(param=PARAM_SFC, cdate=DATE))
     fields.update(get_open_data(param=PARAM_PL, cdate=DATE, levelist=LEVELS))
@@ -51,8 +58,6 @@ if "__name__" == "__main__":
         fields[f"z_{level}"] = gh * 9.80665
 
     # Save the data to a file
-    path = Path("/discover/nobackup/projects/QEFM/data/FMAifs/ifs_scda")
-    path.mkdir(parents=True, exist_ok=True)
-    np.savez(path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz", **fields)
+    np.savez(out_path / f"IFS_{DATE.strftime('%Y%m%dT%H')}.npz", **fields)
 
 
