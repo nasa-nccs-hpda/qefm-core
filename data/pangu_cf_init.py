@@ -12,21 +12,33 @@ parser.add_argument("--month", "-m", type=str, help="Month")
 parser.add_argument("--day", "-d", type=str, help="Day")
 args = parser.parse_args()
 
-input_dir = Path("/discover/nobackup/projects/QEFM/data/")
+#input_dir = Path("/discover/nobackup/projects/QEFM/data/")
+input_dir = Path("/css/era5")
 fmodel = "FMPangu"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / "FMAurora" 
 
-files = sorted(file_path.glob(f"{yyyy}-{mm}-{dd}*.nc"))
+files = []
+file_path = input_dir / "pressure_hourly" / "inst" / f"Y{yyyy}" / f"M{mm}" 
+files.append(sorted(file_path.glob(f"era5_atmos-inst_allvar_{yyyy}{mm}{dd}_00z.nc"))[0])
+file_path = input_dir / "surface_hourly" / "inst" / f"Y{yyyy}" / f"M{mm}" 
+files.append(sorted(file_path.glob(f"era5_surface-inst_allvar_{yyyy}{mm}{dd}_00z.nc"))[0])
+
+
+
 #file = files[0]
 if len(files) != 2:
     raise ValueError("There should be 2 files for each day")
 else:
+    vars = ['z', 'q', 't', 'u', 'v']
+    levs = levels = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
     ds1 = xr.open_dataset(files[0])
+    ds1 = ds1[vars].sel(pressure_level=levs)
     print(ds1)
+    vars = ['msl', 'u10', 'v10', 't2m']
     ds2 = xr.open_dataset(files[1])
+    ds2 = ds2[vars]
     print(ds2)
     ds = xr.merge([ds1, ds2], compat='override')
 
