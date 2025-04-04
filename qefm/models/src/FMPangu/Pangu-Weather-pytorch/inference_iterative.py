@@ -120,15 +120,6 @@ if __name__ == '__main__':
     input_24, input_surface_24 = input, input_surface
     
     for i in range(nsteps):
-      if (i+1) % 4 == 0:
-        output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
-        ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
-        ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
-        # update the input for the next time step
-        input_24, input_surface_24 = output, output_surface
-        #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
-        #np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
-      else:
         output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
         ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
         ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
@@ -138,3 +129,22 @@ if __name__ == '__main__':
         # Save the results
         #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
         #np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
+
+    #   if (i+1) % 4 == 0:
+    #     output, output_surface = ort_session_24.run(None, {'input':input_24, 'input_surface':input_surface_24})
+    #     ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
+    #     ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
+    #     # update the input for the next time step
+    #     input_24, input_surface_24 = output, output_surface
+    #     #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
+    #     #np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
+    #   else:
+    #     output, output_surface = ort_session_6.run(None, {'input':input, 'input_surface':input_surface})
+    #     ds_tmp = pred_to_ds(output_surface, output, time_values[i+1])
+    #     ds_tmp.to_netcdf((output_data_dir / f'pred_idx_{i:02d}.nc'))
+    #     # update the input for the next time step
+    #     input, input_surface = output, output_surface
+    #     # Your can save the results here
+    #     # Save the results
+    #     #np.save(os.path.join(output_data_dir, f'output_upper_tidx_{i+1:02d}'), output)
+    #     #np.save(os.path.join(output_data_dir, f'output_surface_tidx_{i+1:02d}'), output_surface)
