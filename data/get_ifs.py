@@ -29,7 +29,7 @@ def get_open_data(param, cdate, levelist=[]):
 
     return fields
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     # Define the parameters and levels to retrieve
     # The parameters are defined in the IFS documentation
     PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "slor", "sdor"]
