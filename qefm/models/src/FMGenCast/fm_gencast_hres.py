@@ -26,6 +26,8 @@ from graphcast import gencast
 from graphcast import denoiser
 from graphcast import nan_cleaning
 
+print("\n======= GenCast HiRes =========")
+
 # @title Plotting functions
 
 def select(
