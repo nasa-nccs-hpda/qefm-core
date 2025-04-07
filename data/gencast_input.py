@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(description="Download GenCast input data")
 parser.add_argument("--year", "-y", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", type=str, help="Day of the data")
-parser.add_argument("--nsteps", "-n", default=22, type=int, help="Number of time steps")
+parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
 parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
 
 args = parser.parse_args()
@@ -19,7 +19,7 @@ date_str = f"{args.year}-{args.month}-{args.day}"
 nsteps = int(args.nsteps) 
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
-output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/0p25/samples")
 
 
 levs = np.array(
