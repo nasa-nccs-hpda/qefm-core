@@ -87,8 +87,8 @@ ds = ds.rename({
 })
 # writing to netcdf
 output_file = output_dir / \
-f"gencast-dataset-source-era5 \
-_date-{date_str}_res-{str(res)} \
+f"gencast-dataset-source-era5\
+_date-{date_str}_res-{str(res)}\
 _levels-{str(nlev)}_steps-{str(nsteps-2)}.nc"
 print(output_file)
 ds.to_netcdf(output_file)
