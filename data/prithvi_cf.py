@@ -264,6 +264,13 @@ for file in files:
                 ds_new[var].attrs[key] = value
         if var == "H":
             ds_new[var].attrs["long_name"] = "height"
+
+        # using zonal mean to replace lat=90
+        zmean = ds_new[var].sel(lat=89.5).mean(dim="lon")
+        ds_new[var].loc[dict(lat=90.0)] = zmean.expand_dims(dim={"lat": 1})\
+            .broadcast_like(ds_new[var].sel(lat=90.0))
+
+
     #     arr = ds[var].values
     #     if len(arr.shape) == 3:
     #         fll = np.full((14, 1, 576), FILL_VALUE)
