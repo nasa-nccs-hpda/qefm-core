@@ -39,7 +39,7 @@ var_2d = ["10m_u_component_of_wind",
           "surface_pressure",
           "total_column_water",
           "land_sea_mask",
-          "geopotential_at_surface"
+          "geopotential_at_surface",
           "slope_of_sub_gridscale_orography",
           "standard_deviation_of_orography",
           ]
