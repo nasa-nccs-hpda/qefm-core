@@ -12,6 +12,7 @@ parser.add_argument("--year", "-y", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", type=str, help="Day of the data")
 parser.add_argument("--nsteps", "-n", default=22, type=int, help="Number of time steps")
+parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
 
 args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
@@ -19,6 +20,7 @@ nsteps = int(args.nsteps)
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
 output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
+
 
 levs = np.array(
     [50,  100,  150,  200,  250,  \
@@ -43,6 +45,8 @@ var_3d = ["temperature",
           "geopotential",]
 
 var_list = static + var_2d + var_3d
+res = 0.25
+nlev = len(levs)
 
 # get ear5 from gs
 ds = xr.open_dataset(
@@ -53,7 +57,9 @@ ds = xr.open_dataset(
 )[var_list].sel(time=time_steps, level=levs)
 
 # coarsen the data & reverse the latitude
-ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4))
+if args.coarsen:
+    ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4))
+    res = 1.0
 
 # change dimension names
 ds = ds.rename({
@@ -80,7 +86,10 @@ ds = ds.rename({
     "total_precipitation": "total_precipitation_12hr",
 })
 # writing to netcdf
-output_file = output_dir / f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+output_file = output_dir / \
+    f"gencast-dataset-source-era5 \
+    _date-{date_str}_res-{str(res)} \
+    _levels-{str(nlev)}_steps-{str(nsteps-2)}.nc"
 print(output_file)
 ds.to_netcdf(output_file)
 
