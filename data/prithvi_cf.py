@@ -257,6 +257,7 @@ for file in files:
     # mask = np.where(height > topo, 1, 0)
     add_vars_attrs = ["GWETROOT", "LAI", "EFLUX", "HFLUX", "Z0M", "PRECTOT", "LWGEM", "LWGAB", "LWTUP", "SWGNT", "SWTNT", ]
     for var in ds_new.data_vars:
+        ds_new[var].attrs['_FillValue'] = FILL_VALUE
         ds_new[var].attrs['missing_value'] = FILL_VALUE
         if var in add_vars_attrs:
             for key, value in varMap[var].items():
