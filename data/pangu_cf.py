@@ -17,7 +17,7 @@ fmodel = "FMPangu"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel / 'raw' / f"{yyyy}-{mm}-{dd}"
+file_path = input_dir / fmodel / 'raw' / 'v2' / f"{yyyy}-{mm}-{dd}"
 
 files = sorted(file_path.glob("pred_idx*.nc"))
 #file = files[0]
@@ -225,7 +225,7 @@ for idx, file in enumerate(files):
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/v2/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-0.25_levels-13.nc"
     output_file = output_dir / fname
