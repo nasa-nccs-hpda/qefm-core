@@ -75,10 +75,6 @@ To run a specific Foundation Model task with **qefm-core**, use the following c
 ```shell
 cd /discover/nobackup/projects/QEFM/qefm-core
 ```
-**Run Inference for **All** Foundation Models**:
-```shell
-./tests/fm-inference.sh qefm-core.sif ensemble
-```
 **Run Inference for Aurora Foundation Model**:
 ```shell
 ./tests/fm-inference.sh qefm-core.sif aurora
@@ -86,10 +82,6 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 **Run Inference for Fourcastnet Foundation Model**:
 ```shell
 ./tests/fm-inference.sh qefm-core.sif fourcastnet
-```
-**Run Inference for GraphCast Foundation Model**:
-```shell
-./tests/fm-inference.sh qefm-core.sif graphcast
 ```
 **Run Inference for Pangu Foundation Model**:
 ```shell
@@ -103,8 +95,14 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core.sif sfno
 ```
+*** NOTE:  The following models leverage a separate container that hosts specialized dependencies (i.e., JAX)
+
 **Run Inference for GenCast Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif gencast
+./tests/fm-inference.sh qefm-core-gencast.sif gencast
+```
+**Run Inference for GraphCast Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core-gencast.sif graphcast
 ```
 
