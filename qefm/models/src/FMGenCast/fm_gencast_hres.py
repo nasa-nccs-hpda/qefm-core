@@ -165,6 +165,10 @@ noise_config = ckpt.noise_config
 noise_encoder_config = ckpt.noise_encoder_config
 denoiser_architecture_config = ckpt.denoiser_architecture_config
 
+# https://github.com/google-deepmind/graphcast/blob/main/docs/cloud_vm_setup.md#running-inference-on-gpu
+# triblockdiag_mha also requires more memory, as such running inference on GPU requires:
+# - 0.25deg GenCast: ~300GB of System Memory and ~60GB of vRAM
+# - 1deg GenCast: ~24GB of System Memory and ~16GB vRAM
 denoiser_architecture_config.sparse_transformer_config.attention_type = "triblockdiag_mha"
 denoiser_architecture_config.sparse_transformer_config.mask_type = "full"
 
