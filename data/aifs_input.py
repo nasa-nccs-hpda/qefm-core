@@ -21,40 +21,61 @@ end_time = f"{date_str}T00:00"
 time_steps = pd.date_range(end=end_time, periods=nsteps, freq="6h")
 output_dir = Path("/discover/nobackup/projects/QEFM/data/FMAifs/nc_files")
 
+PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "slor", "sdor"]
+SFC_LONG_NAME = ["10m_u_component_of_wind",
+                 "10m_v_component_of_wind",
+                 "2m_dewpoint_temperature",
+                 "2m_temperature",
+                 "mean_sea_level_pressure",
+                 "skin_temperature",
+                 "surface_pressure",
+                 "total_column_water",
+                 "land_sea_mask",
+                 "geopotential_at_surface",
+                 "slope_of_sub_gridscale_orography",
+                 "standard_deviation_of_orography"]
+PARAM_PL = ["z", "t", "u", "v", "w", "q"]
+PL_LONG_NAME = ["geopotential",
+                "temperature",
+                "u_component_of_wind",
+                "v_component_of_wind",
+                "vertical_velocity",
+                "specific_humidity"]
+LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 
-levs = np.array(
-    [50,  100,  150,  200,  250,  \
-     300,  400,  500,  600,  700, \
-     850,  925,  1000])
+# levs = np.array(
+#     [50,  100,  150,  200,  250,  \
+#      300,  400,  500,  600,  700, \
+#      850,  925,  1000])
 
 # static = ["land_sea_mask",
 #           "geopotential_at_surface",]
 
-var_2d = ["10m_u_component_of_wind",
-          "10m_v_component_of_wind",
-          "2m_dewpoint_temperature",
-          "2m_temperature",
-          "mean_sea_level_pressure",
-          "skin_temperature",
-          "surface_pressure",
-          "total_column_water",
-          "land_sea_mask",
-          "geopotential_at_surface",
-          "slope_of_sub_gridscale_orography",
-          "standard_deviation_of_orography",
-          ]
+# var_2d = ["10m_u_component_of_wind",
+#           "10m_v_component_of_wind",
+#           "2m_dewpoint_temperature",
+#           "2m_temperature",
+#           "mean_sea_level_pressure",
+#           "skin_temperature",
+#           "surface_pressure",
+#           "total_column_water",
+#           "land_sea_mask",
+#           "geopotential_at_surface",
+#           "slope_of_sub_gridscale_orography",
+#           "standard_deviation_of_orography",
+#           ]
 
-var_3d = [ "geopotential",
-          "temperature",
-          "u_component_of_wind",
-          "v_component_of_wind",
-          "vertical_velocity",
-          "specific_humidity",
-          ]
+# var_3d = [ "geopotential",
+#           "temperature",
+#           "u_component_of_wind",
+#           "v_component_of_wind",
+#           "vertical_velocity",
+#           "specific_humidity",
+#           ]
 
-var_list = var_2d + var_3d
+var_list = SFC_LONG_NAME + PL_LONG_NAME
 res = 0.25
-nlev = len(levs)
+nlev = len(LEVELS)
 
 # get ear5 from gs
 ds = xr.open_dataset(
@@ -62,7 +83,7 @@ ds = xr.open_dataset(
     engine="zarr",
     #chunks={},
     storage_options={"token": None}  # Public dataset, so no authentication needed
-)[var_list].sel(time=time_steps, level=levs)
+)[var_list].sel(time=time_steps, level=LEVELS)
 
 # coarsen the data & reverse the latitude
 if args.coarsen:
