@@ -114,6 +114,11 @@ file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/nc_files/aifs-datas
 #         pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
 fields.update(get_nc_data(file_path_os, param=PARAM_SFC, longname=SFC_LONG_NAME))
 fields.update(get_nc_data(file_path_os, param=PARAM_PL, longname=PL_LONG_NAME, levelist=LEVELS))
+out_path = "/discover/nobackup/projects/QEFM/data/FMAifs/pkl_files"
+out_file_name = f"aifs-dataset-source-era5_date-{datetime.strftime(DATE, "%Y-%m-%d")}_res-0.25_levels-13_steps-0.pkl"
+out_file = os.path.join(out_path, out_file_name)
+with open(out_file, 'wb') as fp:
+    pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
 print("fields: \n", fields)
 exit()
 
