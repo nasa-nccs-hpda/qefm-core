@@ -59,8 +59,8 @@ def get_nc_data(file, param, longname, levelist=[]):
         for vs, vl in zip(param, longname):
             if vl not in ds.data_vars:
                 raise ValueError(f"Variable {vl} not found in the dataset.")       
-            var = ds[vl]
-
+            var = ds[vl].sel(time=t)
+            # Check if the variable is 3D or 2D
             if levelist:
                 for lev in levelist:
                     f = var.sel(level=lev).squeeze().to_numpy()
