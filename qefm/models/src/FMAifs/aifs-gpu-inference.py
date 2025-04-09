@@ -100,12 +100,13 @@ def get_open_data(param, levelist=[]):
 fields = {}
 #file_path_os = "data.p"
 file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/nc_files/aifs-dataset-source-era5_date-2024-12-01_res-0.25_levels-13_steps-0.nc"
-# if os.path.exists(file_path_os):
+#file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/pkl_files/aifs-dataset-source-era5_date-2024-12-01_res-0.25_levels-13_steps-0.pkl"
+#if os.path.exists(file_path_os):
 #     print(f"File '{file_path_os}' exists.")
-#     with open('data.p', 'rb') as fp:
+#     with open(file_path_os, 'rb') as fp:
 #        fields = pickle.load(fp)
 #     print("unpickled fields: \n", fields)
-# else:
+#else:
 #     print(f"File '{file_path_os}' does not exist.")
 #     fields.update(get_open_data(param=PARAM_SFC))
 #     fields.update(get_open_data(param=PARAM_PL, levelist=LEVELS))
@@ -114,13 +115,13 @@ file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/nc_files/aifs-datas
 #         pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
 fields.update(get_nc_data(file_path_os, param=PARAM_SFC, longname=SFC_LONG_NAME))
 fields.update(get_nc_data(file_path_os, param=PARAM_PL, longname=PL_LONG_NAME, levelist=LEVELS))
-out_path = "/discover/nobackup/projects/QEFM/data/FMAifs/pkl_files"
-out_file_name = f"aifs-dataset-source-era5_date-{datetime.strftime(DATE, "%Y-%m-%d")}_res-0.25_levels-13_steps-0.pkl"
-out_file = os.path.join(out_path, out_file_name)
-with open(out_file, 'wb') as fp:
-    pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
+## out_path = "/discover/nobackup/projects/QEFM/data/FMAifs/pkl_files"
+## date_str = datetime.datetime.strftime(DATE, "%Y-%m-%d")
+## out_file_name = f"aifs-dataset-source-era5_date-{date_str}_res-0.25_levels-13_steps-0.pkl"
+## out_file = os.path.join(out_path, out_file_name)
+## with open(out_file, 'wb') as fp:
+##    pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
 print("fields: \n", fields)
-exit()
 
 # for level in LEVELS:
 #     gh = fields.pop(f"gh_{level}")
@@ -128,11 +129,12 @@ exit()
 
 input_state = dict(date=DATE, fields=fields)
 
-checkpoint = {"huggingface":"ecmwf/aifs-single-0.2.1"}
+#checkpoint = {"huggingface":"ecmwf/aifs-single-0.2.1"}
+checkpoint = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/aifs/aifs_single_v0.2.1.ckpt"
 print(checkpoint)
 runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
 
-for state in runner.run(input_state=input_state, lead_time=12):
+for state in runner.run(input_state=input_state, lead_time=6):
     print_state(state)
 
