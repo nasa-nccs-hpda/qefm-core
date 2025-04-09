@@ -41,14 +41,24 @@ LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 DATE = datetime.datetime(2024, 12, 1, 0)
 print("Initial date is", DATE)
 
-def roll_and_interpolate(data):
-    # Check if the data is in the expected shape
-    if data.shape != (721, 1440):
-        raise ValueError(f"Data shape is {data.shape}, expected (721, 1440)")
-    # Shift the data from -180 to 180 to 0-360
-    data = np.roll(data, -data.shape[1] // 2, axis=1)
+def state_to_dataset(state):
+    lats = np.arange(-90., 90., 0.25)
+    lons = np.arange(0., 360., 0.25)
+    # Convert the state to a dataset
+    ds = xr.Dataset()
+    for param, values in state.items():
+        # Create a DataArray for each parameter
+        da = xr.DataArray(values, dims=["time", "lat", "lon"], coords={"time": [DATE], "lat": np.arange(721), "lon": np.arange(1440)})
+        ds[param] = da
+    return ds
+
+def interpolate(data, forward=True):
+    if forward:
     # Interpolate the data from 0.25 to N320
-    data = ekr.interpolate(data, {"grid": (0.25, 0.25)}, {"grid": "N320"})
+        data = ekr.interpolate(data, {"grid": (0.25, 0.25)}, {"grid": "N320"})
+    else:
+        # Interpolate the data from N320 to 0.25
+        data = ekr.interpolate(data, {"grid": "N320"}, {"grid": (0.25, 0.25)})
     return data
 
 def get_nc_data(file, param, longname, levelist=[]):
@@ -64,13 +74,13 @@ def get_nc_data(file, param, longname, levelist=[]):
             if levelist:
                 for lev in levelist:
                     f = var.sel(level=lev).squeeze().to_numpy()
-                    values = roll_and_interpolate(f)
+                    values = interpolate(f)
                     # Add the values to the list
                     name = f"{vs}_{lev}"
                     fields[name].append(values)
             else:
                 f = var.squeeze().to_numpy()
-                values = roll_and_interpolate(f)
+                values = interpolate(f)
                 # Add the values to the list
                 name = vs
                 fields[name].append(values)
@@ -136,5 +146,6 @@ runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
 
 for state in runner.run(input_state=input_state, lead_time=6):
+    print("state: \n", state.keys())
     print_state(state)
 
