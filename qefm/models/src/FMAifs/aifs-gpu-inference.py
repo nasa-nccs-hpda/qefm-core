@@ -42,15 +42,33 @@ DATE = datetime.datetime(2024, 12, 1, 0)
 print("Initial date is", DATE)
 
 def state_to_dataset(state):
+    ## Convert the state to a dataset
+    
+    # Get the date from the state
+    cdate = state["date"]
+
+    # Get the fields from the state
+    fields = state.get("fields", {})
+    #names = list(fields.keys())
+
     lats = np.arange(-90., 90., 0.25)
     lons = np.arange(0., 360., 0.25)
     # Convert the state to a dataset
-    ds = xr.Dataset()
-    for param, values in state.items():
+    ds_2d = xr.Dataset()
+    for name in PARAM_SFC:
         # Create a DataArray for each parameter
-        da = xr.DataArray(values, dims=["time", "lat", "lon"], coords={"time": [DATE], "lat": np.arange(721), "lon": np.arange(1440)})
-        ds[param] = da
-    return ds
+        values = fields.get(name, None)
+        if values is None:
+            raise ValueError(f"Parameter {name} not found in the state.")
+        else:
+            values = interpolate(values, forward=False)
+            da = xr.DataArray(values, 
+                              dims=["time", "lat", "lon"], 
+                              coords={"time": [cdate], "lat": lats, "lon": lons},
+                              name=name)
+            # Add the DataArray to the dataset
+            ds_2d[name] = da
+    return ds_2d
 
 def interpolate(data, forward=True):
     if forward:
