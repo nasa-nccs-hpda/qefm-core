@@ -54,7 +54,7 @@ def state_to_dataset(state):
 
     lats = np.linspace(-90., 90., 721)
     lons = np.linspace(0., 359.75, 1440)
-    # Convert the state to a dataset
+    # Convert the 2d state to a dataset
     ds_2d = xr.Dataset()
     for name in PARAM_SFC_OUT:
         # Create a DataArray for each parameter
@@ -63,13 +63,36 @@ def state_to_dataset(state):
             raise ValueError(f"Parameter {name} not found in the state.")
         else:
             values = interpolate(values, forward=False)
-            da = xr.DataArray(values[None, :, :], 
+            da = xr.DataArray(values[None, :, :].astype(np.float32), 
                               dims=["time", "lat", "lon"], 
-                              coords={"time": [cdate], "lat": lats, "lon": lons},
+                              coords={"time": [cdate], "lat": lats.astype(np.float32), "lon": lons.astype(np.float32)},
                               name=name)
             # Add the DataArray to the dataset
             ds_2d[name] = da
-    return ds_2d
+    # Convert the 3d state to a dataset
+    ds_3d = xr.Dataset()
+    for name in PARAM_PL:
+        vertical = []
+        for l in LEVELS:
+            name_lv = f"{name}_{l}"
+            # Create a DataArray for each parameter
+
+            values = fields.get(name_lv, None)
+            if values is None:
+                raise ValueError(f"Parameter {name_lv} not found in the state.")
+            else:
+                values = interpolate(values, forward=False)
+                vertical.append(values)
+        
+        # Stack the vertical levels
+        data = np.stack(vertical)
+        da = xr.DataArray(data[None,:,:,:].astype(np.float32), 
+                        dims=["time", "level", "lat", "lon"], 
+                        coords={"time": [cdate], "level": np.array(LEVELS), "lat": lats.astype(np.float32), "lon": lons.astype(np.float32)},
+                        name=name)
+        # Add the DataArray to the dataset
+        ds_3d[name] = da
+    return xr.merge([ds_2d, ds_3d])
 
 def interpolate(data, forward=True):
     if forward:
