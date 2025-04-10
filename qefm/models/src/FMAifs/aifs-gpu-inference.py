@@ -17,6 +17,7 @@ except ImportError:  # Python 3.x
     import pickle
 
 PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "slor", "sdor"]
+PARAM_SFC_OUT = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "cp", "tp"]
 SFC_LONG_NAME = ["10m_u_component_of_wind",
                  "10m_v_component_of_wind",
                  "2m_dewpoint_temperature",
