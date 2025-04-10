@@ -192,7 +192,7 @@ runner = SimpleRunner(checkpoint, device="cuda")
 out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAifs/raw")
 
 for state in runner.run(input_state=input_state, lead_time=24):
-    print("state: \n", state.keys())
+    print("state at: \n", state.get("date"))
     #print_state(state)
     ds, str = state_to_dataset(state)
     out_file_name = f"prediction_date-{str}.nc"
