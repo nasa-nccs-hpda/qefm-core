@@ -8,7 +8,8 @@ import earthkit.data as ekd
 import earthkit.regrid as ekr
 from pathlib import Path
 from anemoi.inference.runners.simple import SimpleRunner
-from anemoi.inference.outputs.printer import print_state
+#from anemoi.inference.outputs.printer import print_state
+import argparse
 
 import os
 try:
@@ -16,6 +17,18 @@ try:
 except ImportError:  # Python 3.x
     import pickle
 
+# argparse
+parser = argparse.ArgumentParser(description="Run the AIFS model.")
+parser.add_argument("--yyyy", "-y", type=str, default="2024", help="Year")
+parser.add_argument("--mm", "-m", type=str, default="12", help="Month")
+parser.add_argument("--dd", "-d", type=str, default="01", help="Day")
+
+args = parser.parse_args()
+YYYY = args.yyyy
+MM = args.mm
+DD = args.dd
+
+# Set the default parameters
 PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "slor", "sdor"]
 PARAM_SFC_OUT = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "cp", "tp"]
 SFC_LONG_NAME = ["10m_u_component_of_wind",
@@ -39,7 +52,7 @@ PL_LONG_NAME = ["geopotential",
                 "specific_humidity"]
 LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 
-DATE = datetime(2024, 12, 1, 0)
+DATE = datetime(int(YYYY), int(MM), int(DD), 0)
 print("Initial date is", DATE)
 
 def state_to_dataset(state):
@@ -153,7 +166,8 @@ def get_open_data(param, levelist=[]):
 
 fields = {}
 #file_path_os = "data.p"
-file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/nc_files/aifs-dataset-source-era5_date-2024-12-01_res-0.25_levels-13_steps-0.nc"
+input_root = Path("/discover/nobackup/projects/QEFM/data/FMAifs/nc_files")
+file_path_os = input_root / f"aifs-dataset-source-era5_date-{YYYY}-{MM}-{DD}_res-0.25_levels-13_steps-0.nc"
 #file_path_os = "/discover/nobackup/projects/QEFM/data/FMAifs/pkl_files/aifs-dataset-source-era5_date-2024-12-01_res-0.25_levels-13_steps-0.pkl"
 #if os.path.exists(file_path_os):
 #     print(f"File '{file_path_os}' exists.")
