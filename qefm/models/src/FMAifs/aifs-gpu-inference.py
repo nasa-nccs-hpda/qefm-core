@@ -189,13 +189,15 @@ print(checkpoint)
 runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
 
-out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAifs/raw")
+out_root = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAifs/raw")
+out_path = out_root / datetime.strftime(DATE, "%Y-%m-%d")
+out_path.mkdir(parents=True, exist_ok=True)
 
 for state in runner.run(input_state=input_state, lead_time=24):
     print("state at: \n", state.get("date"))
     #print_state(state)
     ds, str = state_to_dataset(state)
     out_file_name = f"prediction_date-{str}.nc"
-    out_file = out_path / datetime.strftime(DATE, "%Y-%m-%d") / out_file_name
+    out_file = out_path / out_file_name
     ds.to_netcdf(out_file, mode="w", format="NETCDF4", engine="netcdf4")
 
