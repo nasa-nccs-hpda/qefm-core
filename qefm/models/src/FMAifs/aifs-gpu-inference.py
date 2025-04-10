@@ -189,7 +189,7 @@ fields.update(get_nc_data(file_path_os, param=PARAM_PL, longname=PL_LONG_NAME, l
 ## out_file = os.path.join(out_path, out_file_name)
 ## with open(out_file, 'wb') as fp:
 ##    pickle.dump(fields, fp, protocol=pickle.HIGHEST_PROTOCOL)
-print("fields: \n", fields)
+## print("fields: \n", fields)
 
 # for level in LEVELS:
 #     gh = fields.pop(f"gh_{level}")
