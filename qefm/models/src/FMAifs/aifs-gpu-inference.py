@@ -51,8 +51,8 @@ def state_to_dataset(state):
     fields = state.get("fields", {})
     #names = list(fields.keys())
 
-    lats = np.arange(-90., 90., 0.25)
-    lons = np.arange(0., 360., 0.25)
+    lats = np.linspace(-90., 90., 721)
+    lons = np.linspace(0., 359.75, 1440)
     # Convert the state to a dataset
     ds_2d = xr.Dataset()
     for name in PARAM_SFC:
@@ -62,7 +62,7 @@ def state_to_dataset(state):
             raise ValueError(f"Parameter {name} not found in the state.")
         else:
             values = interpolate(values, forward=False)
-            da = xr.DataArray(values, 
+            da = xr.DataArray(values[None, :, :], 
                               dims=["time", "lat", "lon"], 
                               coords={"time": [cdate], "lat": lats, "lon": lons},
                               name=name)
