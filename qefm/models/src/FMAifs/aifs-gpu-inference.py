@@ -54,7 +54,7 @@ def state_to_dataset(state):
     fields = state.get("fields", {})
     #names = list(fields.keys())
 
-    lats = np.linspace(-90., 90., 721)
+    lats = np.linspace(90., -90., 721)
     lons = np.linspace(0., 359.75, 1440)
     # Convert the 2d state to a dataset
     ds_2d = xr.Dataset()
