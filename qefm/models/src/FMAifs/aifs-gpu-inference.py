@@ -1,12 +1,12 @@
 print("start")
-import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 
 import numpy as np
 import xarray as xr
 import earthkit.data as ekd
 import earthkit.regrid as ekr
-
+from pathlib import Path
 from anemoi.inference.runners.simple import SimpleRunner
 from anemoi.inference.outputs.printer import print_state
 
@@ -39,7 +39,7 @@ PL_LONG_NAME = ["geopotential",
                 "specific_humidity"]
 LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 
-DATE = datetime.datetime(2024, 12, 1, 0)
+DATE = datetime(2024, 12, 1, 0)
 print("Initial date is", DATE)
 
 def state_to_dataset(state):
@@ -47,6 +47,8 @@ def state_to_dataset(state):
     
     # Get the date from the state
     cdate = state["date"]
+    # Datetime to string
+    date_str = datetime.strftime(cdate, "%Y-%m-%dT%H")
 
     # Get the fields from the state
     fields = state.get("fields", {})
@@ -92,7 +94,7 @@ def state_to_dataset(state):
                         name=name)
         # Add the DataArray to the dataset
         ds_3d[name] = da
-    return xr.merge([ds_2d, ds_3d])
+    return xr.merge([ds_2d, ds_3d]), date_str
 
 def interpolate(data, forward=True):
     if forward:
@@ -134,7 +136,7 @@ def get_nc_data(file, param, longname, levelist=[]):
 def get_open_data(param, levelist=[]):
     fields = defaultdict(list)
     # Get the data for the current date and the previous date
-    for date in [DATE - datetime.timedelta(hours=6), DATE]:
+    for date in [DATE - timedelta(hours=6), DATE]:
         data = ekd.from_source("ecmwf-open-data", date=date, param=param, levelist=levelist)
         for f in data:
             # Open data is between -180 and 180, we need to shift it to 0-360
@@ -187,10 +189,13 @@ print(checkpoint)
 runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
 
-for state in runner.run(input_state=input_state, lead_time=6):
+out_path = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAifs/raw")
+
+for state in runner.run(input_state=input_state, lead_time=24):
     print("state: \n", state.keys())
-    print_state(state)
-    ds = state_to_dataset(state)
-    print(ds)
-    exit()
+    #print_state(state)
+    ds, str = state_to_dataset(state)
+    out_file_name = f"prediction_date-{str}.nc"
+    out_file = out_path / datetime.strftime(DATE, "%Y-%m-%d") / out_file_name
+    ds.to_netcdf(out_file, mode="w", format="NETCDF4", engine="netcdf4")
 
