@@ -56,7 +56,7 @@ def state_to_dataset(state):
     lons = np.linspace(0., 359.75, 1440)
     # Convert the state to a dataset
     ds_2d = xr.Dataset()
-    for name in PARAM_SFC:
+    for name in PARAM_SFC_OUT:
         # Create a DataArray for each parameter
         values = fields.get(name, None)
         if values is None:
@@ -167,4 +167,7 @@ runner = SimpleRunner(checkpoint, device="cuda")
 for state in runner.run(input_state=input_state, lead_time=6):
     print("state: \n", state.keys())
     print_state(state)
+    ds = state_to_dataset(state)
+    print(ds)
+    exit()
 
