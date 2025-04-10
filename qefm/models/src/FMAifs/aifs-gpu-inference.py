@@ -207,7 +207,7 @@ out_root = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/FMAifs/ra
 out_path = out_root / datetime.strftime(DATE, "%Y-%m-%d")
 out_path.mkdir(parents=True, exist_ok=True)
 
-for state in runner.run(input_state=input_state, lead_time=24):
+for state in runner.run(input_state=input_state, lead_time=240):
     print("state at: \n", state.get("date"))
     #print_state(state)
     ds, str = state_to_dataset(state)
