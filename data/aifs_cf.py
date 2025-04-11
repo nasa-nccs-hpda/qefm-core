@@ -162,11 +162,11 @@ for idx, file in enumerate(files):
             "units" : "K",
         },
         "T2MDEW": {
-            "long_name" : "2-meter_dew_point_temperature",
+            "long_name" : "dew_point_temperature_at_2_m",
             "units" : "K",
         },
         "TS": {
-            "long_name" : "surface_temperature",
+            "long_name" : "surface_skin_temperature",
             "units" : "K",
         },
         "SLP": {
@@ -179,15 +179,15 @@ for idx, file in enumerate(files):
         },
         "PRECCON": {
             "long_name" : "convective_precipitation",
-            "units" : "m",
+            "units" : "kg m-2 s-1",
         },
         "PRECTOT": {
             "long_name" : "total_precipitation",
-            "units" : "m",
+            "units" : "kg m-2 s-1",
         },
         "TQL": {
-            "long_name" : "total_column_water",
-            "units" : "m",
+            "long_name" : "total_precipitable_liquid_water",
+            "units" : "kg m-2",
         },
         "H": {
             "long_name" : "height",
@@ -210,7 +210,7 @@ for idx, file in enumerate(files):
             "units" : "m s-1",
         },
         "OMEGA": {
-            "long_name" : "vertical_velocity",
+            "long_name" : "vertical_pressure_velocity",
             "units" : "Pa s-1",
         },
         "PHIS": {
