@@ -260,7 +260,7 @@ for idx, file in enumerate(files):
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/v2/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-0.25_levels-13.nc"
     output_file = output_dir / fname
