@@ -48,12 +48,12 @@ salloc --gres=gpu:1 --mem=60G --time=1:00:00 --partition=gpu_a100 --constraint=r
 
 ### <b> Command-Line Interface (CLI) </b>
 
-To run each of the Foundation Model tasks with **qefm-core** in one script, change directories to the qefm-core root directory and run the inference ensemble script:
+To run each of the Foundation Model tasks with **qefm-core**, change directories to the qefm-core root directory and run the inference script:
 
 ```bash
 module load singularity
 cd <Root directory>
-./tests/fm-inference.sh <Container name> ensemble
+./tests/fm-inference.sh <Container name> <Foundation Model name>
 ```
 
 To run a specific Foundation Model task with **qefm-core**, use the following command:
@@ -67,7 +67,7 @@ To run a specific Foundation Model task with **qefm-core**, use the following c
 | --------------------- |:----------------------------------------------------|:---------|:---------|:-----------------------------------------------------------------------------------------|
 | `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      | `/discover/nobackup/projects/QEFM/qefm-core`                                             |
 | `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core.sif`                                                                          |
-| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `ensemble`, `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi` , `sfno` |
+| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi` , `sfno` |
 
 ### <b> Examples </b>
 
