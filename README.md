@@ -95,7 +95,7 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core.sif sfno
 ```
-*** _NOTE:  The following models leverage a separate container that hosts specialized dependencies (i.e., JAX)._
+*** _NOTE:  The following models leverage a separate container that hosts specialized dependencies (i.e., JAX).  Since GenCast is built on top of GraphCast, the same container supports both._
 
 **Run Inference for GenCast Foundation Model**:
 ```shell
