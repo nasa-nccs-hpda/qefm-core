@@ -176,8 +176,9 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 #dataset_file_value = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-dataset-source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-10.nc"
-dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
-dataset_file_value = f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+#dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
+dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples"
+dataset_file_value = f"gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-10.nc"
 dataset_file = os.path.join(dataset_dir, dataset_file_value)
 print("dataset_file_value:\n", dataset_file_value, "\n")
 # with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
