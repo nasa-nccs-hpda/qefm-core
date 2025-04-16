@@ -194,11 +194,11 @@ print(", ".join([f"{k}: {v}" for k, v in parse_file_parts(dataset_file_value.rem
 # @title Extract training and eval data
 
 train_inputs, train_targets, train_forcings = data_utils.extract_inputs_targets_forcings(
-    example_batch, target_lead_times=slice("12h", "12h"), # Only 1AR training.
+    example_batch, target_lead_times=slice("6h", "6h"), # Only 1AR training.
     **dataclasses.asdict(task_config))
 
 eval_inputs, eval_targets, eval_forcings = data_utils.extract_inputs_targets_forcings(
-    example_batch, target_lead_times=slice("12h", f"{(example_batch.dims['time']-2)*12}h"), # All but 2 input frames.
+    example_batch, target_lead_times=slice("6h", f"{(example_batch.dims['time']-2)*6}h"), # All but 2 input frames.
     **dataclasses.asdict(task_config))
 
 print("All Examples:  ", example_batch.dims.mapping)
@@ -337,8 +337,8 @@ for chunk in rollout.chunked_prediction_generator_multiple_runs(
     ):
     chunks.append(chunk)
 predictions = xarray.combine_by_coords(chunks)
-out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw"
-out_file_value = f"gencast-prediction-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/6hr"
+out_file_value = f"gencast-prediction-era5_date-{date_str}_res-1.0_levels-13_steps-10.nc"
 out_file = os.path.join(out_dir, out_file_value)
 predictions.to_netcdf(out_file)
 print("Predictions computed for 10 days out_file:\n", out_file, "\n")
