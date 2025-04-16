@@ -19,13 +19,11 @@ yyyy = args.year
 mm = args.month
 dd = args.day
 
-files = input_dir.glob(f"aifs-dataset-source-era5_date-{yyyy}-{mm}-{dd}*.nc")
+files = sorted(input_dir.glob(f"aifs-dataset-source-era5_date-{yyyy}-{mm}-{dd}*.nc"))
 # file_path = input_dir / "pressure_hourly" / "inst" / f"Y{yyyy}" / f"M{mm}" 
 # files.append(sorted(file_path.glob(f"era5_atmos-inst_allvar_{yyyy}{mm}{dd}_00z.nc"))[0])
 # file_path = input_dir / "surface_hourly" / "inst" / f"Y{yyyy}" / f"M{mm}" 
 # files.append(sorted(file_path.glob(f"era5_surface-inst_allvar_{yyyy}{mm}{dd}_00z.nc"))[0])
-
-
 
 ds = xr.open_dataset(files[0])
 
