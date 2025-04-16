@@ -18,8 +18,8 @@ args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
 nsteps = int(args.nsteps) 
 start_time = f"{date_str}T00:00"
-time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
-output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/0p25/samples")
+time_steps = pd.date_range(start=start_time, periods=nsteps, freq="6h")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples")
 
 
 levs = np.array(
