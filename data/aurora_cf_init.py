@@ -231,12 +231,12 @@ ds['H'] = ds['H']/MAPL_GRAV
 topo = ds.PHIS.values/MAPL_GRAV
 height = ds.H.values
 mask = np.where(height > topo, 1, 0)
-for var in ds.data_vars:
+for var in varMap.keys():
     # add attributes
     ds[var].attrs = varMap[var]
     ds[var].attrs['_FillValue'] = FILL_VALUE
-    ds[var].attrs['missing_value'] = FILL_VALUE
-    ds[var].attrs['fmissing_value'] = FILL_VALUE
+    #ds[var].attrs['missing_value'] = FILL_VALUE
+    #ds[var].attrs['fmissing_value'] = FILL_VALUE
     # mask 3d variables
     if 'lev' in ds[var].dims:
         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
