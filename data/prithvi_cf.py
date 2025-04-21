@@ -17,7 +17,7 @@ fmodel = "FMPrithvi-WxC"
 yyyy = args.year
 mm = args.month
 dd = args.day
-file_path = input_dir / fmodel / 'raw' / f"Y{yyyy}" / f"M{mm}" / f"D{dd}"
+file_path = input_dir / fmodel / 'raw' / '6hr' / f"Y{yyyy}" / f"M{mm}" / f"D{dd}"
 
 files = sorted(file_path.glob("pred_*.nc"))
 #file = files[0]
@@ -51,7 +51,7 @@ for file in files:
     long_name = "time"
     begin_date = np.int32(f"{YYYY}{MM}{DD}")
     begin_time = np.int32(datetime.hour * 10000)
-    time_increment = np.int32(30000)
+    time_increment = np.int32(60000)
     units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
 
@@ -307,7 +307,7 @@ for file in files:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/6hr/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-prediction-merra2_date-{tstamp}_res-0.5_levels-14.nc"
     output_file = output_dir / fname

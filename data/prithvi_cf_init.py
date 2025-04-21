@@ -31,7 +31,9 @@ else:
 MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
 
-for idt in ds_org.time.values[:2]:
+#for idt in ds_org.time.values[:2]:
+for i in [0, 2]:
+    idt = ds_org.time.values[i]
     ds = ds_org.sel(time=idt).expand_dims(dim={"time": 1})
     # print("Processing file : ", file)
     # ds = xr.open_dataset(file)
@@ -58,7 +60,7 @@ for idt in ds_org.time.values[:2]:
     long_name = "time"
     begin_date = np.int32(f"{YYYY}{MM}{DD}")
     begin_time = np.int32(datetime.hour * 10000)
-    time_increment = np.int32(30000)
+    time_increment = np.int32(60000)
     units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
 
@@ -308,7 +310,7 @@ for idt in ds_org.time.values[:2]:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/6hr/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{fmodel}-initial-merra2_date-{tstamp}_res-0.5_levels-14.nc"
     output_file = output_dir / fname
