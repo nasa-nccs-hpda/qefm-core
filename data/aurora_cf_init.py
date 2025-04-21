@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 #input_dir = Path("/discover/nobackup/projects/QEFM/data/")
 input_dir = Path("/css/era5")
-fmodel = "FMPangu"
+fmodel = "FMAurora"
 yyyy = args.year
 mm = args.month
 dd = args.day
@@ -262,8 +262,8 @@ compression = {"zlib": True,
             "complevel": 1,
             "shuffle": True,}
 encoding = {var: compression for var in ds.data_vars}
-#output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
-output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/test/Y{yyyy}/M{mm}/D{dd}")
+output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+#output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/test/Y{yyyy}/M{mm}/D{dd}")
 output_dir.mkdir(parents=True, exist_ok=True)
 fname = f"init_aurora_{tstamp}.nc"
 output_file = output_dir / fname
