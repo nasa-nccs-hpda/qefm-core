@@ -105,10 +105,6 @@ ds = ds.rename(var_mapping)
 
 #ds = ds.assign_coords(datetime=ds["time"])
 
-# change time coordinate to timedelta
-ds['time']=ds['time']-ds['time'].isel(time=0)
-#ds['time']=ds['time']/np.timedelta64(1, 's')
-
 # drop the time dimension for land_sea_mask and geopotential_at_surface
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
@@ -127,7 +123,9 @@ ds = ds.astype({var: 'float32' for var in ds.data_vars})
 # expand the time dimension
 ds = expand_dims(ds, nsteps)
 
-
+# change time coordinate to timedelta
+ds['time']=ds['time']-ds['time'].isel(time=0)
+#ds['time']=ds['time']/np.timedelta64(1, 's')
 # writing to netcdf
 output_file = output_dir / \
 f"gencast-dataset-source-geos\
