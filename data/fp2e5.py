@@ -8,7 +8,7 @@ from fp_to_era5 import *
 if __name__ == "__main__":
 
     dt = datetime(2024, 12, 12, 12)
-    Files =  discover_files(dt, outdir='./ouput/')
+    Files =  discover_files(dt, outdir='./output/')
     print(Files)
 
     fp_Nx = xr.open_dataset(Files['fp_Nx'],engine='netcdf4')
