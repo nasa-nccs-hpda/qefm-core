@@ -103,7 +103,7 @@ ds = ds.drop_vars(["hgt", "p", "sp"])
 ds = ds.rename(var_mapping)
 
 
-#ds = ds.assign_coords(datetime=ds["time"])
+#
 
 # drop the time dimension for land_sea_mask and geopotential_at_surface
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
@@ -122,6 +122,8 @@ ds = ds.astype({var: 'float32' for var in ds.data_vars})
 
 # expand the time dimension
 ds = expand_dims(ds, nsteps)
+
+ds = ds.assign_coords(datetime=ds["time"])
 
 # change time coordinate to timedelta
 ds['time']=ds['time']-ds['time'].isel(time=0)
