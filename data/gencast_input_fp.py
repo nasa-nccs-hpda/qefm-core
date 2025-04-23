@@ -114,7 +114,7 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
 
 # expand the dimensions 
-for var in var_list:
+for var in ds.data_vars:
     ds[var] = ds[var].expand_dims("batch")
 
 # # rename the precipitation variable
