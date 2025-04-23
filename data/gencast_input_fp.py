@@ -121,7 +121,8 @@ for var in var_list:
 # ds = ds.rename({
 #     "total_precipitation": "total_precipitation_12hr",
 # })
-
+# change data types
+ds = ds.astype({var: 'float32' for var in ds.data_vars})
 # writing to netcdf
 output_file = output_dir / \
 f"gencast-dataset-source-geos\
