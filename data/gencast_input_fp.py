@@ -97,6 +97,8 @@ ds = xr.open_mfdataset(fs)
 # if args.coarsen:
 ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4)).compute()
 res=1.0
+
+ds = ds.drop_vars(["hgt", "p", "sp"])
 # change variable names
 ds = ds.rename(var_mapping)
 
