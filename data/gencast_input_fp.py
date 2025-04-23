@@ -123,6 +123,11 @@ for var in var_list:
 # })
 # change data types
 ds = ds.astype({var: 'float32' for var in ds.data_vars})
+
+# expand the time dimension
+ds = expand_dims(ds, nsteps)
+
+
 # writing to netcdf
 output_file = output_dir / \
 f"gencast-dataset-source-geos\
