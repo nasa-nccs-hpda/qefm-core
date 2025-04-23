@@ -103,15 +103,6 @@ ds = ds.drop_vars(["hgt", "p", "sp"])
 ds = ds.rename(var_mapping)
 
 
-#
-
-# drop the time dimension for land_sea_mask and geopotential_at_surface
-#ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
-ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
-
-# expand the dimensions 
-for var in ds.data_vars:
-    ds[var] = ds[var].expand_dims("batch")
 
 # # rename the precipitation variable
 # ds = ds.rename({
@@ -125,9 +116,18 @@ ds = expand_dims(ds, nsteps)
 
 ds = ds.assign_coords(datetime=ds["time"])
 
+# expand the dimensions 
+for var in ds.data_vars:
+    ds[var] = ds[var].expand_dims("batch")
+
 # change time coordinate to timedelta
 ds['time']=ds['time']-ds['time'].isel(time=0)
 #ds['time']=ds['time']/np.timedelta64(1, 's')
+
+# drop the time dimension for land_sea_mask and geopotential_at_surface
+#ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
+ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time", "batch"])
+
 # writing to netcdf
 output_file = output_dir / \
 f"gencast-dataset-source-geos\
