@@ -124,6 +124,11 @@ for var in list(ds.data_vars) + ['datetime']:
 ds['time']=ds['time']-ds['time'].isel(time=0)
 #ds['time']=ds['time']/np.timedelta64(1, 's')
 
+# add land_sea_mask
+file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+ds_lsm = xr.open_dataset(file)
+ds['land_sea_mask'] = ds_lsm['land_sea_mask']
+
 # drop the time dimension for land_sea_mask and geopotential_at_surface
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time"])
