@@ -57,7 +57,8 @@ var_3d = ["temperature",
           "v_component_of_wind",
           "vertical_velocity",
           "geopotential",]
-var_mapping = {"t2m": "2m_temperature",
+var_mapping = {
+                "t2m": "2m_temperature",
                 "t": "temperature",
                 "u10": "10m_u_component_of_wind",
                 "v10": "10m_v_component_of_wind",
@@ -94,10 +95,9 @@ ds = xr.open_mfdataset(fs)
 
 # coarsen the data & reverse the latitude
 # if args.coarsen:
-ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4))
-res = 1.0
-
-# change dimension names
+ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4)).compute()
+res=1.0
+# change variable names
 ds = ds.rename(var_mapping)
 
 
