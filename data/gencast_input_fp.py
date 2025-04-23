@@ -126,7 +126,7 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 
 # drop the time dimension for land_sea_mask and geopotential_at_surface
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
-ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time", "batch"])
+ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_dims(["time", "batch"])
 
 # writing to netcdf
 output_file = output_dir / \
