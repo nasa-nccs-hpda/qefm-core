@@ -67,7 +67,7 @@ var_mapping = {
                 "v": "v_component_of_wind",
                 "q": "specific_humidity",
                 "w": "vertical_velocity",
-                "hgt": "geopotential",
+                "z": "geopotential",
                 "skt": "sea_surface_temperature",
                 "msl": "mean_sea_level_pressure",
                 "tp": "total_precipitation_12hr",
@@ -99,12 +99,12 @@ ds = xr.open_mfdataset(fs)
 ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4)).compute()
 res=1.0
 
-ds = ds.drop_vars(["z", "p", "sp"])
+ds = ds.drop_vars(["hgt", "p", "sp"])
 # change variable names
 ds = ds.rename(var_mapping)
 
-# Geopotential from geopotential_height
-ds['geopotential'] = ds['geopotential'] * GRAV
+# # Geopotential from geopotential_height
+# ds['geopotential'] = ds['geopotential'] * GRAV
 
 # # rename the precipitation variable
 # ds = ds.rename({
