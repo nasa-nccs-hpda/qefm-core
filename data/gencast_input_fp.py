@@ -31,6 +31,7 @@ def expand_dims(ds, steps):
 date_str = '2024-12-12'
 # nsteps = int(args.nsteps)
 nsteps = 22 
+GRAV = 9.80665
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
 output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples")
@@ -66,7 +67,7 @@ var_mapping = {
                 "v": "v_component_of_wind",
                 "q": "specific_humidity",
                 "w": "vertical_velocity",
-                "z": "geopotential",
+                "hgt": "geopotential",
                 "skt": "sea_surface_temperature",
                 "msl": "mean_sea_level_pressure",
                 "tp": "total_precipitation_12hr",
@@ -98,11 +99,12 @@ ds = xr.open_mfdataset(fs)
 ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4)).compute()
 res=1.0
 
-ds = ds.drop_vars(["hgt", "p", "sp"])
+ds = ds.drop_vars(["z", "p", "sp"])
 # change variable names
 ds = ds.rename(var_mapping)
 
-
+# Geopotential from geopotential_height
+ds['geopotential'] = ds['geopotential'] * GRAV
 
 # # rename the precipitation variable
 # ds = ds.rename({
