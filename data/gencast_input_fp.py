@@ -135,6 +135,9 @@ ds['land_sea_mask'] = ds_lsm['land_sea_mask']
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
 ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time"])
 
+# mask out skin temperature over land
+ds['sea_surface_temperature'] = ds['sea_surface_temperature'].where(ds['land_sea_mask'] == 0)
+
 # writing to netcdf
 output_file = output_dir / \
 f"gencast-dataset-source-geos\
