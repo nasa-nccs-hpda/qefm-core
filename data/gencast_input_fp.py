@@ -130,6 +130,8 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 ds_lsm = xr.open_dataset(file)
 ds['land_sea_mask'] = ds_lsm['land_sea_mask']
+# using the sea_surface_temperature from the original dataset
+ds['sea_surface_temperature'] = ds_lsm['sea_surface_temperature']
 
 # drop the time dimension for land_sea_mask and geopotential_at_surface
 #ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
