@@ -20,13 +20,5 @@ RUN pip install --upgrade "jax[cuda12]"
 RUN pip install --upgrade xarray netCDF4 h5netcdf
 RUN pip install IPython
 
-# AISF dependencies
-RUN pip install -q anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1
-RUN pip install -q earthkit-regrid ecmwf-opendata
-RUN pip install nvidia-cuda-nvcc
-RUN pip install flash_attn
-RUN pip install matplotlib
-RUN pip install cartopy
-
 HEALTHCHECK NONE
 ENTRYPOINT [""]
