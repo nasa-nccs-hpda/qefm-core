@@ -1,4 +1,4 @@
-name: QEFM to Docker Hub (Debian slim-bullseye)
+name: QEFM to Docker Hub - arm64 - (Debian slim-bullseye)
 
 on:
   workflow_dispatch:
