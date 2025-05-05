@@ -25,6 +25,8 @@ RUN pip install dm-haiku
 RUN pip install dm-tree
 RUN pip install matplotlib
 RUN pip install chex
+RUN pip install jraph
+RUN pip install dask
 
 #RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
 #RUN pip install -vvv --disable-pip-version-check --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip 
