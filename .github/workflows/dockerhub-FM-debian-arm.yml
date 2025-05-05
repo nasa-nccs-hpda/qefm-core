@@ -63,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./requirements/Dockerfile-FM.core.debian
+          file: ./requirements/Dockerfile-FM.core.node
           #platforms: linux/amd64
           platforms: linux/amd64,linux/arm64
           push: true
