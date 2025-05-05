@@ -13,16 +13,16 @@ RUN pip install nvidia-cuda-runtime-cu12
 
 #RUN pip install cartopy
 
-# GraphCast dependencies
-#RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
-#RUN pip install -vvv --disable-pip-version-check --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip 
-
 # GPU dependencies
 RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
 RUN pip install --upgrade xarray netCDF4 h5netcdf
 RUN pip install IPython
+
+# GraphCast dependencies
+RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
+#RUN pip install -vvv --disable-pip-version-check --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip 
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
