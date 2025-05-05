@@ -18,11 +18,11 @@ RUN pip install nvidia-cuda-runtime-cu12
 #RUN pip install -vvv --disable-pip-version-check --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip 
 
 # GPU dependencies
-#RUN pip install --upgrade "jax[cuda12]"
+RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
-#RUN pip install --upgrade xarray netCDF4 h5netcdf
-#RUN pip install IPython
+RUN pip install --upgrade xarray netCDF4 h5netcdf
+RUN pip install IPython
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
