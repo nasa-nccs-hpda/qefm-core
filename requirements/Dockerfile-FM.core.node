@@ -30,6 +30,9 @@ RUN pip install dask
 RUN pip install trimesh
 
 RUN pip install Pint
+RUN pip install tree_math 
+RUN pip install tensorstore 
+RUN pip install xarray_tensorstore
 
 #RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
 #RUN pip install -vvv --disable-pip-version-check --no-cache-dir --no-deps https://github.com/deepmind/graphcast/archive/master.zip 
