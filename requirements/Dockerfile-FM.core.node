@@ -32,6 +32,7 @@ RUN pip install trimesh
 RUN pip install Pint
 RUN pip install tree_math 
 RUN pip install scikit-learn 
+RUN pip install tensorstore
 #RUN pip install xarray_tensorstore
 
 #RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
