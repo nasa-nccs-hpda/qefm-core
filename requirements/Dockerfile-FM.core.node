@@ -8,14 +8,14 @@
 FROM arm64v8/python:3.10-slim
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-RUN pip install --upgrade setuptools pip wheel
-RUN pip install nvidia-pyindex
+# RUN pip install --upgrade setuptools pip wheel
+# RUN pip install nvidia-pyindex
 # RUN pip install nvidia-cuda-runtime-cu12
 
 #RUN pip install cartopy
 
 # GPU dependencies
-RUN pip install --upgrade "jax[cuda12]"
+# RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
 # RUN pip install --upgrade xarray netCDF4 h5netcdf
