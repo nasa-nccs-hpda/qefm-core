@@ -4,37 +4,35 @@
 # You prefer the familiarity of Debian while benefiting from some size reduction.
 
 #FROM node:18
-#FROM python:3.10-slim-bullseye
-FROM arm64v8/python:3.10-slim
+FROM python:3.10-slim-bullseye
+#FROM arm64v8/python:3.10-slim
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-# RUN pip install --upgrade setuptools pip wheel
-# RUN pip install nvidia-pyindex
-# RUN pip install nvidia-cuda-runtime-cu12
-
-#RUN pip install cartopy
+RUN pip install --upgrade setuptools pip wheel
+RUN pip install nvidia-pyindex
+RUN pip install nvidia-cuda-runtime-cu12
 
 # GPU dependencies
-# RUN pip install --upgrade "jax[cuda12]"
+RUN pip install --upgrade "jax[cuda12]"
 
 # GenCast dependencies
-# RUN pip install --upgrade xarray netCDF4 h5netcdf
-# RUN pip install IPython
+RUN pip install --upgrade xarray netCDF4 h5netcdf
+RUN pip install IPython
 
 # GraphCast dependencies
-# RUN pip install dm-haiku
-# RUN pip install dm-tree
-# RUN pip install matplotlib
-# RUN pip install chex
-# RUN pip install jraph
-# RUN pip install dask
-# RUN pip install trimesh
+RUN pip install dm-haiku
+RUN pip install dm-tree
+RUN pip install matplotlib
+RUN pip install chex
+RUN pip install jraph
+RUN pip install dask
+RUN pip install trimesh
 
-# RUN pip install Pint
-# RUN pip install tree_math 
-# RUN pip install scikit-learn 
-# RUN pip install tensorstore
-# RUN pip install rtree
+RUN pip install Pint
+RUN pip install tree_math 
+RUN pip install scikit-learn 
+RUN pip install tensorstore
+RUN pip install rtree
 #RUN pip install xarray_tensorstore
 
 #RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
