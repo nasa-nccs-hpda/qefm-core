@@ -4,7 +4,8 @@
 # You prefer the familiarity of Debian while benefiting from some size reduction.
 
 #FROM node:18
-FROM python:3.10-slim-bullseye
+#FROM python:3.10-slim-bullseye
+FROM arm64v8/python:3.10-slim
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 RUN pip install --upgrade setuptools pip wheel
