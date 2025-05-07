@@ -10,7 +10,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
-        name: Set up QEMU
+        name: Set up QEFM
         uses: docker/setup-qemu-action@v2
       -
         name: Set up Docker Buildx
@@ -21,41 +21,41 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Lower github-runner storage
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          df -h
+      # - 
+      #   name: Lower github-runner storage
+      #   run: |
+      #     sudo rm -rf /usr/share/dotnet
+      #     sudo rm -rf /opt/ghc
+      #     sudo rm -rf "/usr/local/share/boost"
+      #     sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      #     df -h
 
-      - 
-        name: Clean up tools (https://github.com/marketplace/actions/free-disk-space-ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-              # this might remove tools that are actually needed,
-              # if set to "true" but frees about 6 GB
-              tool-cache: true
+      # - 
+      # #   name: Clean up tools (https://github.com/marketplace/actions/free-disk-space-ubuntu)
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #         # this might remove tools that are actually needed,
+      #         # if set to "true" but frees about 6 GB
+      #         tool-cache: true
               
-              # all of these default to true, but feel free to set to
-              # "false" if necessary for your workflow
-              android: true
-              dotnet: true
-              haskell: true
-              large-packages: true
-              docker-images: true
-              swap-storage: true
+      #         # all of these default to true, but feel free to set to
+      #         # "false" if necessary for your workflow
+      #         android: true
+      #         dotnet: true
+      #         haskell: true
+      #         large-packages: true
+      #         docker-images: true
+      #         swap-storage: true
               
-      - 
-        name: Prune docker images (https://github.com/jens-maus/RaspberryMatic/blob/d5044bef3307bc61166377c162569de1a61cf332/.github/workflows/ci.yml#L34-L40)
-        run: |
-              sudo swapoff -a
-              sudo rm -f /swapfile
-              sudo apt clean
-              # docker rmi $(docker image ls -aq)
-              docker image prune -a
-              df -h
+      # - 
+      #   name: Prune docker images (https://github.com/jens-maus/RaspberryMatic/blob/d5044bef3307bc61166377c162569de1a61cf332/.github/workflows/ci.yml#L34-L40)
+      #   run: |
+      #         sudo swapoff -a
+      #         sudo rm -f /swapfile
+      #         sudo apt clean
+      #         # docker rmi $(docker image ls -aq)
+      #         docker image prune -a
+      #         df -h
 
       -        
         name: Build and push
@@ -66,8 +66,8 @@ jobs:
           #platforms: linux/arm64
           #platforms: linux/amd64,linux/arm64,linux/arm/v8
           #platforms: linux/amd64,linux/arm64/v8
-          #platforms: "linux/arm64/v8"
+          platforms: linux/arm64/v8
           #platforms: linux/amd64,linux/arm64/v8
-          platforms: linux/arm64v8
+          #platforms: linux/arm64v8
           push: true
           tags: nasanccs/qefm-core-debian-arm64:latest
