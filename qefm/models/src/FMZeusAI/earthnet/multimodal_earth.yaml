@@ -74,7 +74,8 @@ data:
   test:
       target: zeus.datasets.common.CommonGridMultiModalDataset
       params:
-        data_dir: data/GEO-ATMS-VIIRS-MIRS/test
+#        data_dir: data/GEO-ATMS-VIIRS-MIRS/test
+        data_dir: /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMZeusAI/earthnet/data/GEO-ATMS-VIIRS-MIRS/test/
         domains:
           mirs_img:
             vars: ['TSkin', 'SurfP', 'Emis', 'TPW', 'RWP', 'CLW']

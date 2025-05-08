@@ -160,3 +160,7 @@ dmypy.json
 /qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/
 /qefm/models/src/FMSfno/torch-harmonics/examples/wandb/
 
+/qefm/models/src/FMZeusAI/earthnet/data/
+qefm/models/src/FMZeusAI/earthnet/pred.pkl
+qefm/models/src/FMZeusAI/earthnet/goes16_highres.png
+qefm/models/src/FMZeusAI/earthnet/goes16.png
