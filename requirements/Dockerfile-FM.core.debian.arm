@@ -6,7 +6,6 @@
 FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-RUN pip install xarray-tensorstore
 RUN pip install --upgrade setuptools pip wheel
 RUN pip install nvidia-pyindex
 RUN pip install nvidia-cuda-runtime-cu12
@@ -31,6 +30,8 @@ RUN pip install tree_math
 RUN pip install scikit-learn 
 RUN pip install tensorstore
 RUN pip install rtree
+
+RUN pip install xarray-tensorstore
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
