@@ -1,4 +1,4 @@
-name: QEFM to Docker Hub - amd/arm64 - (Debian slim-bullseye)
+name: GenCast to Docker Hub - amd/arm64 - (Debian slim-bullseye)
 on:
   workflow_dispatch:
 
