@@ -132,7 +132,9 @@ if source == "Random":
 else:
   assert source == "Checkpoint"
   params_file_value = "GenCast 1p0deg Mini <2019.npz"
-  relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+  #relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+#  relative_params_file = '/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+  relative_params_file = '/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/checkpoints/gencast/gencast-params-GenCast_0p25deg<2019.npz'
   absolute_path = os.path.join(script_dir, relative_params_file)
   print("absolute_path:\n", absolute_path, "\n")
   params_file = absolute_path
@@ -174,13 +176,12 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 
 # @title Load weather data
 # dataset_file_value= "source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
-#dataset_file_value = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-dataset-source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
-#dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-10.nc"
-#dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
-dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples"
+dataset_dir = "/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/checkpoints/gencast"
+#dataset_dir = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast" 
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024"
-dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+#dataset_file_value = "gencast-dataset-source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc" 
+dataset_file_value = "source-era5_date-2019-03-29_res-0.25_levels-13_steps-04.nc"
 dataset_file = os.path.join(dataset_dir, dataset_file_value)
 print("dataset_file_value:\n", dataset_file_value, "\n")
 # with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
@@ -213,16 +214,16 @@ print("Eval Targets:  ", eval_targets.dims.mapping)
 print("Eval Forcings: ", eval_forcings.dims.mapping)
 
 # @title Load normalization data
-relative_diffs_file = "../../../checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
+relative_diffs_file = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
 diffs_file = os.path.join(script_dir, relative_diffs_file)
 
-relative_mean_file = "../../../checkpoints/gencast/gencast-stats-mean_by_level.nc"
+relative_mean_file = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-stats-mean_by_level.nc"
 mean_file = os.path.join(script_dir, relative_mean_file)
 
-relative_stddev_file = "../../../checkpoints/gencast/gencast-stats-stddev_by_level.nc"
+relative_stddev_file = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-stats-stddev_by_level.nc"
 stddev_file = os.path.join(script_dir, relative_stddev_file)
 
-relative_min_file = "../../../checkpoints/gencast/gencast-stats-min_by_level.nc"
+relative_min_file = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-stats-min_by_level.nc"
 min_file = os.path.join(script_dir, relative_min_file)
 
 with open(diffs_file, "rb") as f:
@@ -341,12 +342,12 @@ for chunk in rollout.chunked_prediction_generator_multiple_runs(
     chunks.append(chunk)
 predictions = xarray.combine_by_coords(chunks)
 #out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/Y2024"
-out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/geos"
-out_file_value = f"gencast-prediction-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
-out_file = os.path.join(out_dir, out_file_value)
-predictions.to_netcdf(out_file)
-print("Predictions computed for 10 days out_file:\n", out_file, "\n")
-
+#out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/geos"
+#out_file_value = f"gencast-prediction-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+#out_file = os.path.join(out_dir, out_file_value)
+#predictions.to_netcdf(out_file)
+#print("Predictions computed for 10 days out_file:\n", out_file, "\n")
+print(predictions)
 
 # @title Choose predictions to plot
 
