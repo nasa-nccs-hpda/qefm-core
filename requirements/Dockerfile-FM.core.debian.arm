@@ -6,12 +6,12 @@
 FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
+# INstall qefm-core source code
 RUN apt-get update && apt-get install -y git
+RUN mkdir /app      
+RUN cd /app         
+RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git
 
-
-RUN mkdir /app \      
-           cd /app \        
-           git clone https://github.com/nasa-nccs-hpda/qefm-core.git 
 #Set working directory
 WORKDIR /app/qefm-core
 
@@ -19,7 +19,7 @@ WORKDIR /app/qefm-core
 #RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
 #WORKDIR /data/app
 
-ENV PYTHONPATH="${PYTHONPATH}:/app/qefm-core/qefm/models/src/FMGenCast/xarray_tensorstore.py"
+ENV PYTHONPATH="/app/qefm-core/qefm/models/src/FMGenCast/xarray_tensorstore.py"
 #RUN pip install xarray-tensorstore
 
 RUN pip install --upgrade setuptools pip wheel
