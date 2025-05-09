@@ -8,10 +8,16 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 
 RUN apt-get update && apt-get install -y git
 
-WORKDIR /data
-RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
-WORKDIR /data/app
 
+RUN mkdir /app \      
+           cd /app \        
+           git clone https://github.com/nasa-nccs-hpda/qefm-core.git 
+#Set working directory
+WORKDIR /app/qefm-core
+
+#WORKDIR /data
+#RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
+#WORKDIR /data/app
 
 ENV PYTHONPATH="${PYTHONPATH}:/app/qefm-core/qefm/models/src/FMGenCast/xarray_tensorstore.py"
 #RUN pip install xarray-tensorstore
