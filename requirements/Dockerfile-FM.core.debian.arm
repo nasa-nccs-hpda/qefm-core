@@ -7,7 +7,11 @@ FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 RUN apt-get update && apt-get install -y git
-RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /app/qefm-core
+
+WORKDIR /data
+RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
+WORKDIR /data/app
+
 
 ENV PYTHONPATH="${PYTHONPATH}:/app/qefm-core/qefm/models/src/FMGenCast/xarray_tensorstore.py"
 #RUN pip install xarray-tensorstore
