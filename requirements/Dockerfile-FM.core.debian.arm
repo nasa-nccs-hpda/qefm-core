@@ -13,7 +13,7 @@ RUN cd /app
 RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git
 
 #Set working directory
-WORKDIR /app/qefm-core
+#WORKDIR /app/qefm-core
 
 #WORKDIR /data
 #RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
