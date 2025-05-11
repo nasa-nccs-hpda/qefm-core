@@ -22,7 +22,8 @@ RUN ls -alRt /qefm-core
 # Option 1: RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast:/qefm-core/qefm/models/src/FMGenCast/graphcast"
 # Option 2: ENV PYTHONPATH="$PYTHONPATH:/app"
 
-RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+#RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
 #ENV PYTHONPATH "${PYTHONPATH}:/path/to/your/external/directory"
 #ENV PYTHONPATH="/qefm-core/qefm/models/src/FMGenCast"
 #RUN pip install xarray-tensorstore
