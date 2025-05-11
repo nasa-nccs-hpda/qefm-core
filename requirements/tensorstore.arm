@@ -6,7 +6,8 @@
 FROM python:3.10-slim-bullseye
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-RUN pip install xarray-tensorstore
+#RUN pip install xarray-tensorstore
+ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
