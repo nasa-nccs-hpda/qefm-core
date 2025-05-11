@@ -19,7 +19,12 @@ RUN ls -alRt /qefm-core
 #RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
 #WORKDIR /data/app
 
-ENV PYTHONPATH="/qefm-core/qefm/models/src/FMGenCast"
+# Option 1: RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast:/qefm-core/qefm/models/src/FMGenCast/graphcast"
+# Option 2: ENV PYTHONPATH="$PYTHONPATH:/app"
+
+RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+#ENV PYTHONPATH "${PYTHONPATH}:/path/to/your/external/directory"
+#ENV PYTHONPATH="/qefm-core/qefm/models/src/FMGenCast"
 #RUN pip install xarray-tensorstore
 
 RUN pip install --upgrade setuptools pip wheel
