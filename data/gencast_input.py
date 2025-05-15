@@ -12,7 +12,7 @@ parser.add_argument("--year", "-y", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", type=str, help="Day of the data")
 parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
-parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
+parser.add_argument("--coarsen", "-c", default=False, type=bool, help="If True, coarsen the data to 1p0 degree")
 
 args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
@@ -55,11 +55,11 @@ ds = xr.open_dataset(
     engine="zarr",
     #chunks={},
     storage_options={"token": None}  # Public dataset, so no authentication needed
-)[var_list].sel(time=time_steps, level=levs)
+)[var_list].sel(time=time_steps, level=levs).isel(latitude=slice(None, None, -1))
 
 # coarsen the data & reverse the latitude
 if args.coarsen:
-    ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4))
+    ds = ds.isel(latitude=slice(None, None, 4), longitude=slice(None, None, 4))
     res = 1.0
 
 # change dimension names
