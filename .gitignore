@@ -164,7 +164,9 @@ qefm/models/src/FMAifs/aifs-cpu-inference.py
 qefm/models/src/FMAifs/aifs-gpu-inference-viz.py
 qefm/models/src/FMAifs/data.p
 qefm/models/src/FMAurora/predictions-for-ERA5-rollout-GT.py
-qefm/models/src/FMZeusAI/
-qefm/models/src/__FMZeusAI/
+qefm/models/src/FMZeusAI/earthnet/data/
 requirements/Dockerfile-FM.core.debian.arm-works
 .vscode/
+qefm/models/src/FMZeusAI/earthnet/goes16_highres.png
+qefm/models/src/FMZeusAI/earthnet/goes16.png
+qefm/models/src/FMZeusAI/earthnet/pred.pkl
