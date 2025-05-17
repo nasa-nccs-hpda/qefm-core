@@ -301,3 +301,4 @@ predictions = rollout.chunked_prediction(
     forcings=eval_forcings)
 predictions
 print("predictions:\n", predictions)
+print(predictions['2m_temperature'].isel(batch=0).squeeze().to_numpy())
