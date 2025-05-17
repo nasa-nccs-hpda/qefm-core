@@ -1,68 +1,20 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# > Copyright 2024 DeepMind Technologies Limited.
-# >
-# > Licensed under the Apache License, Version 2.0 (the "License");
-# > you may not use this file except in compliance with the License.
-# > You may obtain a copy of the License at
-# >
-# >      http://www.apache.org/licenses/LICENSE-2.0
-# >
-# > Unless required by applicable law or agreed to in writing, software
-# > distributed under the License is distributed on an "AS-IS" BASIS,
-# > WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# > See the License for the specific language governing permissions and
-# > limitations under the License.
-
-# # GenCast Mini Demo
-# 
-# This notebook demonstrates running `GenCast 1p0deg Mini <2019`.
-# 
-# `GenCast 1p0deg Mini <2019` is a GenCast model at 1deg resolution, with 13 pressure levels and a 4 times refined icosahedral mesh. It is trained on ERA5 data from 1979 to 2018, and can be causally evaluated on 2019 and later years.
-# 
-# While other GenCast models are [available](https://github.com/google-deepmind/graphcast/blob/main/README.md), this model has the smallest memory footprint of those provided and is the only one runnable with the freely provided TPUv2-8 configuration in Colab. You can select this configuration in `Runtime>Change Runtime Type`.
-# 
-# **N.B.** The performance of `GenCast 1p0deg Mini <2019` is reasonable but is not representative of the performance of the other GenCast models described in the [README](https://github.com/google-deepmind/graphcast/blob/main/README.md).
-# 
-# To run the other models using Google Cloud Compute, refer to [gencast_demo_cloud_vm.ipynb](https://colab.research.google.com/github/deepmind/graphcast/blob/master/gencast_demo_cloud_vm.ipynb).
-
-# # Installation and Initialization
-
-# In[ ]:
-
-
-# @title Upgrade packages (kernel needs to be restarted after running this cell).
-
-get_ipython().run_line_magic('pip', 'install -U importlib_metadata')
-
-
-# In[ ]:
-
-
-# @title Pip install repo and dependencies
-
-get_ipython().run_line_magic('pip', 'install --upgrade https://github.com/deepmind/graphcast/archive/master.zip')
-
-
-# In[5]:
-
-
-# @title Imports
 
 import dataclasses
 import datetime
 import math
-from google.cloud import storage
+#smodl load singulia  yfrom google.cloud import storage
 from typing import Optional
 import haiku as hk
 from IPython.display import HTML
 from IPython import display
-import ipywidgets as widgets
+#import ipywidgets as widgets
 import jax
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import animation
+# from matplotlib import animation
+# import matplotlib
+# import matplotlib.pyplot as plt
 import numpy as np
 import xarray
 
@@ -78,7 +30,7 @@ from graphcast import nan_cleaning
 
 
 
-# In[ ]:
+# In[2]:
 
 
 # @title Plotting functions
@@ -98,27 +50,27 @@ def select(
     data = data.sel(level=level)
   return data
 
-def scale(
-    data: xarray.Dataset,
-    center: Optional[float] = None,
-    robust: bool = False,
-    ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
-  vmin = np.nanpercentile(data, (2 if robust else 0))
-  vmax = np.nanpercentile(data, (98 if robust else 100))
-  if center is not None:
-    diff = max(vmax - center, center - vmin)
-    vmin = center - diff
-    vmax = center + diff
-  return (data, matplotlib.colors.Normalize(vmin, vmax),
-          ("RdBu_r" if center is not None else "viridis"))
+# def scale(
+#     data: xarray.Dataset,
+#     center: Optional[float] = None,
+#     robust: bool = False,
+#     ) -> tuple[xarray.Dataset, caltlib.colors.Normalize, str]:
+#   vmin = np.nanpercentile(data, (2 if robust else 0))
+#   vmax = np.nanpercentile(data, (98 if robust else 100))
+#   if center is not None:
+#     diff = max(vmax - center, center - vmin)
+#     vmin = center - diff
+#     vmax = center + diff
+#   return (data, matplotlib.colors.Normalize(vmin, vmax),
+#           ("RdBu_r" if center is not None else "viridis"))
 
-def plot_data(
-    data: dict[str, xarray.Dataset],
-    fig_title: str,
-    plot_size: float = 5,
-    robust: bool = False,
-    cols: int = 4
-    ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
+# def plot_data(
+#     data: dict[str, xarray.Dataset],
+#     fig_title: str,
+#     plot_size: float = 5,
+#     robust: bool = False,
+#     cols: int = 4
+#     ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
 
   first_data = next(iter(data.values()))[0]
   max_steps = first_data.sizes.get("time", 1)
@@ -171,12 +123,14 @@ def plot_data(
 
 # In[3]:
 
-
+import os
+script_dir = os.path.dirname(os.path.abspath(__name__))
+print("script_dir:\n", script_dir, "\n")
 # @title Authenticate with Google Cloud Storage
 
 # Gives you an authenticated client, in case you want to use a private bucket.
-gcs_client = storage.Client.create_anonymous_client()
-gcs_bucket = gcs_client.get_bucket("dm_graphcast")
+# gcs_client = storage.Client.create_anonymous_client()
+# gcs_bucket = gcs_client.get_bucket("dm_graphcast")
 dir_prefix = "gencast/"
 
 
@@ -188,28 +142,36 @@ dir_prefix = "gencast/"
 # 
 # 
 
-# In[4]:
+# In[5]:
 
 
 # @title Choose the model
 
-params_file_options = [
-    name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix+"params/"))
-    if (name := blob.name.removeprefix(dir_prefix+"params/"))]  # Drop empty string.
+# params_file_options = [
+#     name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix+"params/"))
+#     if (name := blob.name.removeprefix(dir_prefix+"params/"))]  # Drop empty string.
 
 latent_value_options = [int(2**i) for i in range(4, 10)]
-random_latent_size = widgets.Dropdown(
-    options=latent_value_options, value=512,description="Latent size:")
-random_attention_type = widgets.Dropdown(
-    options=["splash_mha", "triblockdiag_mha", "mha"], value="splash_mha", description="Attention:")
-random_mesh_size = widgets.IntSlider(
-    value=4, min=4, max=6, description="Mesh size:")
-random_num_heads = widgets.Dropdown(
-    options=[int(2**i) for i in range(0, 3)], value=4,description="Num heads:")
-random_attention_k_hop = widgets.Dropdown(
-    options=[int(2**i) for i in range(2, 5)], value=16,description="Attn k hop:")
-random_resolution = widgets.Dropdown(
-    options=["1p0", "0p25"], value="1p0", description="Resolution:")
+# random_latent_size = widgets.Dropdown(
+#     options=latent_value_options, value=512,description="Latent size:")
+# random_attention_type = widgets.Dropdown(
+#     options=["splash_mha", "triblockdiag_mha", "mha"], value="splash_mha", description="Attention:")
+# random_mesh_size = widgets.IntSlider(
+#     value=4, min=4, max=6, description="Mesh size:")
+# random_num_heads = widgets.Dropdown(
+#     options=[int(2**i) for i in range(0, 3)], value=4,description="Num heads:")
+# random_attention_k_hop = widgets.Dropdown(
+#     options=[int(2**i) for i in range(2, 5)], value=16,description="Attn k hop:")
+# random_resolution = widgets.Dropdown(
+#     options=["1p0", "0p25"], value="1p0", description="Resolution:")
+#
+
+random_latent_size = 512
+random_attention_type = "splash_mha"
+random_mesh_size = 4
+random_num_heads = 4
+random_attention_k_hop = 16
+random_resolution = "1p0"
 
 def update_latent_options(*args):
   def _latent_valid_for_attn(attn, latent, heads):
@@ -227,41 +189,42 @@ def update_latent_options(*args):
       if _latent_valid_for_attn(attn, latent, heads)]
 
 # Observe changes to only allow for valid combinations.
-random_attention_type.observe(update_latent_options, "value")
-random_latent_size.observe(update_latent_options, "value")
-random_num_heads.observe(update_latent_options, "value")
+# random_attention_type.observe(update_latent_options, "value")
+# random_latent_size.observe(update_latent_options, "value")
+# random_num_heads.observe(update_latent_options, "value")
 
-params_file = widgets.Dropdown(
-    options=[f for f in params_file_options if "Mini" in f],
-    description="Params file:",
-    layout={"width": "max-content"})
+# params_file = widgets.Dropdown(
+#     options=[f for f in params_file_options if "Mini" in f],
+#     description="Params file:",
+#     layout={"width": "max-content"})
+#
+# source_tab = widgets.Tab([
+#     params_file,
+#     widgets.VBox([
+#         random_attention_type,
+#         random_mesh_size,
+#         random_num_heads,
+#         random_latent_size,
+#         random_attention_k_hop,
+#         random_resolution
+#     ]),
+# ])
+# source_tab.set_title(0, "Checkpoint")
+# source_tab.set_title(1, "Random")
+# widgets.VBox([
+#     source_tab,
+#     widgets.Label(value="Run the next cell to load the model. Rerunning this cell clears your selection.")
+# ])
 
-source_tab = widgets.Tab([
-    params_file,
-    widgets.VBox([
-        random_attention_type,
-        random_mesh_size,
-        random_num_heads,
-        random_latent_size,
-        random_attention_k_hop,
-        random_resolution
-    ]),
-])
-source_tab.set_title(0, "Checkpoint")
-source_tab.set_title(1, "Random")
-widgets.VBox([
-    source_tab,
-    widgets.Label(value="Run the next cell to load the model. Rerunning this cell clears your selection.")
-])
 
-
-# In[1]:
+# In[6]:
 
 
 # @title Load the model
 
-source = source_tab.get_title(source_tab.selected_index)
-
+# source = source_tab.get_title(source_tab.selected_index)
+# GST
+source = "Checkpoint"
 if source == "Random":
   params = None  # Filled in below
   state = {}
@@ -283,7 +246,14 @@ if source == "Random":
   )
 else:
   assert source == "Checkpoint"
-  with gcs_bucket.blob(dir_prefix + f"params/{params_file.value}").open("rb") as f:
+  params_file_value = "GenCast 1p0deg Mini <2019.npz"
+  relative_params_file = '../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+  absolute_path = os.path.join(script_dir, relative_params_file)
+  print("absolute_path:\n", absolute_path, "\n")
+  params_file = absolute_path
+  with open(params_file, "rb") as f:
+      # with gcs_bucket.blob(dir_prefix + f"params/{params_file_value}").open("rb") as f:
+    print(f)
     ckpt = checkpoint.load(f, gencast.CheckPoint)
   params = ckpt.params
   state = {}
@@ -293,6 +263,10 @@ else:
   noise_config = ckpt.noise_config
   noise_encoder_config = ckpt.noise_encoder_config
   denoiser_architecture_config = ckpt.denoiser_architecture_config
+
+  denoiser_architecture_config.sparse_transformer_config.attention_type = "triblockdiag_mha"
+  denoiser_architecture_config.sparse_transformer_config.mask_type = "full"
+
   print("Model description:\n", ckpt.description, "\n")
   print("Model license:\n", ckpt.license, "\n")
 
@@ -311,14 +285,14 @@ else:
 # 
 # 
 
-# In[ ]:
+# In[8]:
 
 
 # @title Get and filter the list of available example datasets
 
-dataset_file_options = [
-    name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix + "dataset/"))
-    if (name := blob.name.removeprefix(dir_prefix+"dataset/"))]  # Drop empty string.
+# dataset_file_options = [
+#     name for blob in gcs_bucket.list_blobs(prefix=(dir_prefix + "dataset/"))
+#     if (name := blob.name.removeprefix(dir_prefix+"dataset/"))]  # Drop empty string.
 
 def parse_file_parts(file_name):
   return dict(part.split("-", 1) for part in file_name.split("_"))
@@ -336,81 +310,85 @@ def data_valid_for_model(file_name: str, params_file_name: str):
     source_matches = not source_matches
   return res_matches and source_matches
 
-dataset_file = widgets.Dropdown(
-    options=[
-        (", ".join([f"{k}: {v}" for k, v in parse_file_parts(option.removesuffix(".nc")).items()]), option)
-        for option in dataset_file_options
-        if data_valid_for_model(option, params_file.value)
-    ],
-    description="Dataset file:",
-    layout={"width": "max-content"})
-widgets.VBox([
-    dataset_file,
-    widgets.Label(value="Run the next cell to load the dataset. Rerunning this cell clears your selection and refilters the datasets that match your model.")
-])
+# dataset_file = widgets.Dropdown(
+#     options=[
+#         (", ".join([f"{k}: {v}" for k, v in parse_file_parts(option.removesuffix(".nc")).items()]), option)
+#         for option in dataset_file_options
+#         if data_valid_for_model(option, params_file.value)
+#     ],
+#     description="Dataset file:",
+#     layout={"width": "max-content"})
+# widgets.VBox([
+#     dataset_file,
+#     widgets.Label(value="Run the next cell to load the dataset. Rerunning this cell clears your selection and refilters the datasets that match your model.")
+# ])
 
 
-# In[ ]:
+# In[9]:
 
 
 # @title Load weather data
-
-with gcs_bucket.blob(dir_prefix+f"dataset/{dataset_file.value}").open("rb") as f:
+# dataset_file_value= "source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
+dataset_file_value = "../../checkpoints/gencast/gencast-dataset-source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
+dataset_file = os.path.join(script_dir, dataset_file_value)
+print("dataset_file_value:\n", dataset_file_value, "\n")
+# with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
+with open(dataset_file, "rb") as f:
   example_batch = xarray.load_dataset(f).compute()
 
 assert example_batch.dims["time"] >= 3  # 2 for input, >=1 for targets
 
-print(", ".join([f"{k}: {v}" for k, v in parse_file_parts(dataset_file.value.removesuffix(".nc")).items()]))
+print(", ".join([f"{k}: {v}" for k, v in parse_file_parts(dataset_file_value.removesuffix(".nc")).items()]))
 
 example_batch
 
 
-# In[ ]:
+# In[10]:
 
 
 # @title Choose data to plot
+#
+# plot_example_variable = widgets.Dropdown(
+#     options=example_batch.data_vars.keys(),
+#     value="2m_temperature",
+#     description="Variable")
+# plot_example_level = widgets.Dropdown(
+#     options=example_batch.coords["level"].values,
+#     value=500,
+#     description="Level")
+# plot_example_robust = widgets.Checkbox(value=True, description="Robust")
+# plot_example_max_steps = widgets.IntSlider(
+#     min=1, max=example_batch.dims["time"], value=example_batch.dims["time"],
+#     description="Max steps")
+#
+# widgets.VBox([
+#     plot_example_variable,
+#     plot_example_level,
+#     plot_example_robust,
+#     plot_example_max_steps,
+#     widgets.Label(value="Run the next cell to plot the data. Rerunning this cell clears your selection.")
+# ])
 
-plot_example_variable = widgets.Dropdown(
-    options=example_batch.data_vars.keys(),
-    value="2m_temperature",
-    description="Variable")
-plot_example_level = widgets.Dropdown(
-    options=example_batch.coords["level"].values,
-    value=500,
-    description="Level")
-plot_example_robust = widgets.Checkbox(value=True, description="Robust")
-plot_example_max_steps = widgets.IntSlider(
-    min=1, max=example_batch.dims["time"], value=example_batch.dims["time"],
-    description="Max steps")
 
-widgets.VBox([
-    plot_example_variable,
-    plot_example_level,
-    plot_example_robust,
-    plot_example_max_steps,
-    widgets.Label(value="Run the next cell to plot the data. Rerunning this cell clears your selection.")
-])
-
-
-# In[ ]:
+# In[11]:
 
 
 # @title Plot example data
 
 plot_size = 7
+#
+# data = {
+#     " ": scale(select(example_batch, plot_example_variable.value, plot_example_level.value, plot_example_max_steps.value),
+#               robust=plot_example_robust.value),
+# }
+# fig_title = plot_example_variable.value
+# if "level" in example_batch[plot_example_variable.value].coords:
+#   fig_title += f" at {plot_example_level.value} hPa"
+#
+# plot_data(data, fig_title, plot_size, plot_example_robust.value)
 
-data = {
-    " ": scale(select(example_batch, plot_example_variable.value, plot_example_level.value, plot_example_max_steps.value),
-              robust=plot_example_robust.value),
-}
-fig_title = plot_example_variable.value
-if "level" in example_batch[plot_example_variable.value].coords:
-  fig_title += f" at {plot_example_level.value} hPa"
 
-plot_data(data, fig_title, plot_size, plot_example_robust.value)
-
-
-# In[ ]:
+# In[12]:
 
 
 # @title Extract training and eval data
@@ -432,22 +410,61 @@ print("Eval Targets:  ", eval_targets.dims.mapping)
 print("Eval Forcings: ", eval_forcings.dims.mapping)
 
 
-# In[ ]:
+# In[13]:
 
 
 # @title Load normalization data
+relative_diffs_file = "../../checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
+diffs_file = os.path.join(script_dir, relative_diffs_file)
+print("diffs_file: ", str(diffs_file))
 
-with gcs_bucket.blob(dir_prefix+"stats/diffs_stddev_by_level.nc").open("rb") as f:
-  diffs_stddev_by_level = xarray.load_dataset(f).compute()
-with gcs_bucket.blob(dir_prefix+"stats/mean_by_level.nc").open("rb") as f:
-  mean_by_level = xarray.load_dataset(f).compute()
-with gcs_bucket.blob(dir_prefix+"stats/stddev_by_level.nc").open("rb") as f:
-  stddev_by_level = xarray.load_dataset(f).compute()
-with gcs_bucket.blob(dir_prefix+"stats/min_by_level.nc").open("rb") as f:
-  min_by_level = xarray.load_dataset(f).compute()
+relative_mean_file = "../../checkpoints/gencast/gencast-stats-mean_by_level.nc"
+mean_file = os.path.join(script_dir, relative_mean_file)
+print("mean_file: ", str(mean_file))
+
+relative_stddev_file = "../../checkpoints/gencast/gencast-stats-stddev_by_level.nc"
+stddev_file = os.path.join(script_dir, relative_stddev_file)
+print("stddev_file: ", str(stddev_file))
+
+relative_min_file = "../../checkpoints/gencast/gencast-stats-min_by_level.nc"
+min_file = os.path.join(script_dir, relative_min_file)
+print("min_file: ", str(min_file))
+
+with open(diffs_file, "rb") as f:
+    diffs_stddev_by_level = xarray.load_dataset(f).compute()
+with open(mean_file, "rb") as f:
+    mean_by_level = xarray.load_dataset(f).compute()
+with open(stddev_file, "rb") as f:
+    stddev_by_level = xarray.load_dataset(f).compute()
+with open(min_file, "rb") as f:
+    min_by_level = xarray.load_dataset(f).compute()
+
+# with gcs_bucket.blob(dir_prefix+"stats/diffs_stddev_by_level.nc").open("rb") as f:
+#   diffs_stddev_by_level = xarray.load_dataset(f).compute()
+# with gcs_bucket.blob(dir_prefix+"stats/mean_by_level.nc").open("rb") as f:
+#   mean_by_level = xarray.load_dataset(f).compute()
+# with gcs_bucket.blob(dir_prefix+"stats/stddev_by_level.nc").open("rb") as f:
+#   stddev_by_level = xarray.load_dataset(ff).compute()
+# with gcs_bucket.blob(dir_prefix+"stats/min_by_level.nc").open("rb") as f:
+#   min_by_level = xarray.load_dataset(f).compute()
 
 
 # In[ ]:
+
+
+# config.update("jax_platform_name", "cpu")
+
+# Set the environment variable
+# import os
+# os.environ['XLA_FLAGS'] = '--xla_force_host_platform_device_count=24'
+# # Verify it's set
+# print(f"XLA_FLAGS: {os.getenv('XLA_FLAGS')}")
+#
+# print(jax.devices())
+# jax.local_device_count(backend='cpu')
+
+
+# In[14]:
 
 
 # @title Build jitted functions, and possibly initialize random weights
@@ -519,9 +536,24 @@ if params is None:
   )
 
 
-loss_fn_jitted = jax.jit(
-    lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
-)
+# loss_fn_jitted = jax.jit(
+#     lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
+# )
+
+# loss_fn_jitted = jax.jit(
+#     lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
+# , backend='cpu')
+# grads_fn_jitted = jax.jit(grads_fn, backend='cpu')
+# run_forward_jitted = jax.jit(
+#     lambda rng, i, t, f: run_forward.apply(params, state, rng, i, t, f)[0]
+# , backend='cpu')
+# # We also produce a pmapped version for running in parallel.
+# run_forward_pmap = xarray_jax.pmap(run_forward_jitted, dim="sample", backend='cpu')
+
+# run_forward_jitted = jax.jit(
+#     lambda rng, inputs, targets_template, forcings: run_forward.apply(params, state, rng, inputs, targets_template, forcings)[0]
+# )
+#GST orig below
 grads_fn_jitted = jax.jit(grads_fn)
 run_forward_jitted = jax.jit(
     lambda rng, i, t, f: run_forward.apply(params, state, rng, i, t, f)[0]
@@ -537,14 +569,14 @@ run_forward_pmap = xarray_jax.pmap(run_forward_jitted, dim="sample")
 # 
 # Note that the `Autoregressive rollout` cell will take longer than the standard inference time to run when executed for the first time, as this will include code compilation time. This cost does not increase with the number of devices, it is a fixed-cost one time operation whose result can be reused across any number of devices.
 
-# In[ ]:
+# In[15]:
 
 
 # The number of ensemble members should be a multiple of the number of devices.
 print(f"Number of local devices {len(jax.local_devices())}")
 
 
-# In[ ]:
+# In[16]:
 
 
 # @title Autoregressive rollout (loop in python)
@@ -554,7 +586,8 @@ print("Targets: ", eval_targets.dims.mapping)
 print("Forcings:", eval_forcings.dims.mapping)
 
 num_ensemble_members = 8 # @param int
-rng = jax.random.PRNGKey(0)
+#rng = jax.random.PRNGKey(0)
+rng = jax.random.key(0)
 # We fold-in the ensemble member, this way the first N members should always
 # match across different runs which use take the same inputs, regardless of
 # total ensemble size.
@@ -562,6 +595,23 @@ rngs = np.stack(
     [jax.random.fold_in(rng, i) for i in range(num_ensemble_members)], axis=0)
 
 chunks = []
+# #chex.fake_pmap
+# for chunk in rollout.chunked_prediction_generator_multiple_runs(
+#     # Use pmapped version to parallelise across devices.
+#     # predictor_fn=run_forward_pmap,
+#     predictor_fn=run_forward_jitted,
+#     rngs=rngs,
+#     inputs=eval_inputs,
+#     targets_template=eval_targets * np.nan,
+#     forcings=eval_forcings,
+#     num_steps_per_chunk = 1,
+#     num_samples = num_ensemble_members,
+#     # pmap_devices=jax.local_devices()
+#     ):
+#     chunks.append(chunk)
+# predictions = xarray.combine_by_coords(chunks)
+
+# GST
 for chunk in rollout.chunked_prediction_generator_multiple_runs(
     # Use pmapped version to parallelise across devices.
     predictor_fn=run_forward_pmap,
@@ -575,67 +625,68 @@ for chunk in rollout.chunked_prediction_generator_multiple_runs(
     ):
     chunks.append(chunk)
 predictions = xarray.combine_by_coords(chunks)
+print("predictions:\n", predictions)
+print(predictions['2m_temperature'].isel(sample=0).squeeze().to_numpy())
 
-
-# In[ ]:
+# In[17]:
 
 
 # @title Choose predictions to plot
 
-plot_pred_variable = widgets.Dropdown(
-    options=predictions.data_vars.keys(),
-    value="2m_temperature",
-    description="Variable")
-plot_pred_level = widgets.Dropdown(
-    options=predictions.coords["level"].values,
-    value=500,
-    description="Level")
-plot_pred_robust = widgets.Checkbox(value=True, description="Robust")
-plot_pred_max_steps = widgets.IntSlider(
-    min=1,
-    max=predictions.dims["time"],
-    value=predictions.dims["time"],
-    description="Max steps")
-plot_pred_samples = widgets.IntSlider(
-    min=1,
-    max=num_ensemble_members,
-    value=num_ensemble_members,
-    description="Samples")
+# plot_pred_variable = widgets.Dropdown(
+#     options=predictions.data_vars.keys(),
+#     value="2m_temperature",
+#     description="Variable")
+# plot_pred_level = widgets.Dropdown(
+#     options=predictions.coords["level"].values,
+#     value=500,
+#     description="Level")
+# plot_pred_robust = widgets.Checkbox(value=True, description="Robust")
+# plot_pred_max_steps = widgets.IntSlider(
+#     min=1,
+#     max=predictions.dims["time"],
+#     value=predictions.dims["time"],
+#     description="Max steps")
+# plot_pred_samples = widgets.IntSlider(
+#     min=1,
+#     max=num_ensemble_members,
+#     value=num_ensemble_members,
+#     description="Samples")
+#
+# widgets.VBox([
+#     plot_pred_variable,
+#     plot_pred_level,
+#     plot_pred_robust,
+#     plot_pred_max_steps,
+#     plot_pred_samples,
+#     widgets.Label(value="Run the next cell to plot the predictions. Rerunning this cell clears your selection.")
+# ])
 
-widgets.VBox([
-    plot_pred_variable,
-    plot_pred_level,
-    plot_pred_robust,
-    plot_pred_max_steps,
-    plot_pred_samples,
-    widgets.Label(value="Run the next cell to plot the predictions. Rerunning this cell clears your selection.")
-])
 
-
-# In[ ]:
+# In[18]:
 
 
 # @title Plot prediction samples and diffs
 
-plot_size = 5
-plot_max_steps = min(predictions.dims["time"], plot_pred_max_steps.value)
+# plot_size = 5
+# plot_max_steps = min(predictions.dims["time"], plot_pred_max_steps.value)
+#
+# fig_title = plot_pred_variable.value
+# if "level" in predictions[plot_pred_variable.value].coords:
+#   fig_title += f" at {plot_pred_level.value} hPa"
+#
+# for sample_idx in range(plot_pred_samples.value):
+#   data = {
+#       "Targets": scale(select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
+#       "Predictions": scale(select(predictions.isel(sample=sample_idx), plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
+#       "Diff": scale((select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps) -
+#                           select(predictions.isel(sample=sample_idx), plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
+#                         robust=plot_pred_robust.value, center=0),
+#   }
+#   display.display(plot_data(data, fig_title + f", Sample {sample_idx}", plot_size, plot_pred_robust.value))
 
-fig_title = plot_pred_variable.value
-if "level" in predictions[plot_pred_variable.value].coords:
-  fig_title += f" at {plot_pred_level.value} hPa"
 
-for sample_idx in range(plot_pred_samples.value):
-  data = {
-      "Targets": scale(select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
-      "Predictions": scale(select(predictions.isel(sample=sample_idx), plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
-      "Diff": scale((select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps) -
-                          select(predictions.isel(sample=sample_idx), plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
-                        robust=plot_pred_robust.value, center=0),
-  }
-  display.display(plot_data(data, fig_title + f", Sample {sample_idx}", plot_size, plot_pred_robust.value))
-
-
-# In[ ]:
+# In[19]:
 
 
 # @title Plot ensemble mean and CRPS
@@ -655,21 +706,21 @@ def crps(targets, predictions, bias_corrected = True):
   return mean_abs_err - 0.5 * mean_abs_diff
 
 
-plot_size = 5
-plot_max_steps = min(predictions.dims["time"], plot_pred_max_steps.value)
-
-fig_title = plot_pred_variable.value
-if "level" in predictions[plot_pred_variable.value].coords:
-  fig_title += f" at {plot_pred_level.value} hPa"
-
-data = {
-    "Targets": scale(select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
-    "Ensemble Mean": scale(select(predictions.mean(dim=["sample"]), plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
-    "Ensemble CRPS": scale(crps((select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
-                        select(predictions, plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
-                      robust=plot_pred_robust.value, center=0),
-}
-display.display(plot_data(data, fig_title, plot_size, plot_pred_robust.value))
+# plot_size = 5
+# plot_max_steps = min(predictions.dims["time"], plot_pred_max_steps.value)
+#
+# fig_title = plot_pred_variable.value
+# if "level" in predictions[plot_pred_variable.value].coords:
+#   fig_title += f" at {plot_pred_level.value} hPa"
+#
+# data = {
+#     "Targets": scale(select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
+#     "Ensemble Mean": scale(select(predictions.mean(dim=["sample"]), plot_pred_variable.value, plot_pred_level.value, plot_max_steps), robust=plot_pred_robust.value),
+#     "Ensemble CRPS": scale(crps((select(eval_targets, plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
+#                         select(predictions, plot_pred_variable.value, plot_pred_level.value, plot_max_steps)),
+#                       robust=plot_pred_robust.value, center=0),
+# }
+# display.display(plot_data(data, fig_title, plot_size, plot_pred_robust.value))
 
 
 # # Train the model
@@ -678,7 +729,15 @@ display.display(plot_data(data, fig_title, plot_size, plot_pred_robust.value))
 # 
 # The first time executing the cell takes more time, as it includes the time to jit the function.
 
-# In[ ]:
+# In[21]:
+
+
+loss_fn_jitted = jax.jit(
+    lambda rng, i, t, f: loss_fn.apply(params, state, rng, i, t, f)[0]
+)
+
+
+# In[22]:
 
 
 # @title Loss computation
@@ -690,7 +749,7 @@ loss, diagnostics = loss_fn_jitted(
 print("Loss:", float(loss))
 
 
-# In[ ]:
+# In[23]:
 
 
 # @title Gradient computation
@@ -702,4 +761,10 @@ loss, diagnostics, next_state, grads = grads_fn_jitted(
     forcings=train_forcings)
 mean_grad = np.mean(jax.tree_util.tree_flatten(jax.tree_util.tree_map(lambda x: np.abs(x).mean(), grads))[0])
 print(f"Loss: {loss:.4f}, Mean |grad|: {mean_grad:.6f}")
+
+
+# In[ ]:
+
+
+
 
