@@ -101,3 +101,7 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core-gencast.sif gencast
 ```
+**Run Inference for GraphCast Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core-gencast.sif graphcast
+```
