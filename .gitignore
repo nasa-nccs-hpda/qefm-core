@@ -167,3 +167,4 @@ qefm/models/src/FMAurora/predictions-for-ERA5-rollout-GT.py
 qefm/models/src/FMZeusAI/
 qefm/models/src/__FMZeusAI/
 requirements/Dockerfile-FM.core.debian.arm-works
+.vscode/
