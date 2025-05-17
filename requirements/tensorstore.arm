@@ -1,0 +1,13 @@
+## Start with Debian slim-bullseye - https://medium.com/@arif.rahman.rhm/choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye-5586bac8b4c9
+# Choose Slim Bullseye if:
+# You want a newer base image with reasonable size.
+# You prefer the familiarity of Debian while benefiting from some size reduction.
+
+FROM python:3.10-slim-bullseye
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+#RUN pip install xarray-tensorstore
+ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]

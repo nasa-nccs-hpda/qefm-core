@@ -1,0 +1,57 @@
+## Start with Debian slim-bullseye - https://medium.com/@arif.rahman.rhm/choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye-5586bac8b4c9
+# Choose Slim Bullseye if:
+# You want a newer base image with reasonable size.
+# You prefer the familiarity of Debian while benefiting from some size reduction.
+
+FROM python:3.10-slim-bullseye
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+# INstall qefm-core source code
+RUN apt-get update && apt-get install -y git
+#RUN mkdir /app      
+#RUN cd /app         
+RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git
+RUN ls -alRt /qefm-core
+#Set working directory
+#WORKDIR /app/qefm-core
+
+#WORKDIR /data
+#RUN git clone https://github.com/nasa-nccs-hpda/qefm-core.git /data/app
+#WORKDIR /data/app
+
+# Option 1: RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast:/qefm-core/qefm/models/src/FMGenCast/graphcast"
+# Option 2: ENV PYTHONPATH="$PYTHONPATH:/app"
+
+#RUN export PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+#ENV PYTHONPATH "${PYTHONPATH}:/path/to/your/external/directory"
+#ENV PYTHONPATH="/qefm-core/qefm/models/src/FMGenCast"
+#RUN pip install xarray-tensorstore
+
+RUN pip install --upgrade setuptools pip wheel
+RUN pip install nvidia-pyindex
+RUN pip install nvidia-cuda-runtime-cu12
+
+# GPU dependencies
+RUN pip install --upgrade "jax[cuda12]"
+
+# GenCast dependencies
+RUN pip install --upgrade xarray netCDF4 h5netcdf
+RUN pip install IPython
+
+RUN pip install dm-haiku
+RUN pip install dm-tree
+RUN pip install matplotlib
+RUN pip install chex
+RUN pip install jraph
+RUN pip install dask
+RUN pip install trimesh
+
+RUN pip install Pint
+RUN pip install tree_math 
+RUN pip install scikit-learn 
+RUN pip install tensorstore
+RUN pip install rtree
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]
