@@ -184,5 +184,4 @@ qefm/models/src/FMAifs/aifs-cpu-inference.py
 qefm/models/src/FMAifs/aifs-gpu-inference-viz.py
 qefm/models/src/FMAifs/data.p
 qefm/models/src/FMAurora/predictions-for-ERA5-rollout-GT.py
-qefm/models/src/FMZeusAI/GEO-ATMS-VIIRS-MIRS.test.tar
-qefm/models/src/FMZeusAI/zeus.tar
+qefm/models/src/FMZeusAI/
