@@ -79,7 +79,7 @@ script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
 
 dir_prefix = "gencast/"
-input_source = "era5" # @param ["era5", "geos"]
+input_source = "geos" # @param ["era5", "geos"]
 
 latent_value_options = [int(2**i) for i in range(4, 10)]
 
