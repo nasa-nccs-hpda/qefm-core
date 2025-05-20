@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
 fmodel = "FMGenCast"
-file_path = input_dir / fmodel / 'raw'
+file_path = input_dir / fmodel / 'raw' / 'Y2024'
 yyyy = args.year
 mm = args.month
 dd = args.day
@@ -33,7 +33,7 @@ ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T12:00:00")
 ds_org = ds_org.squeeze(dim="batch")
 
 # add variable geopotential at surface
-source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast")
+source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']

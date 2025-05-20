@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/")
 fmodel = "FMGenCast"
-file_path = input_dir / fmodel
+file_path = input_dir / fmodel / '12hr' / 'Y2024'
 yyyy = args.year
 mm = args.month
 dd = args.day
