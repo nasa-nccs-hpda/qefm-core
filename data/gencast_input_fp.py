@@ -19,22 +19,24 @@ def expand_dims(ds, steps):
     ds_extended = xr.concat([ds, repeated], dim='time')
     return ds_extended
 
-# parser = argparse.ArgumentParser(description="Download GenCast input data")
-# parser.add_argument("--year", "-y", type=str, help="Year of the data")
-# parser.add_argument("--month", "-m", type=str, help="Month of the data")
-# parser.add_argument("--day", "-d", type=str, help="Day of the data")
-# parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
-# parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
+parser = argparse.ArgumentParser(description="Download GenCast input data")
+parser.add_argument("--year", "-y", type=str, help="Year of the data")
+parser.add_argument("--month", "-m", type=str, help="Month of the data")
+parser.add_argument("--day", "-d", type=str, help="Day of the data")
+parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
+parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
 
-# args = parser.parse_args()
-# date_str = f"{args.year}-{args.month}-{args.day}"
-date_str = '2024-12-12'
-# nsteps = int(args.nsteps)
-nsteps = 22 
+args = parser.parse_args()
+date_str = f"{args.year}-{args.month}-{args.day}"
+#date_str = '2024-12-12'
+nsteps = int(args.nsteps)
+
+#nsteps = 22 
 GRAV = 9.80665
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
-output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples")
+#output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos")
 
 
 levs = np.array(
@@ -88,9 +90,12 @@ nlev = len(levs)
 #     storage_options={"token": None}  # Public dataset, so no authentication needed
 # )[var_list].sel(time=time_steps, level=levs)
 
-# get surface dataset
-input_root = Path("/discover/nobackup/jli30/fromArlindo/output")
-fs = sorted(input_root.glob("*20241212*.nc4"))
+# get dataset
+input_root = Path('/discover/nobackup/projects/QEFM/data/FMGenCast/geos-fp-interp')
+input_path = input_root / f"Y{args.year}" / f"M{args.month}"
+stamp = f"{args.year}{args.month}{args.day}"
+#input_root = Path("/discover/nobackup/jli30/fromArlindo/output")
+fs = sorted(input_root.glob(f"f5295_fp.*{stamp}*.nc4"))
 ds = xr.open_mfdataset(fs)
 
 
@@ -127,7 +132,8 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 #ds['time']=ds['time']/np.timedelta64(1, 's')
 
 # add land_sea_mask
-file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024 \
+    gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 ds_lsm = xr.open_dataset(file)
 ds['land_sea_mask'] = ds_lsm['land_sea_mask']
 # using the sea_surface_temperature from the original dataset
