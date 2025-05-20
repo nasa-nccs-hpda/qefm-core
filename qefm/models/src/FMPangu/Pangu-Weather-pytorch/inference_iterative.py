@@ -60,7 +60,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_data_dir', type=str, default='output_data', help='The directory of your output data')
     parser.add_argument('--ckpt_path', type=str, default='./', help='The path to the pre-trained model')
     parser.add_argument('--start_time', type=str, default='2024-12-01T00:00:00', help='The start time of the inference')
-    parser.add_argument('--time_steps', type=int, default=2, help='The number of time steps to run the inference')
+    parser.add_argument('--time_steps', type=int, default=40, help='The number of time steps to run the inference')
     args = parser.parse_args()
 
     # The directory of your input and output data
