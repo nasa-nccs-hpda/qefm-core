@@ -20,7 +20,8 @@ nsteps = int(args.nsteps)
 start_time = f"{date_str}T00:00"
 time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
 #output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples")
-output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
+#output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/0p25")
 
 
 levs = np.array(
