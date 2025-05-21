@@ -245,7 +245,7 @@ if __name__ == "__main__":
     # Parameters
     input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
     fmodel = "FMGenCast"
-    file_path = input_dir / fmodel / 'raw'
+    file_path = input_dir / fmodel / 'raw' / '0p25'
     yyyy = args.year
     mm = args.month
     dd = args.day
