@@ -178,7 +178,8 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-01.nc"
 #dataset_file_value = "/discover/nobackup/jli30/QEFM/qefm-core/data/gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-10.nc"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
-dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples"
+#dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples"
+dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024"
 dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 dataset_file = os.path.join(dataset_dir, dataset_file_value)
