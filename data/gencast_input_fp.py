@@ -95,9 +95,12 @@ input_root = Path('/discover/nobackup/projects/QEFM/data/FMGenCast/geos-fp-inter
 input_path = input_root / f"Y{args.year}" / f"M{args.month}"
 stamp = f"{args.year}{args.month}{args.day}"
 #input_root = Path("/discover/nobackup/jli30/fromArlindo/output")
-fs = sorted(input_root.glob(f"f5295_fp.*{stamp}*.nc4"))
-ds = xr.open_mfdataset(fs)
-
+fs = sorted(input_path.glob(f"f5295_fp.*{stamp}*.nc4"))
+print(fs)
+#ds = xr.open_mfdataset(fs[:2], combine='nested', concat_dim='time', chunks=None)
+ds_2d = xr.concat([xr.open_dataset(fp) for fp in fs[:2]], dim='time')
+ds_3d = xr.concat([xr.open_dataset(fp) for fp in fs[2:]], dim='time')
+ds = xr.merge([ds_2d, ds_3d])
 
 # coarsen the data & reverse the latitude
 # if args.coarsen:
@@ -132,8 +135,7 @@ ds['time']=ds['time']-ds['time'].isel(time=0)
 #ds['time']=ds['time']/np.timedelta64(1, 's')
 
 # add land_sea_mask
-file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024 \
-    gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
+file = f"/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024/gencast-dataset-source-era5_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 ds_lsm = xr.open_dataset(file)
 ds['land_sea_mask'] = ds_lsm['land_sea_mask']
 # using the sea_surface_temperature from the original dataset
