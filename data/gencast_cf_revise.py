@@ -9,9 +9,10 @@ def get_phis(ds, fmodel, yyyy, mm, dd):
     Get surface geopotential height from input file
     """
     source = Path("/discover/nobackup/projects/QEFM/data")
-    file_path = source / fmodel
-    tmp_file = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
-    ds_temp = xr.open_dataset(tmp_file)
+    file_path = source / fmodel / '0p25'
+    tmp_file = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}*.nc"))
+    print("INside ", tmp_file)
+    ds_temp = xr.open_dataset(tmp_file[0])
     ds['PHIS'] = ds_temp['geopotential_at_surface']
     return ds
 
@@ -257,10 +258,11 @@ if __name__ == "__main__":
     ens_num = 8
 
     # Read a file
-    file = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
-    ds_org = xr.open_dataset(file)
+    file = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))
+    ds_org = xr.open_dataset(file[0], engine='netcdf4')
     # For GenCast Only, remove "batch"
     ds_org = ds_org.squeeze(dim="batch")
+    print(ds_org)
 
     # add variable geopotential at surface
     ds_org = get_phis(ds_org, fmodel, yyyy, mm, dd)
@@ -269,10 +271,13 @@ if __name__ == "__main__":
         ds = ds_org.sel(time=ctime).expand_dims("time")
 
         for idx in range(ens_num+1):
+            print(idx)
+            print(ds)
+            print(ds.isel(sample=idx))
             if idx == 8:
                 ds = ds.mean(dim='sample').squeeze()
             else:
-                ds = ds.sel(time=ctime, sample=idx).squeuze()
+                ds = ds.isel(sample=idx)
             
             ds = proc_slice(ds, ref_date, ctime)
             print(ds)
