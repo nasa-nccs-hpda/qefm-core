@@ -14,7 +14,8 @@ args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
 fmodel = "FMGenCast"
-file_path = input_dir / fmodel / 'raw' / 'Y2024'
+#file_path = input_dir / fmodel / 'raw' / 'Y2024'
+file_path = input_dir / fmodel / 'raw' / '0p25'
 yyyy = args.year
 mm = args.month
 dd = args.day
@@ -33,7 +34,8 @@ ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T12:00:00")
 ds_org = ds_org.squeeze(dim="batch")
 
 # add variable geopotential at surface
-source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
+#source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
+source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/0p25")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
@@ -246,9 +248,9 @@ for ctime in ds_org.time.values:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/0p25/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-1.0_levels-13_ens-mean.nc"
+    fname = f"{fmodel}-prediction-era5_date-{tstamp}_res-0.25_levels-13_ens-mean.nc"
     output_file = output_dir / fname
     ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 
