@@ -271,16 +271,13 @@ if __name__ == "__main__":
         ds = ds_org.sel(time=ctime).expand_dims("time")
 
         for idx in range(ens_num+1):
-            print(idx)
-            print(ds)
-            print(ds.isel(sample=idx))
             if idx == 8:
-                ds = ds.mean(dim='sample').squeeze()
+                ds_tmp = ds.mean(dim='sample').squeeze()
             else:
-                ds = ds.isel(sample=idx)
+                ds_tmp = ds.isel(sample=idx)
             
-            ds = proc_slice(ds, ref_date, ctime)
-            print(ds)
+            ds_out, tstamp = proc_slice(ds_tmp, ref_date, ctime)
+            print(ds_out)
 
 '''
 
