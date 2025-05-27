@@ -1,4 +1,4 @@
-name: xarray-tensorstore
+name: QEFM to Docker Hub - all - amd/arm64 - (Debian slim-bullseye)
 on:
   workflow_dispatch:
 
@@ -63,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v6.16.0
         with:
           context: .
-          file: ./requirements/tensorstore.arm
+          file: ./requirements/Dockerfile-FM.core.all
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: nasanccs/xarray-tensorstore:latest
+          tags: nasanccs/qefm-core:latest

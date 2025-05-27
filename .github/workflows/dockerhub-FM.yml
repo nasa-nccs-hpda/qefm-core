@@ -65,4 +65,4 @@ jobs:
           context: .
           file: ./requirements/Dockerfile-FM.core
           push: true
-          tags: nasanccs/qefm-core:latest
+          tags: nasanccs/qefm-core-debian:latest
