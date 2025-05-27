@@ -25,7 +25,7 @@ RUN pip install pyglet
 RUN pip install manifold3d
 RUN pip install lxml
 RUN pip install drawsvg
-RUN pip install vhacdx
+#RUN pip install vhacdx
 RUN pip install xxhash
 
 # Aurora dependencies
