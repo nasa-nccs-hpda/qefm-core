@@ -12,7 +12,7 @@ ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm
 # GraphCast dependencies
 #RUN pip install git+git://github.com/deepmind/jraph.git
 RUN pip install jax
-RUN pip install cartopy
+#RUN pip install cartopy
 #RUN pip install Cartopy
 RUN pip install chex
 RUN pip install dm-haiku
