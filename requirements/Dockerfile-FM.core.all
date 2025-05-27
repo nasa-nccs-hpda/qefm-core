@@ -10,7 +10,7 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
 
 # GraphCast dependencies
-RUN pip install git+git://github.com/deepmind/jraph.git
+#RUN pip install git+git://github.com/deepmind/jraph.git
 RUN pip install jax
 RUN pip install Cartopy
 RUN pip install chex
