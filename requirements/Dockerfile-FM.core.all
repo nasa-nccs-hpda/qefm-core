@@ -37,7 +37,8 @@ RUN pip install xxhash
 # Aurora dependencies
 RUN pip install cdsapi
 
-RUN pip install --upgrade nvidia-cudnn-cu11
+#RUN pip install --upgrade nvidia-cudnn-cu11
+RUN pip install nvidia-cudnn-cu11==9.8.0.87
 RUN pip install --no-cache-dir --no-deps torch
 
 #RUN pip install cuda-python
