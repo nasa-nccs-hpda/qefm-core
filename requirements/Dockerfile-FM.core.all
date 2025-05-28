@@ -39,6 +39,7 @@ RUN pip install cdsapi
 
 RUN pip install --no-cache-dir --no-deps torch
 
+RUN pip install cuda-python
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
