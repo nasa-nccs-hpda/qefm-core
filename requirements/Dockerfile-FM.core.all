@@ -9,12 +9,11 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 
 ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
 
-RUN pip install git+git://github.com/deepmind/jraph.git
-RUN pip install Cartopy
-RUN pip install --index-url=https://blpapi.bloomberg.com/repository/releases/python/simple blpapi
-RUN pip install embreex==2.17.7.post5
-RUN pip install vhacdx
-
+#RUN pip install git+git://github.com/deepmind/jraph.git
+#RUN pip install Cartopy
+#RUN pip install --index-url=https://blpapi.bloomberg.com/repository/releases/python/simple blpapi
+#RUN pip install embreex==2.17.7.post5
+#RUN pip install vhacdx
 
 # GraphCast dependencies
 #RUN pip install git+git://github.com/deepmind/jraph.git
@@ -38,7 +37,7 @@ RUN pip install xxhash
 # Aurora dependencies
 RUN pip install cdsapi
 
-RUN pip install torch
+RUN pip install --no-cache-dir --no-deps torch
 
 
 HEALTHCHECK NONE
