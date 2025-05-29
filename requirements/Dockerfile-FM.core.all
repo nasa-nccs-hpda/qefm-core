@@ -46,6 +46,9 @@ RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/w
 
 RUN pip install nvidia-cudnn-cu11==9.8.0.87
 
+RUN pip install wandb
+RUN pip install huggingface-hub
+RUN pip install onnx
 
 #RUN pip install --no-cache-dir --no-deps torch
 #conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
