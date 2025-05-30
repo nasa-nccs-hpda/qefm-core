@@ -9,39 +9,23 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 
 ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
 
-#RUN pip install git+git://github.com/deepmind/jraph.git
-#RUN pip install Cartopy
-#RUN pip install --index-url=https://blpapi.bloomberg.com/repository/releases/python/simple blpapi
-#RUN pip install embreex==2.17.7.post5
-#RUN pip install vhacdx
-
 # GraphCast dependencies
-#RUN pip install git+git://github.com/deepmind/jraph.git
 RUN pip install jax
-#RUN pip install cartopy
-#RUN pip install Cartopy
 RUN pip install chex
 RUN pip install dm-haiku
 
 RUN pip install trimesh
 RUN pip install Rtree
 RUN pip install pyglet
-#RUN pip install --index-url=https://blpapi.bloomberg.com/repository/releases/python/simple blpapi
-#RUN pip install embreex==2.17.7.post5
 RUN pip install manifold3d
 RUN pip install lxml
 RUN pip install drawsvg
-#RUN pip install vhacdx
 RUN pip install xxhash
 
 # Aurora dependencies
 RUN pip install cdsapi
 
-#RUN pip install --upgrade nvidia-cudnn-cu11
-#RUN pip install nvidia-cudnn-cu11==9.8.0.87
-
 RUN pip uninstall torch torchvision
-#RUN pip cache purge
 RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/whl/torch_stable.html
 
 RUN pip install nvidia-cudnn-cu11==9.8.0.87
@@ -52,15 +36,12 @@ RUN pip install onnx
 
 RUN pip install onnxruntime
 RUN pip install ruamel.yaml
-#RUN pip install ruamel.yaml==0.9.7
 RUN pip install "numpy<2"
 RUN pip install einops
 RUN pip install timm
 
-#RUN pip install --no-cache-dir --no-deps torch
-#conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-
-#RUN pip install cuda-python
+# Test after all good
+RUN pip install torch-harmonics
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]

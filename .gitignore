@@ -174,3 +174,4 @@ qefm/models/src/FMZeusAI/GEO-ATMS-VIIRS-MIRS.test.tar
 qefm/models/src/FMZeusAI/zeus.tar
 
 qefm/models/src/FMAardvarkWeather/
+requirements/Dockerfile-FM.core copy.all
