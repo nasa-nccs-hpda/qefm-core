@@ -41,7 +41,8 @@ RUN pip install einops
 RUN pip install timm
 
 # Test after all good
-RUN pip install torch-harmonics
+#RUN pip install torch-harmonics
+RUN pip install --no-cache-dir --no-deps  torch-harmonics
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
