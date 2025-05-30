@@ -40,9 +40,8 @@ RUN pip install "numpy<2"
 RUN pip install einops
 RUN pip install timm
 
-# Test after all good
-#RUN pip install torch-harmonics
-RUN pip install --no-cache-dir --no-deps  torch-harmonics
+# SFNO - cannot import name 'custom_fwd' from 'torch.amp' 
+#RUN pip install --no-cache-dir --no-deps  torch-harmonics
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
