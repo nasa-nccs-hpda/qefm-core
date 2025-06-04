@@ -18,7 +18,8 @@ PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "s
 PARAM_PL = ["gh", "t", "u", "v", "w", "q"]
 LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50]
 
-DATE = datetime.datetime(2025, 3, 20, 6)
+DATE = datetime.datetime(2025, 6, 3, 6)
+#DATE = datetime.datetime(2025, 3, 20, 6)
 print("Initial date is", DATE)
 
 def get_open_data(param, levelist=[]):
