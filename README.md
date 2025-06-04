@@ -99,3 +99,7 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core-all.sif   gencast
 ```
+**Run Inference for All Supported Foundation Models**:
+```shell
+./tests/fm-inference.sh qefm-core-all.sif   ensemble
+```
