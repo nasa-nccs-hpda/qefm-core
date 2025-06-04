@@ -66,8 +66,8 @@ To run a specific Foundation Model task with **qefm-core**, use the following c
 | Command-line-argument | Description                                         |Required/Optional/Flag | Default  | Example                                                                                  |
 | --------------------- |:----------------------------------------------------|:---------|:---------|:-----------------------------------------------------------------------------------------|
 | `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      | `/discover/nobackup/projects/QEFM/qefm-core`                                             |
-| `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core.sif`                                                                          |
-| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi` , `sfno` |
+| `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core-all.sif `                                                                          |
+| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi`|
 
 ### <b> Examples </b>
 
@@ -77,31 +77,25 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```
 **Run Inference for Aurora Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif aurora
+./tests/fm-inference.sh qefm-core-all.sif  aurora
 ```
 **Run Inference for Fourcastnet Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif fourcastnet
+./tests/fm-inference.sh qefm-core-all.sif  fourcastnet
 ```
 **Run Inference for Pangu Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif pangu
+./tests/fm-inference.sh qefm-core-all.sif  pangu
 ```
 **Run Inference for Privthi Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif privthi
-```
-**Run Inference for SFNO Foundation Model**:
-```shell
-./tests/fm-inference.sh qefm-core.sif sfno
+./tests/fm-inference.sh qefm-core-all.sif  privthi
 ```
 **Run Inference for GraphCast Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core.sif graphcast
+./tests/fm-inference.sh qefm-core-all.sif  graphcast
 ```
-*** _NOTE:  GenCast leverages a separate container that hosts specialized dependencies (i.e., JAX)._
-
 **Run Inference for GenCast Foundation Model**:
 ```shell
-./tests/fm-inference.sh qefm-core-gencast.sif gencast
+./tests/fm-inference.sh qefm-core-all.sif   gencast
 ```
