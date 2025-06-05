@@ -1,0 +1,16 @@
+## Start with Debian slim-bullseye - https://medium.com/@arif.rahman.rhm/choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye-5586bac8b4c9
+
+ARG VERSION_DATE=latest
+ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
+
+# Import NVIDIA Modulus container as the BASE Image (Modulus base image)
+FROM ${FROM_IMAGE}:${VERSION_DATE}
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+# AIFS dependencies
+RUN pip install -q anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1
+RUN pip install -q earthkit-regrid==0.3.4 ecmwf-opendata
+RUN pip install -q flash_attn
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]
