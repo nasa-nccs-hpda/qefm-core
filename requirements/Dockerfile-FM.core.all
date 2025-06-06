@@ -43,5 +43,7 @@ RUN pip install timm
 # SFNO - cannot import name 'custom_fwd' from 'torch.amp' 
 #RUN pip install --no-cache-dir --no-deps  torch-harmonics
 
+# AIFS dependencies
+
 HEALTHCHECK NONE
 ENTRYPOINT [""]
