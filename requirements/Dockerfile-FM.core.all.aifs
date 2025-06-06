@@ -7,6 +7,8 @@ ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
 FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
+RUN apt-get install nvidia-cuda-toolkit
+
 RUN apt-get update && apt-get install -y curl
 RUN apt-get install -y sed
 RUN apt-get install -y sudo
