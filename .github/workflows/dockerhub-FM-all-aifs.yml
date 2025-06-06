@@ -64,7 +64,8 @@ jobs:
         with:
           context: .
           file: ./requirements/Dockerfile-FM.core.all.aifs
-          platforms: linux/amd64
+          #platforms: linux/amd64
+          platforms: linux/arm64
           #platforms: linux/amd64,linux/arm64
           push: true
           tags: nasanccs/qefm-core-debian-all-aifs:latest
