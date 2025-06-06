@@ -38,9 +38,7 @@ RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata
 #RUN pip install flash-attn --no-build-isolation
 
 WORKDIR /app
-
 RUN git clone https://github.com/HazyResearch/flash-attention.git
-
 WORKDIR /app/flash-attention
 RUN echo "PYTHONPATH = $PYTHONPATH"
 ENV PYTHONPATH="$PYTHONPATH:/app/flash-attention"
@@ -48,8 +46,8 @@ RUN echo "PYTHONPATH = $PYTHONPATH"
 
 RUN pwd
 RUN ls -alt
-RUN python setup.py install
-#RUN pip install -e .
+#RUN python setup.py install
+RUN pip install -e .
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
