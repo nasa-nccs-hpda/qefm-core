@@ -47,7 +47,7 @@ RUN echo "PYTHONPATH = $PYTHONPATH"
 RUN pwd
 RUN ls -alt
 #RUN python setup.py install
-RUN pip install -e .
+#RUN pip install -e .
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
