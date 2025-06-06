@@ -8,17 +8,23 @@ FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # AIFS dependencies
-RUN pip install -q anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1
-RUN pip install -q earthkit-regrid==0.3.4 ecmwf-opendata
+#RUN pip install -q anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1
+#RUN pip install -q earthkit-regrid==0.3.4 ecmwf-opendata
 #RUN pip install -q flash_attn
 
-#RUN pip install anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
-#RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata 
+ENV NVTE_FLASH_ATTN=0
+ENV NVTE_FLASH_ATTN_2=0
+
+RUN pip install anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
+RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata 
 #RUN pip install flash-attn --no-build-isolation
 
 RUN git clone https://github.com/HazyResearch/flash-attention.git
 RUN cd flash-attention
-RUN pip install -e .
+RUN pwd
+RUN ls -alt
+RUN python setup.py install
+#RUN pip install -e .
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
