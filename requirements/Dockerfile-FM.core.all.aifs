@@ -12,9 +12,9 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 #RUN pip install -q earthkit-regrid==0.3.4 ecmwf-opendata
 #RUN pip install -q flash_attn
 
-RUN pip install -q anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
-RUN pip install -q earthkit-regrid==0.4.0 ecmwf-opendata 
-RUN pip install -q flash_attn
+RUN pip install anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
+RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata 
+RUN pip install flash_attn
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
