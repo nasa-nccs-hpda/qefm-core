@@ -25,7 +25,7 @@ RUN pip install --pre torch torchvision torchaudio --index-url https://download.
 #RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly
 #RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu124
 RUN pip install --upgrade pip setuptools wheel
-RUN pip install flash-attn
+RUN pip install flash-attn --no-build-isolation
 
 #RUN apt-get install nvidia-cuda-toolkit
 RUN pip install nvidia-pyindex
