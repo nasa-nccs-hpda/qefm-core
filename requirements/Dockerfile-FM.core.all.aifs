@@ -7,10 +7,10 @@ ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
 FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-RUN pip uninstall torch
-RUN pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu124
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install flash-attn
+RUN pip uninstall -y  torch
+RUN pip install -y --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu124
+RUN pip install -y --upgrade pip setuptools wheel
+RUN pip install -y flash-attn
 
 #RUN apt-get install nvidia-cuda-toolkit
 RUN pip install nvidia-pyindex
