@@ -8,6 +8,9 @@ FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 #RUN apt-get install nvidia-cuda-toolkit
+RUN pip install nvidia-pyindex
+RUN pip install nvidia-cuda-runtime-cu12
+RUN pip install nvidia-cuda-nvcc-cu12
 
 RUN apt-get update && apt-get install -y curl
 RUN apt-get install -y sed
