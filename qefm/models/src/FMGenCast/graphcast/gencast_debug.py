@@ -66,7 +66,7 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 
 # @title Load weather data
 # dataset_file_value= "source-era5_date-2019-03-29_res-1.0_levels-13_steps-01.nc"
-dataset_file_value = "gencast-dataset-source-era5_date-2024-12-01_res-1.0_levels-13_steps-10.nc"
+dataset_file_value = "gencast-dataset-source-era5_date-2024-12-10_res-1.0_levels-13_steps-10.nc"
 dataset_dir = "/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/checkpoints/gencast"
 #dataset_dir = "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast" 
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024"
