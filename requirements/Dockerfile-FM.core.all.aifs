@@ -16,5 +16,54 @@ RUN pip install earthkit-regrid==0.3.4 earthkit-data==0.13.5 earthkit-meteo==0.3
 RUN pip install ecmwf-opendata==0.3.19 
 RUN pip install flash_attn==2.7.4.post1 --no-build-isolation
 
+RUN pip install --upgrade setuptools pip wheel
+RUN pip install nvidia-pyindex
+RUN pip install nvidia-cuda-runtime-cu12
+
+RUN pip install cartopy
+
+# GraphCast dependencies
+RUN pip install --no-cache-dir https://github.com/deepmind/graphcast/archive/master.zip
+
+# GPU dependencies
+RUN pip install --upgrade "jax[cuda12]"
+
+# GenCast dependencies
+RUN pip install --upgrade xarray netCDF4 h5netcdf
+RUN pip install IPython
+
+ENV PYTHONPATH="$PYTHONPATH:/qefm-core/qefm/models/src/FMGenCast/graphcast:/qefm-core/qefm/models/src/FMGenCast"
+
+# GraphCast dependencies
+RUN pip install jax
+RUN pip install chex
+RUN pip install dm-haiku
+
+RUN pip install trimesh
+RUN pip install Rtree
+RUN pip install pyglet
+RUN pip install manifold3d
+RUN pip install lxml
+RUN pip install drawsvg
+RUN pip install xxhash
+
+# Aurora dependencies
+RUN pip install cdsapi
+
+RUN pip uninstall torch torchvision
+RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/whl/torch_stable.html
+
+RUN pip install nvidia-cudnn-cu11==9.8.0.87
+
+RUN pip install wandb
+RUN pip install huggingface-hub
+RUN pip install onnx
+
+RUN pip install onnxruntime
+RUN pip install ruamel.yaml
+RUN pip install "numpy<2"
+RUN pip install einops
+RUN pip install timm
+
 HEALTHCHECK NONE
 ENTRYPOINT [""]
