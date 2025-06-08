@@ -50,10 +50,10 @@ RUN pip install xxhash
 # Aurora dependencies
 RUN pip install cdsapi
 
-RUN pip uninstall torch torchvision
-RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/whl/torch_stable.html
+#RUN pip uninstall torch torchvision
+#RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/whl/torch_stable.html
 
-RUN pip install nvidia-cudnn-cu11==9.8.0.87
+#RUN pip install nvidia-cudnn-cu11==9.8.0.87
 
 RUN pip install wandb
 RUN pip install huggingface-hub
