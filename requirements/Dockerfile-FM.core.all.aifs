@@ -1,7 +1,10 @@
 ## Start with Debian slim-bullseye - https://medium.com/@arif.rahman.rhm/choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye-5586bac8b4c9
 
-ARG VERSION_DATE=latest
-ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
+ARG VERSION_DATE=2.7.1-cuda12.6-cudnn9-devel
+ARG FROM_IMAGE=pytorch/pytorch
+
+#ARG VERSION_DATE=latest
+#ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
 
 # Import NVIDIA Modulus container as the BASE Image (Modulus base image)
 FROM ${FROM_IMAGE}:${VERSION_DATE}
@@ -10,7 +13,6 @@ LABEL maintainer="glenn.s.tamkin@nasa.gov"
 ENV NVTE_FLASH_ATTN=0
 ENV NVTE_FLASH_ATTN_2=0
 
-RUN pip uninstall -y  torch
 RUN pip install anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
 RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata 
 RUN pip install flash_attn==2.7.4.post1 --no-build-isolation
