@@ -19,6 +19,8 @@ RUN curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --
 
 RUN sudo apt-get update
 RUN sudo apt-get install -y nvidia-container-toolkit
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install flash-attn --no-build-isolation
 
 RUN pip uninstall -y  torch
 RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl
