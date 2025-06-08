@@ -11,11 +11,8 @@ ARG FROM_IMAGE=pytorch/pytorch
 FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
-ENV NVTE_FLASH_ATTN=0
-ENV NVTE_FLASH_ATTN_2=0
-
 RUN pip install anemoi-inference[huggingface]==0.4.9 anemoi-models==0.3.1
-RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata 
+RUN pip install earthkit-regrid==0.4.0 ecmwf-opendata==0.3.19 
 RUN pip install flash_attn==2.7.4.post1 --no-build-isolation
 
 HEALTHCHECK NONE
