@@ -103,11 +103,11 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core-all.sif  graphcast
 ```
-**Run Inference for All Supported Foundation Models**:
+**Run Inference for SFNO Supported Foundation Model**:
 ```shell
 ./tests/fm-inference.sh qefm-core-all.sif   sfno
 ```
-**Run Inference for GraphCast Foundation Model**:
+**Run Inference for All Foundation Models**:
 ```shell
-./tests/fm-inference.sh qefm-core-all.sif  graphcast
+./tests/fm-inference.sh qefm-core-all.sif  ensemble
 ```
