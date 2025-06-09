@@ -1,16 +1,13 @@
 ## Start with Debian slim-bullseye - https://medium.com/@arif.rahman.rhm/choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye-5586bac8b4c9
 
 ARG VERSION_DATE=2.6.0-cuda12.4-cudnn9-devel
-#ARG VERSION_DATE=2.7.1-cuda12.6-cudnn9-devel
 ARG FROM_IMAGE=pytorch/pytorch
-
-#ARG VERSION_DATE=latest
-#ARG FROM_IMAGE=nasanccs/qefm-core-debian-all
 
 # Import NVIDIA Modulus container as the BASE Image (Modulus base image)
 FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
+# AIFS dependencies
 RUN pip install anemoi-inference[huggingface]==0.4.3 anemoi-models==0.2.1 anemoi-transform==0.1.5 anemoi-utils==0.4.17
 RUN pip install earthkit-regrid==0.3.4 earthkit-data==0.13.5 earthkit-meteo==0.3.0 earthkit-regrid==0.3.4
 RUN pip install ecmwf-opendata==0.3.19 
@@ -49,9 +46,6 @@ RUN pip install xxhash
 
 # Aurora dependencies
 RUN pip install cdsapi
-
-#RUN pip uninstall torch torchvision
-#RUN pip install torch==2.0.1+cu118 torchvision -f https://download.pytorch.org/whl/torch_stable.html
 
 RUN pip install wandb
 RUN pip install huggingface-hub
