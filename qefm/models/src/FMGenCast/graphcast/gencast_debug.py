@@ -9,11 +9,14 @@ from graphcast import denoiser
 from graphcast import nan_cleaning
 import os
 import dataclasses
+import optax
+from typyng import Any, Dict, Tuple, Iterator, List
 
 import haiku as hk
 import jax
 import numpy as np
 import xarray
+from pathlib import Path
 
 script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
@@ -21,7 +24,7 @@ print("script_dir:\n", script_dir, "\n")
 ## Load model from ckpt
 params_file_value = "GenCast 1p0deg Mini <2019.npz"
 #relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
-relative_params_file = '/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+relative_params_file = '/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
 #relative_params_file = '/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/checkpoints/gencast/gencast-params-GenCast_0p25deg<2019.npz'
 absolute_path = os.path.join(script_dir, relative_params_file)
 print("absolute_path:\n", absolute_path, "\n")
@@ -211,3 +214,92 @@ loss, diagnostics, next_state, grads = grads_fn_jitted(
    forcings=train_forcings)
 mean_grad = np.mean(jax.tree_util.tree_flatten(jax.tree_util.tree_map(lambda x: np.abs(x).mean(), grads))[0])
 print(f"Loss: {loss:.4f}, Mean |grad|: {mean_grad:.6f}")
+
+# Load training data
+def extract_example(file_path, task_config, target_lead_times=slice("12h", "12h")) -> Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]:
+    """Extracts inputs, targets, and forcings from a single example file."""
+    with open(file_path, "rb") as f:
+        ds = xarray.load_dataset(f).compute()
+    inputs, targets, forcings = data_utils.extract_inputs_targets_forcings(
+        ds,
+        target_lead_times=target_lead_times,
+        **dataclasses.asdict(task_config)
+    )
+    return (inputs, targets, forcings)
+
+def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, target_lead_times=slice("12h", "12h")) -> Iterator[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]:
+    """Generator to yield batches of inputs, targets, and forcings."""
+    batch = []
+
+    for file in file_list:
+        example = extract_example(file, task_config, target_lead_times)
+        batch.append(example)
+
+        if len(batch) == batch_size:
+           
+           yield collate_batch(batch)
+           batch = []
+
+        if batch:
+            yield collate_batch(batch)
+
+def collate_batch(batch: List[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]) -> Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]:
+    """Collates a list of examples into a single batch."""
+    inputs, targets, forcings = zip(*batch)
+    inputs = xarray.concat(inputs, dim="batch")
+    targets = xarray.concat(targets, dim="batch")
+    forcings = xarray.concat(forcings, dim="batch")
+    return inputs, targets, forcings
+
+# setup optimiser
+lr = 1e-3
+optimizer = optax.adam(learning_rate=lr, b1=0.9, b2=0.999, eps=1e-8)
+opt_state = optimizer.init(params)
+
+updates, opt_state = optimizer.update(
+    grads, opt_state, params=params
+)
+params = optax.apply_updates(params, updates)
+
+# @title Training loop
+num_epochs = 10
+batch_size = 2
+
+dataset_dir = Path("/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/checkpoints/gencast")
+file_list = sorted(dataset_dir.glob("gencast-dataset-source-era5_date-2024-12-10_res-1.0_levels-13_steps-*.nc"))
+
+
+lr = 1e-3
+optimizer = optax.adam(learning_rate=lr, b1=0.9, b2=0.999, eps=1e-8)
+opt_state = optimizer.init(params)
+# Training loop
+for epoch in range(num_epochs):
+    print(f"Epoch {epoch + 1}/{num_epochs}")
+
+    shuffled_files = np.random.permutation(file_list)
+
+    for batched_inputs, batched_targets, batched_forcings in batch_data_loader(
+        shuffled_files,
+        task_config,
+        batch_size=batch_size,
+        target_lead_times=slice("12h", "12h")
+    ):
+        # Ensure inputs, targets, and forcings are xarray datasets
+        assert isinstance(batched_inputs, xarray.Dataset)
+        assert isinstance(batched_targets, xarray.Dataset)
+        assert isinstance(batched_forcings, xarray.Dataset)
+
+        # Compute loss and gradients
+        loss, diagnostics, next_state, grads = grads_fn_jitted(
+            params, state, batched_inputs, batched_targets, batched_forcings
+        )
+
+        # Update model parameters
+        updates, opt_state = optimizer.update(grads, opt_state, params)
+        params = optax.apply_updates(params, updates)
+
+        # Update model state (optional: only if model uses state)
+        state = next_state
+
+        # Optional: print training progress
+        print(f"Epoch {epoch}, Loss: {loss}")
