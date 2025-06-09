@@ -9,7 +9,8 @@ if [[ ! -z "${PYTHONPATH}" ]]; then
 fi
 
 module load singularity
-cmd="time singularity exec --nv -B "$1"/qefm  "$1"/../containers/"$2" python "$1"/qefm/models/src/FMGenCast/fm_gencast.py"
+username=$(whoami)
+cmd="time singularity exec --nv -B /home/"$username","$1"/qefm,/discover/nobackup/"$username"  "$1"/../containers/"$2" python "$1"/qefm/models/src/FMGenCast/fm_gencast.py"
 echo $fm: $cmd
 $cmd
 
