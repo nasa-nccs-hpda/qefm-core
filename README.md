@@ -67,13 +67,21 @@ To run a specific Foundation Model task with **qefm-core**, use the following c
 | --------------------- |:----------------------------------------------------|:---------|:---------|:-----------------------------------------------------------------------------------------|
 | `<Root directory>`                  | Path fo qefm-core installation                                | Required | N/A      | `/discover/nobackup/projects/QEFM/qefm-core`                                             |
 | `<Container name>`                  | Name of Singularity container image (or sandbox)                                | Required | N/A      | `qefm-core-all.sif `                                                                          |
-| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `aurora`, `fourcastnet`, `graphcast`, `gencast` `pangu`, `privthi`|
+| `<Foundation Model name>`                  | Short title of Foundation Model                               | Required | N/A      | `gencast`,`aifs`,`aurora`, `fourcastnet`, `graphcast`, `pangu`, `privthi`, `sfno` |
 
 ### <b> Examples </b>
 
 **Navigate to Root directory on Discover**:
 ```shell
 cd /discover/nobackup/projects/QEFM/qefm-core
+```
+**Run Inference for GenCast Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core-all.sif   gencast
+```
+**Run Inference for AIFS Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core-all.sif   aifs
 ```
 **Run Inference for Aurora Foundation Model**:
 ```shell
@@ -95,11 +103,11 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```shell
 ./tests/fm-inference.sh qefm-core-all.sif  graphcast
 ```
-**Run Inference for GenCast Foundation Model**:
-```shell
-./tests/fm-inference.sh qefm-core-all.sif   gencast
-```
 **Run Inference for All Supported Foundation Models**:
 ```shell
-./tests/fm-inference.sh qefm-core-all.sif   ensemble
+./tests/fm-inference.sh qefm-core-all.sif   sfno
+```
+**Run Inference for GraphCast Foundation Model**:
+```shell
+./tests/fm-inference.sh qefm-core-all.sif  graphcast
 ```
