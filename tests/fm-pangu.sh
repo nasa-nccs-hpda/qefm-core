@@ -7,7 +7,8 @@ if [[ ! -z "${PYTHONPATH}" ]]; then
 fi
 
 module load singularity
-cmd="time singularity exec --nv -B "$1"/qefm  "$1"/../containers/"$2" python -u -m torch.distributed.run "$1"/qefm/models/src/FMPangu/Pangu-Weather-pytorch/inference_gpu.py"
+username=$(whoami)
+cmd="time singularity exec --nv -B /home/"$username","$1"/qefm,/discover/nobackup/"$username"  "$1"/../containers/"$2" python -u -m torch.distributed.run "$1"/qefm/models/src/FMPangu/Pangu-Weather-pytorch/inference_gpu.py"
 echo $fm: $cmd
 $cmd
 
