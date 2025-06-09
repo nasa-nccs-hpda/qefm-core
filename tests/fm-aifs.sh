@@ -3,6 +3,7 @@ fm="AIFS"
 container="$1"/../containers/"$2"
 cd "$1"/qefm/models/src/FMAifs
 current_dir=$(pwd)
+export PYTHONPATH="$1"/qefm/models/src/FMAifs
 if [[ ! -z "${PYTHONPATH}" ]]; then
     echo "PYTHONPATH: "$PYTHONPATH""
 fi
