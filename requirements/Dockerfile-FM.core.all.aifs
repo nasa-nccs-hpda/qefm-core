@@ -65,5 +65,7 @@ RUN pip install timm --no-build-isolation
 
 RUN pip install nvidia-cudnn-cu11==9.8.0.87
 
+RUN pip install --no-cache-dir --no-deps  torch-harmonics
+
 HEALTHCHECK NONE
 ENTRYPOINT [""]
