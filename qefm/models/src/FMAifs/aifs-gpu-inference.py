@@ -3,6 +3,7 @@ import datetime
 from collections import defaultdict
 
 import numpy as np
+import earthkit.data as ekd
 import earthkit.regrid as ekr
 
 from anemoi.inference.runners.simple import SimpleRunner
@@ -13,6 +14,15 @@ try:
     import cPickle as pickle
 except ImportError:  # Python 3.x
     import pickle
+
+import torch
+print("Torch Version: ", torch.__version__)
+print("CUDA Version: ", torch.version.cuda)
+print("GPU Device name:", torch.cuda.get_device_properties("cuda").name)
+
+#torch.backends.cuda.enable_flash_sdp(False)
+#print("GPU:", torch.backends.cuda.flash_sdp_enabled())
+#print("GPU FlashAttention available:", torch.backends.cuda.flash_sdp_enabled())
 
 PARAM_SFC = ["10u", "10v", "2d", "2t", "msl", "skt", "sp", "tcw", "lsm", "z", "slor", "sdor"]
 PARAM_PL = ["gh", "t", "u", "v", "w", "q"]
@@ -46,7 +56,7 @@ if os.path.exists(file_path_os):
     print(f"File '{file_path_os}' exists.")
     with open('data.p', 'rb') as fp:
        fields = pickle.load(fp)
-    print("unpickled fields: \n", fields)
+    #print("unpickled fields: \n", fields)
 else:
     print(f"File '{file_path_os}' does not exist.")
     fields.update(get_open_data(param=PARAM_SFC))
@@ -62,10 +72,11 @@ for level in LEVELS:
 input_state = dict(date=DATE, fields=fields)
 
 checkpoint = {"huggingface":"ecmwf/aifs-single-0.2.1"}
-print(checkpoint)
+#print(checkpoint)
 runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
 
+print("input_state['fields']['z_100': ", input_state['fields']['z_100'])
 for state in runner.run(input_state=input_state, lead_time=12):
     print_state(state)
 
