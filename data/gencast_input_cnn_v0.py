@@ -106,7 +106,7 @@ ds = xr.concat([xr.open_dataset(fp) for fp in fs], dim='time')
 
 # coarsen the data & reverse the latitude
 # if args.coarsen:
-ds = ds.isel(latitude=slice(None, None, -4), longitude=slice(None, None, 4)).compute()
+ds = ds.isel(lat=slice(None, None, -4), lon=slice(None, None, 4)).compute()
 res=1.0
 
 #ds = ds.drop_vars(["hgt", "p", "sp"])
