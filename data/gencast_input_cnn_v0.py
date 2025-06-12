@@ -113,7 +113,7 @@ ds = ds[pred_vars]
 ds = ds.isel(lat=slice(None, None, -4), lon=slice(None, None, 4)).compute()
 res=1.0
 
-#ds = ds.drop_vars(["hgt", "p", "sp"])
+ds = ds.drop_vars(["number", "expver"])
 # change variable names
 ds = ds.rename(var_mapping)
 
