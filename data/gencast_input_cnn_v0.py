@@ -52,7 +52,7 @@ var_2d = ["2m_temperature",
           "mean_sea_level_pressure",
           "10m_u_component_of_wind",
           "10m_v_component_of_wind",
-          "total_precipitation",]
+          "total_precipitation_12hr",]
 
 var_3d = ["temperature",
           "specific_humidity",
