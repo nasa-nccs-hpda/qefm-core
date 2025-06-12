@@ -96,7 +96,8 @@ input_path = Path('/discover/nobackup/khbreen/qefm_local/ML/lev_to_press/for_Gen
 #input_path = input_root / f"Y{args.year}" / f"M{args.month}"
 stamp = f"{args.year}{args.month}{args.day}"
 #input_root = Path("/discover/nobackup/jli30/fromArlindo/output")
-fs = list(input_path.glob(f"era5_pred_{stamp}_00z.nc4"))+list(input_path.glob(f"era5_pred_{stamp}_12z.nc4"))
+fs = list(input_path.glob(f"era5_pred_{stamp}_00z.nc"))+list(input_path.glob(f"era5_pred_{stamp}_12z.nc"))
+
 
 #ds = xr.open_mfdataset(fs[:2], combine='nested', concat_dim='time', chunks=None)
 ds = xr.concat([xr.open_dataset(fp) for fp in fs], dim='time')
