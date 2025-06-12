@@ -101,6 +101,10 @@ fs = list(input_path.glob(f"era5_pred_{stamp}_00z.nc"))+list(input_path.glob(f"e
 
 #ds = xr.open_mfdataset(fs[:2], combine='nested', concat_dim='time', chunks=None)
 ds = xr.concat([xr.open_dataset(fp) for fp in fs], dim='time')
+
+# keep predicted variables
+pred_vars = [var for var in ds.data_vars if var.endswith("_pred")]
+ds = ds[pred_vars]
 # ds_3d = xr.concat([xr.open_dataset(fp) for fp in fs[2:]], dim='time')
 # ds = xr.merge([ds_2d, ds_3d])
 
