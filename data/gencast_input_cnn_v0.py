@@ -157,10 +157,10 @@ ds['geopotential_at_surface'] = ds_lsm['geopotential_at_surface']
 
 # writing to netcdf
 output_file = output_dir / \
-f"gencast-dataset-source-geos\
+f"gencast-dataset-source-cnn\
 _date-{date_str}_res-{str(res)}\
 _levels-{str(nlev)}_steps-{str(nsteps-2)}.nc"
 print(output_file)
-#ds.to_netcdf(output_file)
+ds.to_netcdf(output_file)
 
 
