@@ -1,21 +1,21 @@
-print("start")
-import datetime
-from collections import defaultdict
 
-import numpy as np
-import earthkit.data as ekd
-import earthkit.regrid as ekr
-
-from anemoi.inference.runners.simple import SimpleRunner
-from anemoi.inference.outputs.printer import print_state
-
-import os
+print("FMAifs")
 try:
-    import cPickle as pickle
-except ImportError:  # Python 3.x
+    import datetime
+    from collections import defaultdict
     import pickle
+    import numpy as np
+    import torch
+    import earthkit.data as ekd
+    import earthkit.regrid as ekr
 
-import torch
+    from anemoi.inference.runners.simple import SimpleRunner
+    from anemoi.inference.outputs.printer import print_state
+
+    import os
+except:  # Python 3.x
+    print("Import sketchy, reverting to defaults")
+
 print("Torch Version: ", torch.__version__)
 print("CUDA Version: ", torch.version.cuda)
 print("GPU Device name:", torch.cuda.get_device_properties("cuda").name)
@@ -71,7 +71,9 @@ for level in LEVELS:
 
 input_state = dict(date=DATE, fields=fields)
 
-checkpoint = {"huggingface":"ecmwf/aifs-single-0.2.1"}
+checkpoint = ("/discover/nobackup/projects/QEFM/qefm-core/qefm/models/checkpoints/FMAifs/models--ecmwf--aifs-single-0.2.1/snapshots/d8035c35cc85a1b76813c1d848dc629a346d2055/aifs_single_v0.2.1.ckpt")
+#checkpoint = {"../../checkpoints/FMAifs/models--ecmwf--aifs-single-0.2.1"}
+#checkpoint = {"huggingface":"ecmwf/aifs-single-0.2.1"}
 #print(checkpoint)
 runner = SimpleRunner(checkpoint, device="cuda")
 #runner = SimpleRunner(checkpoint, device="cpu")
@@ -79,4 +81,3 @@ runner = SimpleRunner(checkpoint, device="cuda")
 print("input_state['fields']['z_100': ", input_state['fields']['z_100'])
 for state in runner.run(input_state=input_state, lead_time=12):
     print_state(state)
-
