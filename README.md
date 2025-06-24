@@ -113,7 +113,7 @@ cd /discover/nobackup/projects/QEFM/qefm-core
 ```
 ### <b> Runtime Notes: </b>
 
-**Since Singularity caches the container when invoked, it is important to specify the location of the cache to avoid disk space limitations.  For example, set the following environment variables. If running on Discover, /lscratch is a handy spot to create a directory path to use as a cache.**:
+**Since Singularity caches the container when invoked, it is important to specify the location of this cache to avoid disk space limitations.  If running on Discover, /lscratch is a handy spot to create a directory path to use as a cache.  See the example below for setting the appropriate environment variables. **:
 ```shell
 export APPTAINER_TMPDIR=/lscratch/tdirs/gt-scratch/.cache
 export APPTAINER_CACHEDIR=/lscratch/tdirs/gt-scratch/.cache
