@@ -175,3 +175,7 @@ qefm/models/src/FMZeusAI/zeus.tar
 
 qefm/models/src/FMAardvarkWeather/
 requirements/Dockerfile-FM.core copy.all
+qefm/models/src/FMAifs/data.p.*
+#qefm/models/src/FMAifs/data.p.new
+#qefm/models/src/FMAifs/data.p.old
+qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/sfno_sc2_layers4_e32/output_data/metrics.pkl
