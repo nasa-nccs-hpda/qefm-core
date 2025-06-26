@@ -1,0 +1,16 @@
+## Start with core+debian+all+aifs
+
+ARG VERSION_DATE=latest
+ARG FROM_IMAGE=nasanccs/qefm-core-debian-all-aifs
+
+# Import QEFM superset as the BASE Image 
+FROM ${FROM_IMAGE}:${VERSION_DATE}
+LABEL maintainer="glenn.s.tamkin@nasa.gov" 
+
+# ZeusAI/earthnet dependencies
+RUN pip install --no-deps pytorch_lightning
+RUN pip install --no-deps lightning_utilities
+RUN pip install --no-deps torchmetrics
+
+HEALTHCHECK NONE
+ENTRYPOINT [""]
