@@ -170,6 +170,7 @@ requirements/Dockerfile-FM.core.debian.arm-works
 qefm/models/src/FMZeusAI/earthnet/goes16_highres.png
 qefm/models/src/FMZeusAI/earthnet/goes16.png
 qefm/models/src/FMZeusAI/earthnet/pred.pkl
+qefm/models/src/FMZeusAI/earthnet/*.pdf
 qefm/models/src/FMZeusAI/GEO-ATMS-VIIRS-MIRS.test.tar
 qefm/models/src/FMZeusAI/zeus.tar
 
