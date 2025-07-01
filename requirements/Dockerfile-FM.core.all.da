@@ -12,5 +12,8 @@ RUN pip install --no-deps pytorch_lightning
 RUN pip install --no-deps lightning_utilities
 RUN pip install --no-deps torchmetrics
 
+WORKDIR /app
+COPY qefm-core/qefm/models/src/ /app/src/
+
 HEALTHCHECK NONE
 ENTRYPOINT [""]
