@@ -1,0 +1,204 @@
+version: 0.0.1
+data:
+  test:
+      target: zeus.datasets.common.CommonGridMultiModalDataset
+      params:
+        #data_dir: data/GEO-ATMS-VIIRS-MIRS/test
+        #data_dir: /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMZeusAI/earthnet/data/GEO-ATMS-VIIRS-MIRS/test/
+        data_dir: /discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMZeusAI/earthnet/data/GEO-ATMS-VIIRS-MIRS/subset-test/
+        domains:
+          goes16:
+            product: ABI-L1b-RadF
+            sensor: goes16
+            variable_coords:
+                band: [7,8,9,10,11,12,13,14,15,16]
+            source: discover
+            vars: ['Rad']
+          srtm:
+            vars: ['elevation', 'lsm']
+
+        patch_size: 144
+        timesteps: 12
+        bounds: [-180, -90, 180, 90]
+
+
+model:
+  target: earthnet.model.EarthNetv1
+  params:
+    img_size: 144
+    embed_dim: 768
+    depth: 12
+    num_heads: 12
+    decoder_num_heads: 8
+    decoder_dim: 384
+    decoder_depth: 6
+    num_encoded_tokens: 768
+    learning_rate: 0.00005
+    adapters_config:
+      goes16:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 10
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          kl_weight: 1e-6
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                goes16: 10
+              dim: 1
+      goes18:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 10
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                goes18: 10
+              dim: 1
+      gk2a:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 10
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                gk2a: 10
+              dim: 1
+      seviri:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 9
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          kl_weight: 1e-6
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                seviri: 9
+              dim: 1
+      atms:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 22
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          kl_weight: 1e-6
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                atms: 22
+      viirs:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 8
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          latent_dim: 32
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                viirs: 8
+                  # dim: 1
+      srtm:
+        target: earthnet.model.PatchedAdapter2D
+        params:
+          num_channels: 2
+          stride_level: 1
+          latent_dim: 512
+          kl_weight: 1e-6
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                srtm: 2
+      mirs_img:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 8
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          latent_dim: 128
+          encoder_transformer: True
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                mirs_img: 8
+                  # dim: 1
+      mirs_snd_vapor:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 37
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          encoder_transformer: True
+          latent_dim: 128
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                mirs_snd_vapor: 37
+                  # dim: 1
+
+      mirs_snd_temp:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 37
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          encoder_transformer: True
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                mirs_snd_temp: 37
+                  # dim: 1
+
+      mirs_rain:
+        target: earthnet.model.PatchedAdapter3D
+        params:
+          num_channels: 1
+          stride_level: 1
+          num_frames: 12
+          t_patch_size: 1
+          latent_dim: 32
+          encoder_transformer: True
+          data_transform_config:
+            target: earthnet.datasets.transform.StandardScalar
+            params:
+              keys:
+                mirs_rain: 1
+
+    patch_size: 16
+    log_step: 100
+    ckpt_path: checkpoints/earthnet.v1.ckpt
+
+trainer:
+  path: checkpoints/multimae-earth-1/
+  load_ckpt_path: last
+  batch_size: 2
+  max_iterations: 1000000
+  log_step: 100
+  checkpoint_step: 1000
+  n_gpus: 1
+  accumulate_grad_batches: 2
