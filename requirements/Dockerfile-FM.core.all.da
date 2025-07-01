@@ -12,8 +12,9 @@ RUN pip install --no-deps pytorch_lightning
 RUN pip install --no-deps lightning_utilities
 RUN pip install --no-deps torchmetrics
 
-WORKDIR /app
-COPY . /app/src/
+RUN mkdir -p "/usr/local/ilab" && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/qefm-core.git \
+        /usr/local/ilab/qefm-core 
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
