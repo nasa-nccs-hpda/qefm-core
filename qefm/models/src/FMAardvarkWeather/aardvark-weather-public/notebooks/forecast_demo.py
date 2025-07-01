@@ -50,19 +50,28 @@ with open("../data/sample_data_final.pkl", "rb") as fp:
 # Load the model to generate predictions at one day leadtime. First select which varaible to generate station forecasts for.
 
 # In[4]:
-
+base_path = "/discover/nobackup/projects/eis_fire/fm-da/huggingface/hub/datasets--av555--aardvark-weather/snapshots/458601ee741728c6be1cae5f7c5e702aa69a24db/trained_model/" 
 
 local_forecast_var = "tas"  # Model weights included for windspeed (ws) and 2tm (tas)
 
 model = ConvCNPWeatherE2E(
     device="cuda",
     lead_time=1,
-    se_model_path="../trained_models/encoder",
-    forecast_model_path="../trained_models/processor",
-    sf_model_path=f"../trained_models/decoder/{local_forecast_var}/",
+    se_model_path=base_path + "encoder",
+    forecast_model_path=base_path + "processor",
+    sf_model_path=base_path + f"decoder/{local_forecast_var}/",
     return_gridded=True,
     aux_data_path="../data/",
 )
+# model = ConvCNPWeatherE2E(
+#     device="cuda",
+#     lead_time=1,
+#     se_model_path="../trained_models/encoder",
+#     forecast_model_path="../trained_models/processor",
+#     sf_model_path=f"../trained_models/decoder/{local_forecast_var}/",
+#     return_gridded=True,
+#     aux_data_path="../data/",
+# )
 
 
 # Run the model to generate a forecast the sample data. This outputs the station forecast, gridded forevast and initial state
