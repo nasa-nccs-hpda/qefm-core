@@ -13,7 +13,7 @@ __pycache__/
 # C extensions
 *.so
 
-# Distribution / packaging
+# Distribution / packagings
 .Python
 build/
 develop-eggs/
@@ -179,3 +179,6 @@ qefm/models/src/FMAifs/data.p.*
 #qefm/models/src/FMAifs/data.p.new
 #qefm/models/src/FMAifs/data.p.old
 qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/sfno_sc2_layers4_e32/output_data/metrics.pkl
+qefm/models/src/FMZeusAI/.local-da/
+qefm/models/src/FMAardvarkWeather/aardvark-weather-public/trained_models/
+qefm/models/src/FMAardvarkWeather/aardvark-weather-public/trained_models

@@ -7,15 +7,6 @@ import numpy as np
 from models import ConvCNPWeather
 from misc_downscaling_functionality import ConvCNPWeatherOnToOff
 
-#GST https://github.com/pytorch/pytorch/issues/138985
-from torch.serialization import add_safe_globals
-
-from numpy.core.multiarray import scalar
-from numpy import dtype
-from numpy.dtypes import Float64DType
-from _codecs import encode
-torch.serialization.add_safe_globals([scalar, dtype, Float64DType, encode])
-print("torch.serialization.add_safe_globals([scalar, dtype, Float64DType, encode])")
 
 class ConvCNPWeatherE2E(nn.Module):
     """
