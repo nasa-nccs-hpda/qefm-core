@@ -7,6 +7,12 @@ ARG FROM_IMAGE=nasanccs/qefm-core-debian-all-aifs
 FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
+# System dependencies
+RUN apt-get -y install git \
+        git-lfs && \
+    apt-get -y autoremove && \
+    rm -rf /var/cache/apt /var/lib/apt/lists/*
+
 # ZeusAI/earthnet dependencies
 RUN pip install --no-deps pytorch_lightning
 RUN pip install --no-deps lightning_utilities
