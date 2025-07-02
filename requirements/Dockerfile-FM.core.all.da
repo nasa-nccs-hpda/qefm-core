@@ -8,8 +8,8 @@ FROM ${FROM_IMAGE}:${VERSION_DATE}
 LABEL maintainer="glenn.s.tamkin@nasa.gov" 
 
 # System dependencies
-#RUN apt-get update && apt-get install -y git    
-RUN apt-get -y install git 
+RUN apt-get update && apt-get install -y git    
+#RUN apt-get -y install git 
 #        git-lfs && \
 #    apt-get -y autoremove && \
 #    rm -rf /var/cache/apt /var/lib/apt/lists/*
