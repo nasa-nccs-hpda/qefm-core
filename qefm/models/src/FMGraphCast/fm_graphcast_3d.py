@@ -150,7 +150,8 @@ print("Model description:\n", ckpt.description, "\n")
 print("Model license:\n", ckpt.license, "\n")
 
 #dataset_file = "source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
-relative_dataset_file = "../../checkpoints/graphcast/source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
+relative_dataset_file = "../../checkpoints/graphcast/source-era5_date-2022-01-01_res-0.25_levels-37_steps-04.nc"
+#relative_dataset_file = "../../checkpoints/graphcast/source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
 # relative_params_file = '../../checkpoints/graphcast/params_GraphCast_small.npz'
 dataset_file = os.path.join(script_dir, relative_dataset_file)
 print("dataset_file:\n", dataset_file, "\n")
