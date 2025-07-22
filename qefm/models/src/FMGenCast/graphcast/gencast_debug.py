@@ -223,7 +223,7 @@ def extract_example(file_path, task_config, target_lead_times=slice("12h", "12h"
     inputs, targets, forcings = data_utils.extract_inputs_targets_forcings(
         ds,
         target_lead_times=target_lead_times,
-        input_duration='12h',
+#        input_duration='12h',
         **dataclasses.asdict(task_config)
     )
     return (inputs, targets, forcings)
@@ -231,8 +231,10 @@ def extract_example(file_path, task_config, target_lead_times=slice("12h", "12h"
 def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, target_lead_times=slice("12h", "12h")) -> Iterator[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]:
     """Generator to yield batches of inputs, targets, and forcings."""
     batch = []
-
+    print('ckck')
+    print(file_list)
     for file in file_list:
+
         example = extract_example(file, task_config, target_lead_times)
         batch.append(example)
 
@@ -265,8 +267,7 @@ num_epochs = 10
 batch_size = 2
 
 dataset_dir = Path("/explore/nobackup/projects/ilab/data/qefm/gencast/input/6hr/")
-file_list = sorted(dataset_dir.glob("gencast-dataset-source-era5_date-2020*.nc"))
-
+file_list = sorted(dataset_dir.glob("*date-2020*.nc"))
 lr = 1e-3
 optimizer = optax.adam(learning_rate=lr, b1=0.9, b2=0.999, eps=1e-8)
 opt_state = optimizer.init(params)
@@ -284,8 +285,9 @@ for epoch in range(num_epochs):
         batch_size=batch_size,
         target_lead_times=slice("6h", "6h")
     ):
-        # print(batched_inputs)
-        # print(batched_targets)
+
+        print(batched_inputs)
+        print(batched_targets)
         # Ensure inputs, targets, and forcings are xarray datasets
         assert isinstance(batched_inputs, xarray.Dataset)
         assert isinstance(batched_targets, xarray.Dataset)
