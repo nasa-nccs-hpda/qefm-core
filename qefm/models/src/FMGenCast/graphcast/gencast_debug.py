@@ -216,7 +216,7 @@ loss_fn_jitted = jax.jit(
 # print(f"Loss: {loss:.4f}, Mean |grad|: {mean_grad:.6f}")
 
 # Load training data
-def extract_example(file_path, task_config, target_lead_times=slice("12h", "12h")) -> Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]:
+def extract_example(file_path, task_config, target_lead_times=slice("6h", "6h")) -> Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]:
     """Extracts inputs, targets, and forcings from a single example file."""
     with open(file_path, "rb") as f:
         ds = xarray.load_dataset(f).compute()
@@ -262,7 +262,7 @@ def collate_batch(batch: List[Tuple[xarray.Dataset, xarray.Dataset, xarray.Datas
 
 # @title Training loop
 num_epochs = 10
-batch_size = 2
+batch_size = 1
 
 dataset_dir = Path("/explore/nobackup/projects/ilab/data/qefm/gencast/input/6hr/")
 file_list = sorted(dataset_dir.glob("*date-2020*.nc"))
