@@ -231,8 +231,6 @@ def extract_example(file_path, task_config, target_lead_times=slice("12h", "12h"
 def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, target_lead_times=slice("12h", "12h")) -> Iterator[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]:
     """Generator to yield batches of inputs, targets, and forcings."""
     batch = []
-    print('ckck')
-    print(file_list)
     for file in file_list:
 
         example = extract_example(file, task_config, target_lead_times)
@@ -286,8 +284,10 @@ for epoch in range(num_epochs):
         target_lead_times=slice("6h", "6h")
     ):
 
+        print(f"Processing batch with {len(batched_inputs['batch'])} examples")
         print(batched_inputs)
-        print(batched_targets)
+        #print(batched_targets)
+        exit()
         # Ensure inputs, targets, and forcings are xarray datasets
         assert isinstance(batched_inputs, xarray.Dataset)
         assert isinstance(batched_targets, xarray.Dataset)
