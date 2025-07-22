@@ -282,7 +282,7 @@ for epoch in range(num_epochs):
         shuffled_files,
         task_config,
         batch_size=batch_size,
-        target_lead_times=slice("6h", "6h")
+        target_lead_times=slice("12h", "12h")
     ):
 
         print(f"Processing batch with {len(batched_inputs['batch'])} examples")
@@ -300,7 +300,6 @@ for epoch in range(num_epochs):
         assert isinstance(batched_inputs, xarray.Dataset)
         assert isinstance(batched_targets, xarray.Dataset)
         assert isinstance(batched_forcings, xarray.Dataset)
-        exit()
 
         # Compute loss and gradients
         loss, diagnostics, next_state, grads = grads_fn_jitted(
