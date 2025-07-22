@@ -226,6 +226,7 @@ def extract_example(file_path, task_config, target_lead_times=slice("6h", "6h"))
 #        input_duration='12h',
         **dataclasses.asdict(task_config)
     )
+    print("Batched Inputs:  ", inputs.dims.mapping)
     return (inputs, targets, forcings)
 
 def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, target_lead_times=slice("12h", "12h")) -> Iterator[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]:
