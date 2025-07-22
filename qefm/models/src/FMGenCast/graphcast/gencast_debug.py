@@ -286,8 +286,13 @@ for epoch in range(num_epochs):
 
         print(f"Processing batch with {len(batched_inputs['batch'])} examples")
         print(batched_inputs)
-        #print(batched_targets)
-        exit()
+        print(batched_targets)
+        # drop batch dimension for land_sea_mask & geopotential_at_surface
+        for var in ['land_sea_mask', 'geopotential_at_surface']:
+            if var in batched_inputs:
+                batched_inputs[var] = batched_inputs[var].isel(batch=0)
+            if var in batched_targets:
+                batched_targets[var] = batched_targets[var].isel(batch=0)
         # Ensure inputs, targets, and forcings are xarray datasets
         assert isinstance(batched_inputs, xarray.Dataset)
         assert isinstance(batched_targets, xarray.Dataset)
