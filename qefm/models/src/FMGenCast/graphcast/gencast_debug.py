@@ -293,8 +293,8 @@ for epoch in range(num_epochs):
             if var in batched_targets:
                 batched_targets[var] = batched_targets[var].isel(batch=0)
 
-        print(batched_inputs)
-        print(batched_targets)
+        print("batched_inputs :: ", batched_inputs)
+        print("batched_output :: ", batched_targets)
         # Ensure inputs, targets, and forcings are xarray datasets
         assert isinstance(batched_inputs, xarray.Dataset)
         assert isinstance(batched_targets, xarray.Dataset)
