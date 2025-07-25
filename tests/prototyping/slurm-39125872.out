@@ -1,0 +1,12 @@
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+Traceback (most recent call last):
+  File "/explore/nobackup/people/jacaraba/development/qefm-core/tests/prototyping/jax_dummy_model.py", line 3, in <module>
+    import optax
+ModuleNotFoundError: No module named 'optax'
+Traceback (most recent call last):
+  File "/explore/nobackup/people/jacaraba/development/qefm-core/tests/prototyping/jax_dummy_model.py", line 3, in <module>
+    import optax
+ModuleNotFoundError: No module named 'optax'
+srun: error: gh043: task 1: Exited with exit code 1
+srun: error: gh042: task 0: Exited with exit code 1

@@ -1,0 +1,6 @@
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+/usr/local/bin/python: can't open file '/explore/nobackup/people/jacaraba/development/qefm-core/tests/prototyping/jax_dummy_model.py': [Errno 2] No such file or directory
+/usr/local/bin/python: can't open file '/explore/nobackup/people/jacaraba/development/qefm-core/tests/prototyping/jax_dummy_model.py': [Errno 2] No such file or directory
+srun: error: gh042: task 0: Exited with exit code 2
+srun: error: gh043: task 1: Exited with exit code 2

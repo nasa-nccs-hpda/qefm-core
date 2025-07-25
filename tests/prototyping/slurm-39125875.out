@@ -1,0 +1,10 @@
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+INFO:    Environment variable SINGULARITY_TMPDIR is set, but APPTAINER_TMPDIR is preferred
+2025-07-25 10:55:18.355323: F external/xla/xla/pjrt/distributed/client.h:80] Terminating process because the JAX distributed service detected fatal errors. This most likely indicates that another task died; see the other task logs for more details. Disable Python buffering, i.e. `python -u`, to be sure to see all the previous output. absl::Status: DEADLINE_EXCEEDED: Deadline Exceeded
+
+RPC: /tensorflow.CoordinationService/RegisterTask
+srun: error: gh042: task 0: Aborted
+2025-07-25 10:55:18.664759: F external/xla/xla/pjrt/distributed/client.h:80] Terminating process because the JAX distributed service detected fatal errors. This most likely indicates that another task died; see the other task logs for more details. Disable Python buffering, i.e. `python -u`, to be sure to see all the previous output. absl::Status: DEADLINE_EXCEEDED: Deadline Exceeded
+
+RPC: /tensorflow.CoordinationService/RegisterTask
+srun: error: gh043: task 1: Aborted
