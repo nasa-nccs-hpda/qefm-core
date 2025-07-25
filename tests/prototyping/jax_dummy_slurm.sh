@@ -29,15 +29,6 @@ echo "MASTER_PORT=$MASTER_PORT"
 echo "WORLD_SIZE=$WORLD_SIZE"
 echo "RANK=$SLURM_PROCID"
 
-#export NCCL_NET_GDR_LEVEL=PHB
-#export NCCL_SOCKET_IFNAME=ib
-#export NCCL_DEBUG=INFO
-
-# Set NCCL/XLA for JAX multi-node
-#export XLA_FLAGS="--xla_gpu_all_reduce_combine_threshold_bytes=524288 --xla_gpu_enable_triton_gemm=true"
-#export NCCL_DEBUG=INFO
-#export NCCL_SOCKET_IFNAME=^lo,docker  # adjust for your cluster
-
 # Make sure JAX sees all GPUs
 export CUDA_VISIBLE_DEVICES=$(seq -s, 0 $((SLURM_GPUS_PER_TASK-1)))
 
