@@ -10,7 +10,7 @@ parser.add_argument("--outdir", "-o", default="/discover/nobackup/projects/QEFM/
 parser.add_argument("--year", "-y", default="24", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
-parser.add_argument("--freq", "-f", default="12h", type=str, help="Frequency in hours")
+parser.add_argument("--freq", "-f", default="6h", type=str, help="Frequency in hours")
 parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
 parser.add_argument("--coarsen", "-c", default=False, type=bool, help="If True, coarsen the data to 1p0 degree")
 
