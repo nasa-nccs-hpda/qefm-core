@@ -6,11 +6,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Convert GraphCast initial state to CF-compliant NetCDF")
 parser.add_argument("--indir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Path to GraphCast rollout directory")
-parser.add_argument("--outdir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Path to GraphCast CF output directory")
+parser.add_argument("--outdir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/v20240805", type=str, help="Path to GraphCast CF output directory")
 parser.add_argument("--fmodel", default="FMGraphCast", type=str, help="Model name")
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
+parser.add_argument("--tsteps", "-t", default="20", type=str, help="Number of time steps")
 args = parser.parse_args()
 print("arguments:", args._get_kwargs)
 
@@ -21,9 +22,11 @@ file_path = input_dir
 yyyy = args.year
 mm = args.month
 dd = args.day
+tsteps = args.tsteps
 
-files = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))
+files = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*{tsteps}.nc"))
 file = files[0]
+print(file_path, file)
 
 MAPL_GRAV = 9.80665
 FILL_VALUE = np.float32(1.e+15)
@@ -35,12 +38,14 @@ ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T00:00:00")
 # For GenCast Only, remove "batch"
 ds_org = ds_org.squeeze(dim="batch")
 
-source=input_dir
+# # add variable geopotential at surface
+source = Path("/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024")
+# source_files = source.glob(f"*{yyyy}-{mm}-{dd}_*.nc")
+# print(source_files)
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 print("tmp_file: ", tmp_file)
 ds_temp = xr.open_dataset(tmp_file)
-# ds_org['PHIS'] = ds_temp['geopotential_at_surface']
-ds_org['PHIS'] = ds_temp['geopotential']
+ds_org['PHIS'] = ds_temp['geopotential_at_surface']
 
 times = ds_org.time.values[:2]
 firstindex=True
@@ -48,7 +53,7 @@ for ctime in times:
     ds = ds_org.sel(time=ctime).expand_dims("time")
     dt = pd.to_datetime(ctime+ref_date)
 
-    #HH = dt.strftime("%H")
+    HH = dt.strftime("%H")
     YYYY = dt.strftime("%Y")
     MM = dt.strftime("%m")
     DD = dt.strftime("%d")
@@ -68,7 +73,6 @@ for ctime in times:
     time_increment = np.int32(60000)
     units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
-
 
     # change value of time
     ds['time'] = np.float32((ds['time']- ds['time'])/np.timedelta64(1, 'h'))
@@ -135,7 +139,7 @@ for ctime in times:
     #     "long_name" : "ensemble_member",
     #     "units" : " ",
     # }
-    print("After coord \n", ds)
+    #print("After coord \n", ds)
 
     ## Variables
     # rename variables
@@ -158,7 +162,7 @@ for ctime in times:
     ds = ds[var_list]
 
     ds = ds.rename(rename_dict)
-    print("After rename \n ", ds)
+    #print("After rename \n ", ds)
 
 
     # map attributes
@@ -224,25 +228,26 @@ for ctime in times:
     ds['H'] = ds['H']/MAPL_GRAV
 
     # topo
+    topo = ds_org['PHIS'].values/MAPL_GRAV
     # topo = ds.PHIS.values/MAPL_GRAV
-    # height = ds.H.values
-    # mask = np.where(height > topo, 1, 0)
-    # for var in ds.data_vars:
-    #     # add attributes
-    #     ds[var].attrs = varMap[var]
-    #     ds[var].attrs['_FillValue'] = FILL_VALUE
-    #     ds[var].attrs['missing_value'] = FILL_VALUE
-    #     ds[var].attrs['fmissing_value'] = FILL_VALUE
-    #     # mask 3d variables
-    #     if 'lev' in ds[var].dims:
-    #         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
-    # # chunk 
-    # #nlats = len(ds.lat)
-    # #nlons = len(ds.lon)
-    # #chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
-    # #ds = ds.chunk(chunks_size)
-    # print("After variable \n", ds)
-    # ##drop extra variale
+    height = ds.H.values
+    mask = np.where(height > topo, 1, 0)
+    for var in ds.data_vars:
+        # add attributes
+        ds[var].attrs = varMap[var]
+        ds[var].attrs['_FillValue'] = FILL_VALUE
+        ds[var].attrs['missing_value'] = FILL_VALUE
+        ds[var].attrs['fmissing_value'] = FILL_VALUE
+        # mask 3d variables
+        if 'lev' in ds[var].dims:
+            ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+    # chunk 
+    #nlats = len(ds.lat)
+    #nlons = len(ds.lon)
+    #chunks_size = {"ens": 1, "time": 1, "lev": 1, "lat": nlats, "lon": nlons}
+    #ds = ds.chunk(chunks_size)
+    #print("After variable \n", ds)
+    ##drop extra variale
     #ds = ds.drop_vars("datetime")
 
     ## add global attributes
@@ -262,8 +267,8 @@ for ctime in times:
     encoding = {var: compression for var in ds.data_vars}
     output_dir = Path(f"{out_dir}/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    fname = f"{fmodel}-initial-era5_date-{tstamp}_res-0.25_levels-37.nc"
+    fname = f"{fmodel}-initial-era5_date-{tstamp}_res-0.25_levels-37_cf.nc"
     output_file = output_dir / fname
     ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 
-    print("Finished \n", ds)
+    print("Finished \n", output_file)
