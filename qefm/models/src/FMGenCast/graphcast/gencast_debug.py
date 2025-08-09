@@ -271,7 +271,7 @@ def write_checkpoint(
                                                 sampler_config=sampler_config,
                                                 noise_config=noise_config,
                                                 noise_encoder_config=noise_encoder_config,
-                                                description=f"Model checkpoint epoch {ep_number}",
+                                                description=f"Model checkpoint epoch {epoch_number}",
                                                 license=""))
 
 
