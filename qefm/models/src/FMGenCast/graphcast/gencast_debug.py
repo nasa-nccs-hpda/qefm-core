@@ -251,6 +251,30 @@ def collate_batch(batch: List[Tuple[xarray.Dataset, xarray.Dataset, xarray.Datas
     forcings = xarray.concat(forcings, dim="batch")
     return inputs, targets, forcings
 
+
+def write_checkpoint(
+    path_scheme: str, 
+    epoch_number: int, 
+    params: dict[str, Any], 
+    description: str = ckpt.description,
+    license: str = ckpt.license,
+    task_config = ckpt.task_config,
+    denoiser_architecture_config = ckpt.denoiser_architecture_config,
+    sampler_config = ckpt.sampler_config,
+    noise_config = ckpt.noise_config,
+    noise_encoder_config = ckpt.noise_encoder_config):
+    checkpoint_filename = path_scheme.format(ep_number=epoch_number)
+    with open(checkpoint_filename, 'wb') as cfile:
+        checkpoint.dump(cfile, gencast.CheckPoint(params=params,
+                                                task_config=task_config,
+                                                denoiser_architecture_config=denoiser_architecture_config,
+                                                sampler_config=sampler_config,
+                                                noise_config=noise_config,
+                                                noise_encoder_config=noise_encoder_config,
+                                                description=f"Model checkpoint epoch {ep_number}",
+                                                license=""))
+
+
 # # setup optimiser
 # lr = 1e-3
 # optimizer = optax.adam(learning_rate=lr, b1=0.9, b2=0.999, eps=1e-8)
@@ -262,7 +286,7 @@ def collate_batch(batch: List[Tuple[xarray.Dataset, xarray.Dataset, xarray.Datas
 # params = optax.apply_updates(params, updates)
 
 # @title Training loop
-num_epochs = 10
+num_epochs = 1000
 batch_size = 1
 
 dataset_dir = Path("/explore/nobackup/projects/ilab/data/qefm/gencast/input/6hr/")
@@ -302,14 +326,19 @@ for epoch in range(num_epochs):
         loss, diagnostics, next_state, grads = grads_fn_jitted(
             params, state, batched_inputs, batched_targets, batched_forcings
         )
-        mean_grad = np.mean(jax.tree_util.tree_flatten(jax.tree_util.tree_map(lambda x: np.abs(x).mean(), grads))[0])
+        #mean_grad = np.mean(jax.tree_util.tree_flatten(jax.tree_util.tree_map(lambda x: np.abs(x).mean(), grads))[0])
 
         # Update model parameters
-        updates, opt_state = optimizer.update(mean_grad, opt_state, params)
+        updates, opt_state = optimizer.update(grads, opt_state, params)
         params = optax.apply_updates(params, updates)
 
         # Update model state (optional: only if model uses state)
         state = next_state
 
-        # Optional: print training progress
-        print(f"Epoch {epoch}, Loss: {loss}")
+    # Optional: print training progress
+    print(f"Epoch {epoch}, Loss: {loss}")
+
+    path_scheme = "/explore/nobackup/people/jli30/workspace/qefm-core/qefm/models/src/FMGenCast/graphcast/checkpoints/GenCast.1p0deg.epoch.{ep_number:05d}.npz"
+    if (epoch > 0 and epoch % 2 == 0):
+        write_checkpoint(path_scheme, epoch, params)
+        exit() 
