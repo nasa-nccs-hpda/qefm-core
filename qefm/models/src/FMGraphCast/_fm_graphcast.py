@@ -21,16 +21,17 @@ print("Compute Graphcast prediction from subsetted ERA5 data:")
 
 parser = argparse.ArgumentParser(description="Compute Graphcast prediction from subsetted ERA5 data:")
 #parser.add_argument("--infile", "-if", default=".graphcast-dataset-prediction-era5_date-2024-12-01_res-0.25_levels-37_freq-6h_steps-20.nc")
-parser.add_argument("--indir", "-id", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024", type=str, help="ERA5 subsetted source directory")
-parser.add_argument("--outdir", "-o", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Graphcast Rolllout Output directory")
+parser.add_argument("--indir", "-id", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024", type=str, help="ERA5 subsetted source directory")
+parser.add_argument("--outdir", "-o", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/20240810", type=str, help="Graphcast Rolllout Output directory")
 parser.add_argument("--year", "-y", default="24", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
 parser.add_argument("--freq", "-f", default="6", type=str, help="Frequency in hours")
-parser.add_argument("--tsteps", "-t", default="2", type=str, help="# Training steps")
+parser.add_argument("--tsteps", "-t", default="1", type=str, help="# Training steps")
 parser.add_argument("--esteps", "-e", default="20", type=str, help="# Eval steps")
 parser.add_argument("--levs", "-l", default="37", type=str, help="Number of pressure levels")
 parser.add_argument("--res", "-r", default="0.25", type=str, help="Data resolution")
+parser.add_argument("--var", "-v", default="All", type=str, help="Variable of interest")
 
 args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
@@ -39,9 +40,11 @@ start_time = f"{date_str}T00:00"
 cfreq=f"{args.freq}"
 levs=f"{args.levs}"
 res=f"{args.res}"
+var=f"{args.var}"
 output_dir=Path(f"{args.outdir}")
 print("arguments:", args._get_kwargs)
-infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{nsteps}.nc"
+#infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{nsteps}.nc"
+infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-20.nc"
 predfile=f"graphcast-prediction-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{nsteps}.nc"
 infile=f"{args.indir}/"+infile
 predfile=f"{args.outdir}/"+predfile

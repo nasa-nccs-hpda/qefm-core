@@ -23,12 +23,12 @@ done
 
 #for DD in {$start..$end}; do
 #for DD in {03..10}; do
-for DD in {23..23}; do
+for DD in {01..01}; do
     echo "DD=" $DD
     cmd="singularity exec --nv -B /explore/nobackup/projects/ilab /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_graphcast_cf_init.py --year "$YYYY" --month "$MM" --day "$DD" "
     echo $fm: $cmd
     $cmd    
     cmd="singularity exec --nv -B /explore/nobackup/projects/ilab /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_graphcast_cf.py --year "$YYYY" --month "$MM" --day "$DD" "
-    echo $fm: $cmd
-    $cmd
+    #echo $fm: $cmd
+    #$cmd
 done

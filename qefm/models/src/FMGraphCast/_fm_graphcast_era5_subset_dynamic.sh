@@ -11,6 +11,7 @@ MM=$2
 freq=$3
 nsteps=$4
 nlevs=$5
+out_dir=$6 
 
 # YYYY=2024
 # MM=12
@@ -26,7 +27,7 @@ for DD in {01..01}; do
     else
         echo "$filename does not exist, so we'll create it."
 
-        cmd="python _graphcast_input.py --outdir /discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024 --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq"h --nsteps "$nsteps" --levs "$nlevs" "
+        cmd="python _graphcast_input.py --outdir "$out_dir" --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq"h --nsteps "$nsteps"  "
         echo $fm: $cmd
         $cmd
     fi

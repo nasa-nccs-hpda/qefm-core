@@ -6,7 +6,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Convert GraphCast initial state to CF-compliant NetCDF")
 parser.add_argument("--indir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Path to GraphCast rollout directory")
-parser.add_argument("--outdir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/v20240805", type=str, help="Path to GraphCast CF output directory")
+parser.add_argument("--outdir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/v20240811", type=str, help="Path to GraphCast CF output directory")
 parser.add_argument("--fmodel", default="FMGraphCast", type=str, help="Model name")
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
@@ -47,8 +47,10 @@ print("tmp_file: ", tmp_file)
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
 
-times = ds_org.time.values[:2]
+# Toggles manipulation of start times...
 firstindex=True
+
+times = ds_org.time.values[:2]
 for ctime in times:
     ds = ds_org.sel(time=ctime).expand_dims("time")
     dt = pd.to_datetime(ctime+ref_date)
@@ -57,14 +59,15 @@ for ctime in times:
     YYYY = dt.strftime("%Y")
     MM = dt.strftime("%m")
     DD = dt.strftime("%d")
-
-    if (firstindex==True):
-        firstindex=False
-        HH="00"
-        tstamp = dt.strftime("%Y-%m-%dT00") 
-    else:
-        HH="06"
-        tstamp = dt.strftime("%Y-%m-%dT06")
+    tstamp = dt.strftime("%Y-%m-%dT%H") 
+    
+    # if (firstindex==True):
+    #     firstindex=False
+    #     HH="00"
+    #     tstamp = dt.strftime("%Y-%m-%dT00") 
+    # else:
+    #     HH="06"
+    #     tstamp = dt.strftime("%Y-%m-%dT06")
 
     # Time
     long_name = "time"
