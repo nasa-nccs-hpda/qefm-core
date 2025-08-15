@@ -57,14 +57,18 @@ def expand_dims(ds, steps):
     return ds_extended
 
 if __name__ == "__main__":
-   #file = 'graphcast-dataset-source-era5_date-_date_str res-0.25_levels-37_freq-6h_steps-3.nc'
+
    file = f"/discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024/graphcast-dataset-source-era5_date-{date_str}_res-0.25_levels-37_freq-6h_steps-3.nc"
    print("input: ", file)
-   out_file=f"{args.outdir}/graphcast-dataset-source-era5_date-{str(date_str)}_res-0.25_levels-37_freq-6h_steps-{str(nsteps)}.nc"
+   predfile=out_file=f"{args.outdir}/graphcast-dataset-source-era5_date-{str(date_str)}_res-0.25_levels-37_freq-6h_steps-{str(nsteps)}.nc"
    print("output: ", out_file)
-   ds_short = xr.open_dataset(file)
+   if os.path.exists(Path(predfile)):
+      print("Prediction file already exists: ", predfile)
+   else:
+      print("Prediction file doesn't exist: ", predfile)
+      ds_short = xr.open_dataset(file)
 
-   ds_long = expand_dims(ds_short, nsteps)
-   print(f"Size of time dimension : {ds_long.sizes['time']}")
-   ds_long.to_netcdf(out_file)
-   print("Wa la...:", out_file)
+      ds_long = expand_dims(ds_short, nsteps)
+      print(f"Size of time dimension : {ds_long.sizes['time']}")
+      ds_long.to_netcdf(out_file)
+      print("Wa la...:", out_file)

@@ -6,13 +6,13 @@ import argparse
 
 print("Convert GraphCast output to CF-compliant NetCDF")
 parser = argparse.ArgumentParser(description="Convert GraphCast output to CF-compliant NetCDF")
-parser.add_argument("--indir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Path to GraphCast rollout directory")
-parser.add_argument("--outdir", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/v20240805", type=str, help="Path to GraphCast CF output directory")
+parser.add_argument("--indir", default="/discover/nobackup/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Path to GraphCast rollout directory")
+parser.add_argument("--outdir", default="/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGraphCast/v20250815", type=str, help="Path to GraphCast CF output directory")
 parser.add_argument("--fmodel", default="FMGraphCast", type=str, help="Model name")
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
-parser.add_argument("--tsteps", "-t", default="20", type=str, help="Number of time steps")
+parser.add_argument("--tsteps", "-t", default="42", type=str, help="Number of time steps")
 
 args = parser.parse_args()
 print("arguments:", args._get_kwargs)
@@ -40,8 +40,9 @@ ref_date = np.datetime64(f"{yyyy}-{mm}-{dd}T06:00:00")
 ds_org = ds_org.squeeze(dim="batch")
 
 # add variable geopotential at surface
-source = Path("/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024")
-tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
+tmp_file=f"/discover/nobackup/projects/QEFM/data/FMGraphCast/sim/graphcast-dataset-source-era5_date-2024-12-{dd}_res-0.25_levels-37_freq-6h_steps-{str(int(tsteps)+1)}.nc"
+#source = Path("/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024")
+#tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 print("tmp_file: ", tmp_file)
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
