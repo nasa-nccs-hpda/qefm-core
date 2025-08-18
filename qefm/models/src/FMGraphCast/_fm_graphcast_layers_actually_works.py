@@ -32,6 +32,7 @@ print("[XLA_PYTHON_CLIENT_ALLOCATOR] = ", os.environ["XLA_PYTHON_CLIENT_ALLOCATO
 parser = argparse.ArgumentParser(description="Compute Graphcast prediction from subsetted ERA5 data:")
 parser.add_argument("--infile", "-if", default="None")
 parser.add_argument("--indir", "-id", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024", type=str, help="ERA5 subsetted source directory")
+parser.add_argument("--outfile", "-of", default="None")
 parser.add_argument("--outdir", "-o", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs", type=str, help="Graphcast Rolllout Output directory")
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
@@ -46,6 +47,7 @@ parser.add_argument("--pythonpath", "-p", default="None", type=str, help="Python
 
 args = parser.parse_args()
 inputfile=f"{args.infile}"
+outputfile=f"{args.outfile}"
 date_str = f"{args.year}-{args.month}-{args.day}"
 esteps = int(args.esteps) 
 tsteps = int(args.tsteps) 
@@ -82,14 +84,17 @@ if inputfile == 'None':
   infile=f"{args.indir}/"+infile
 else:
   infile=inputfile
-  
-predfile=f"graphcast-prediction-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_train_steps-{tsteps}_eval_steps-{esteps}.nc"
-predfile=f"{args.outdir}/"+predfile
 print("infile:", infile)
+
+if outputfile == 'None':
+  predfile=f"graphcast-prediction-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_train_steps-{tsteps}_eval_steps-{esteps}.nc"
+  predfile=f"{args.outdir}/"+predfile
+  print("predfile:", predfile)
+else:
+  predfile=inputfile 
 print("predfile:", predfile)
+
 input_source = "era5"
-
-
 def parse_file_parts(file_name):
   return dict(part.split("-", 1) for part in file_name.split("_"))
 

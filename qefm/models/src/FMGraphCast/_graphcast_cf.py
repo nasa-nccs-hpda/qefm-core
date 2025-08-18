@@ -12,7 +12,7 @@ parser.add_argument("--fmodel", default="FMGraphCast", type=str, help="Model nam
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
-parser.add_argument("--tsteps", "-t", default="42", type=str, help="Number of time steps")
+parser.add_argument("--tsteps", "-t", default="41", type=str, help="Number of time steps")
 
 args = parser.parse_args()
 print("arguments:", args._get_kwargs)

@@ -62,18 +62,20 @@ for ctime in times:
     DD = dt.strftime("%d")
     tstamp = dt.strftime("%Y-%m-%dT%H") 
     
-    # if (firstindex==True):
-    #     firstindex=False
-    #     HH="00"
-    #     tstamp = dt.strftime("%Y-%m-%dT00") 
-    # else:
-    #     HH="06"
-    #     tstamp = dt.strftime("%Y-%m-%dT06")
+    if (firstindex==True):
+        firstindex=False
+        HH="00"
+        tstamp = dt.strftime("%Y-%m-%dT00") 
+        begin_time = np.int32(00000)
+    else:
+        HH="06"
+        tstamp = dt.strftime("%Y-%m-%dT06")
+        begin_time = np.int32(60000)
 
     # Time
     long_name = "time"
     begin_date = np.int32(f"{YYYY}{MM}{DD}")
-    begin_time = np.int32(dt.hour * 10000)
+    #begin_time = np.int32(dt.hour * 10000)
     time_increment = np.int32(60000)
     units = f"hours since {YYYY}-{MM}-{DD} {HH}:00:00"
     calendar = "proleptic_gregorian"
