@@ -76,10 +76,6 @@ print("NEW PATH: ", sys.path)
 #   print("NEW PATH: ", sys.path)
 
 if inputfile == 'None':
-  #infile=f"graphcast-dataset-source-era5_date-2024-12-01_res-0.25_levels-3_freq-6h_steps-1.nc"
-  #infile=f"_graphcast-dataset-source-era5_date-2024-12-01_res-0.25_levels-37_freq-6h_steps-3.nc"
-  #infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-6h_steps-42.nc"
-  #infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-6h_steps-42.nc"
   infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{esteps}.nc"
   infile=f"{args.indir}/"+infile
 else:
@@ -91,7 +87,7 @@ if outputfile == 'None':
   predfile=f"{args.outdir}/"+predfile
   print("predfile:", predfile)
 else:
-  predfile=inputfile 
+  predfile=outputfile 
 print("predfile:", predfile)
 
 input_source = "era5"
@@ -368,11 +364,11 @@ else:
         forcings=eval_forcings)
   predictions
   print("len(predictions)", len(predictions))
-  #print("predictions:\n", predictions)
-  out_dir = Path(args.outdir)
-  out_file_value = f"graphcast-prediction-{input_source}_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_train_steps-{tsteps}_eval_steps-{esteps}.nc"
-  #/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/graphcast-prediction-era5_date-2024-12-01_res-0.25_levels-37_freq-6h_train_steps-42_eval_steps-42.nc
-  out_file = os.path.join(out_dir, out_file_value)
-  predictions.to_netcdf(out_file)
+  # #print("predictions:\n", predictions)
+  # out_dir = Path(args.outdir)
+  # out_file_value = f"graphcast-prediction-{input_source}_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_train_steps-{tsteps}_eval_steps-{esteps}.nc"
+  # #/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/graphcast-prediction-era5_date-2024-12-01_res-0.25_levels-37_freq-6h_train_steps-42_eval_steps-42.nc
+  # out_file = os.path.join(out_dir, out_file_value)
+  predictions.to_netcdf(predfile)
   days=(6*eval_steps)/24
-  print("Predictions computed for "+str(days)+" days out_file:\n", out_file, "\n")
+  print("Predictions computed for "+str(days)+" days predfile:\n", predfile, "\n")

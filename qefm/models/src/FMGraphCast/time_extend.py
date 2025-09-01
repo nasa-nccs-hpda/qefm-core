@@ -58,7 +58,8 @@ def expand_dims(ds, steps):
 
 if __name__ == "__main__":
 
-   file = f"/discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024/graphcast-dataset-source-era5_date-{date_str}_res-0.25_levels-37_freq-6h_steps-3.nc"
+   file = f"/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/data/FMGraphCast/6h/Y2024/graphcast-dataset-source-era5_date-{date_str}_res-0.25_levels-37_freq-6h_steps-3.nc"
+   #file = f"/discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024/graphcast-dataset-source-era5_date-{date_str}_res-0.25_levels-37_freq-6h_steps-3.nc"
    print("input: ", file)
    predfile=out_file=f"{args.outdir}/graphcast-dataset-source-era5_date-{str(date_str)}_res-0.25_levels-37_freq-6h_steps-{str(nsteps)}.nc"
    print("output: ", out_file)

@@ -6,27 +6,32 @@ cd "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGr
 # if [[ ! -z "${PYTHONPATH}" ]]; then
 #     echo "PYTHONPATH: "$PYTHONPATH""
 # fi
+
+module load singularity
+
 YYYY=$1
 MM=$2
-freq=$3
-nsteps=$4
-nlevs=$5
+D1=$3
+D2=$4
+freq=$5
+nsteps=$6
+nlevs=$7
+outdir=$8
 
-# YYYY=2024
-# MM=12
-# nsteps=42
-# freq=6h
+vers=""
+# outdir="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024/var"
 
-#module load anaconda
-#conda activate graphcast-env 
-for DD in {01..01}; do
-    filename="/discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024/graphcast-dataset-source-era5_date-"$YYYY"-"$MM"-"$DD"_res-0.25_levels-"$nlevs"_freq-"$freq"_steps-"$nsteps".nc"
+for j in $(seq $D1 $D2); do
+    printf -v DD "%02d" "$j"
+    filename="$outdir"/"$vers"/graphcast-dataset-source-era5_date-"$YYYY"-"$MM"-"$DD"_res-0.25_levels-"$nlevs"_freq-"$freq"_steps-"$nsteps".nc""
     if [ -e $filename ]; then
         echo "$filename exists."
     else
-        echo "$filename does not exist, so we'll create it."
+        echo "$filename does not exist so we'll create it."
 
-        cmd="python _graphcast_input.py --outdir /discover/nobackup/projects/QEFM/data/FMGraphCast/6h/Y2024 --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq"h --nsteps "$nsteps" --levs "$nlevs" "
+        cmd="python _graphcast_input_layers.py --outdir "$outdir"/"$vers" --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq"h --nsteps "$nsteps" --levs "$nlevs" "
+        #cmd="singularity exec --nv -B /explore/nobackup/projects/ilab,/explore/nobackup/people/gtamkin/.nccstmp /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  
+        #python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_graphcast_input_layers.py --outdir "$outdir" --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq"h --nsteps "$nsteps" --levs "$nlevs" "
         echo $fm: $cmd
         $cmd
     fi
