@@ -1,0 +1,35 @@
+fm="FMGraphCast"
+# path="/discover/nobackup/jli30/QEFM/qefm-core"
+
+# cd "$path"/qefm/models/src/"$fm"
+
+cd "/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/5day/qefm-core/qefm/models/src/FMGraphCast"
+current_dir=$(pwd)
+export PYTHONPATH=$(pwd):$PYTHONPATH
+if [[ ! -z "${PYTHONPATH}" ]]; then
+    echo "PYTHONPATH: "$PYTHONPATH""
+fi
+
+module load singularity
+YYYY=$1
+MM=$2
+start=$3
+end=$4
+echo $start $end
+
+#for dd in {09..11}; do
+for dd in {$start..$end}; do
+    echo "dd=" $dd
+done
+
+#for DD in {$start..$end}; do
+#for DD in {03..10}; do
+for DD in {10..31}; do
+    echo "DD=" $DD
+    cmd="singularity exec --nv -B /explore/nobackup/projects/ilab /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/5day/qefm-core/qefm/models/src/FMGraphCast/_graphcast_cf_init_10day.py --year "$YYYY" --month "$MM" --day "$DD" "
+    echo $fm: $cmd
+    $cmd    
+    cmd="singularity exec --nv -B /explore/nobackup/projects/ilab /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/5day/qefm-core/qefm/models/src/FMGraphCast/_graphcast_cf_10day.py --year "$YYYY" --month "$MM" --day "$DD" "
+    echo $fm: $cmd
+    $cmd
+done
