@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser(description="Convert GenCast output to CF-compl
 parser.add_argument("--year", "-y", type=str, help="Year")
 parser.add_argument("--month", "-m", type=str, help="Month")
 parser.add_argument("--day", "-d", type=str, help="Day")
+parser.add_argument("--ens_mean", type=bool,default=False, help="whether to calculate ensemble mean")
+parser.add_argument("--ens_num", "-e", type=str,default=False, help="idex of ensemble member")
 args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/rollout_outputs/")
@@ -20,6 +22,7 @@ file_path = input_dir / fmodel / 'raw' / 'geos'
 yyyy = args.year
 mm = args.month
 dd = args.day
+ee = int(args.ens_num)
 
 files = sorted(file_path.glob(f"*geos_date-{yyyy}-{mm}-{dd}_*.nc"))
 file = files[0]
@@ -41,7 +44,7 @@ source = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos")
 tmp_file = list(source.glob(f"*{yyyy}-{mm}-{dd}_*.nc"))[0]
 ds_temp = xr.open_dataset(tmp_file)
 ds_org['PHIS'] = ds_temp['geopotential_at_surface']
-ens_mean = True
+ens_mean = args.ens_mean
 
 for ctime in ds_org.time.values:
     ds = ds_org.sel(time=ctime).expand_dims("time")
@@ -129,9 +132,11 @@ for ctime in ds_org.time.values:
     }
     print("After coord \n", ds)
 
-    ## Calculate ensemble mean
+    ## Calculate ensemble mean or select ensemble member
     if ens_mean:
         ds = ds.mean(dim="ens")
+    else:
+        ds = ds.isel(ens=ee)
 
     ## Variables
     # rename variables
@@ -220,14 +225,14 @@ for ctime in ds_org.time.values:
     height = ds.H.values
     mask = np.where(height > topo, 1, 0)
     for var in ds.data_vars:
-    #    # add attributes
+        # add attributes
         ds[var].attrs = varMap[var]
         ds[var].attrs['_FillValue'] = FILL_VALUE
         ds[var].attrs['missing_value'] = FILL_VALUE
         ds[var].attrs['fmissing_value'] = FILL_VALUE
         # mask 3d variables
-   #     if 'lev' in ds[var].dims:
-   #         ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+        if 'lev' in ds[var].dims:
+            ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # chunk 
     #nlats = len(ds.lat)
     #nlons = len(ds.lon)
@@ -250,10 +255,10 @@ for ctime in ds_org.time.values:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/geos-fp-interp-no-mask/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/geos-fp-interp/Y{yyyy}/M{mm}/D{dd}/ens{(ee+1):02}")
     #output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/0p25/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    fname = f"{fmodel}-prediction-geos_date-{tstamp}_res-1.0_levels-13_ens-mean.nc"
+    fname = f"{fmodel}-prediction-geos_date-{tstamp}_res-1.0_levels-13_ens-{(ee+1):02}.nc"
     output_file = output_dir / fname
     ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 

@@ -202,7 +202,8 @@ train_inputs, train_targets, train_forcings = data_utils.extract_inputs_targets_
 eval_inputs, eval_targets, eval_forcings = data_utils.extract_inputs_targets_forcings(
     example_batch, target_lead_times=slice("12h", f"{(example_batch.dims['time']-2)*12}h"), # All but 2 input frames.
     **dataclasses.asdict(task_config))
-
+print(eval_inputs)
+exit()
 print("All Examples:  ", example_batch.dims.mapping)
 print("Train Inputs:  ", train_inputs.dims.mapping)
 print("Train Targets: ", train_targets.dims.mapping)

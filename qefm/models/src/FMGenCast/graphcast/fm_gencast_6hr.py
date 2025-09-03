@@ -70,7 +70,7 @@ from graphcast import nan_cleaning
 import os
 
 parser = argparse.ArgumentParser(description='GenCast Mini Demo')
-parser.add_argument('--date', '-s', type=str, default='2024-12-12', help='Date to forecast')
+parser.add_argument('--date', '-s', type=str, default='2024-12-01', help='Date to forecast')
 args = parser.parse_args()
 date_str = args.date
 print("date_str:\n", date_str, "\n")
@@ -79,7 +79,7 @@ script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
 
 dir_prefix = "gencast/"
-input_source = "era5" # @param ["era5", "geos", "cnn", "mcd"]
+input_source = "era5" # @param ["era5", "geos", "cnn"]
 
 latent_value_options = [int(2**i) for i in range(4, 10)]
 
@@ -132,7 +132,8 @@ if source == "Random":
 else:
   assert source == "Checkpoint"
   params_file_value = "GenCast 1p0deg Mini <2019.npz"
-  relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+  #relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_<2019.npz'
+  relative_params_file = '../../../checkpoints/gencast/gencast-params-GenCast_1p0deg_Mini_6hr.npz'
   absolute_path = os.path.join(script_dir, relative_params_file)
   print("absolute_path:\n", absolute_path, "\n")
   params_file = absolute_path
@@ -175,15 +176,14 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 # @title Load weather data
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples"
-dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/test"
-#dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples"
+dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos_cnn"
 #dataset_dir = "/discover/nobackup/jli30/mars/preprocess/reformatted"
 #dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 #dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
-dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20-nplabel.nc"
+dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-10.nc"
 dataset_file = os.path.join(dataset_dir, dataset_file_value)
 print("dataset_file_value:\n", dataset_file_value, "\n")
 # with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
@@ -319,7 +319,7 @@ print("Inputs:  ", eval_inputs.dims.mapping)
 print("Targets: ", eval_targets.dims.mapping)
 print("Forcings:", eval_forcings.dims.mapping)
 
-num_ensemble_members = 8 # @param int
+num_ensemble_members = 4 # @param int
 rng = jax.random.PRNGKey(0)
 # We fold-in the ensemble member, this way the first N members should always
 # match across different runs which use take the same inputs, regardless of
@@ -344,12 +344,12 @@ for chunk in rollout.chunked_prediction_generator_multiple_runs(
     chunks.append(chunk)
 predictions = xarray.combine_by_coords(chunks)
 #out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/Y2024"
-#out_dir = f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/{input_source}"
-out_dir = f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/exp"
-out_file_value = f"gencast-prediction-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20_npl.nc"
+out_dir = f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/{input_source}"
+out_file_value = f"gencast-prediction-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20_6hr.nc"
 out_file = os.path.join(out_dir, out_file_value)
 predictions.to_netcdf(out_file)
 print("Predictions computed for 10 days out_file:\n", out_file, "\n")
+print(predictions)
 
 
 # @title Plot ensemble mean and CRPS

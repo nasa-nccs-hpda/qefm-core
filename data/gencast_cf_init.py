@@ -14,7 +14,8 @@ args = parser.parse_args()
 
 input_dir = Path("/discover/nobackup/projects/QEFM/data/")
 fmodel = "FMGenCast"
-file_path = input_dir / fmodel / '12hr' / 'Y2024'
+#file_path = input_dir / fmodel / '12hr' / 'Y2024'
+file_path = input_dir / fmodel / '12hr' / 'geos' 
 yyyy = args.year
 mm = args.month
 dd = args.day
@@ -221,8 +222,8 @@ for ctime in ds_org.time.values[:2]:
         ds[var].attrs['missing_value'] = FILL_VALUE
         ds[var].attrs['fmissing_value'] = FILL_VALUE
         # mask 3d variables
-        if 'lev' in ds[var].dims:
-            ds[var] = ds[var].where(mask == 1, FILL_VALUE)
+#        if 'lev' in ds[var].dims:
+#            ds[var] = ds[var].where(mask == 1, FILL_VALUE)
     # chunk 
     #nlats = len(ds.lat)
     #nlons = len(ds.lon)
@@ -247,9 +248,9 @@ for ctime in ds_org.time.values[:2]:
                 "complevel": 1,
                 "shuffle": True,}
     encoding = {var: compression for var in ds.data_vars}
-    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/Y{yyyy}/M{mm}/D{dd}")
+    output_dir = Path(f"/discover/nobackup/projects/QEFM/data/rollout_outputs/{fmodel}/geos-fp-interp-no-mask/Y{yyyy}/M{mm}/D{dd}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    fname = f"{fmodel}-initial-era5_date-{tstamp}_res-1.0_levels-13.nc"
+    fname = f"{fmodel}-initial-geos_date-{tstamp}_res-1.0_levels-13.nc"
     output_file = output_dir / fname
     ds.to_netcdf(output_file, encoding=encoding, engine="netcdf4")
 

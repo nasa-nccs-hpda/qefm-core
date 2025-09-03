@@ -70,7 +70,7 @@ from graphcast import nan_cleaning
 import os
 
 parser = argparse.ArgumentParser(description='GenCast Mini Demo')
-parser.add_argument('--date', '-s', type=str, default='2024-12-12', help='Date to forecast')
+parser.add_argument('--date', '-s', type=str, default='2025-01-01', help='Date to forecast')
 args = parser.parse_args()
 date_str = args.date
 print("date_str:\n", date_str, "\n")
@@ -79,7 +79,7 @@ script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
 
 dir_prefix = "gencast/"
-input_source = "era5" # @param ["era5", "geos", "cnn", "mcd"]
+input_source = "mcdv90" # @param ["era5", "geos", "cnn", "mcd"]
 
 latent_value_options = [int(2**i) for i in range(4, 10)]
 
@@ -175,15 +175,15 @@ def data_valid_for_model(file_name: str, params_file_name: str):
 # @title Load weather data
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/samples"
-dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/test"
+#dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/test"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos"
 #dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/geos_cnn"
-#dataset_dir = "/discover/nobackup/jli30/mars/preprocess/reformatted"
+dataset_dir = "/discover/nobackup/jli30/mars/preprocess/reformatted"
 #dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 #dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc"
-dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20-nplabel.nc"
+dataset_file_value = f"gencast-dataset-source-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20.nc4"
 dataset_file = os.path.join(dataset_dir, dataset_file_value)
 print("dataset_file_value:\n", dataset_file_value, "\n")
 # with gcs_bucket.blob(dir_prefix + f"dataset/{dataset_file_value}").open("rb") as f:
@@ -204,7 +204,7 @@ train_inputs, train_targets, train_forcings = data_utils.extract_inputs_targets_
     **dataclasses.asdict(task_config))
 
 eval_inputs, eval_targets, eval_forcings = data_utils.extract_inputs_targets_forcings(
-    example_batch, target_lead_times=slice("6h", f"{(example_batch.dims['time']-2)*6}h"), # All but 2 input frames.
+    example_batch, target_lead_times=slice("12h", f"{(example_batch.dims['time']-2)*12}h"), # All but 2 input frames.
     **dataclasses.asdict(task_config))
 
 print("All Examples:  ", example_batch.dims.mapping)
@@ -216,6 +216,7 @@ print("Eval Targets:  ", eval_targets.dims.mapping)
 print("Eval Forcings: ", eval_forcings.dims.mapping)
 
 # @title Load normalization data
+#relative_diffs_file = "../../../checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
 relative_diffs_file = "../../../checkpoints/gencast/gencast-stats-diffs_stddev_by_level.nc"
 diffs_file = os.path.join(script_dir, relative_diffs_file)
 
@@ -251,7 +252,8 @@ def construct_wrapped_gencast():
   predictor = normalization.InputsAndResiduals(
       predictor,
       diffs_stddev_by_level=diffs_stddev_by_level,
-      mean_by_level=mean_by_level,
+##jl mod
+      mean_by_level=mean_by_level*0.75,
       stddev_by_level=stddev_by_level,
   )
 
@@ -315,10 +317,8 @@ print(f"Number of local devices {len(jax.local_devices())}")
 
 # @title Autoregressive rollout (loop in python)
 
-print("Inputs:  ", eval_inputs.dims.mapping)
-print("Targets: ", eval_targets.dims.mapping)
-print("Forcings:", eval_forcings.dims.mapping)
-
+print('Eval input', eval_inputs)
+print('Eval input', eval_inputs['2m_temperature'].isel(time=slice(0, 20), batch=0, lat=90, lon=180))
 num_ensemble_members = 8 # @param int
 rng = jax.random.PRNGKey(0)
 # We fold-in the ensemble member, this way the first N members should always
@@ -346,7 +346,7 @@ predictions = xarray.combine_by_coords(chunks)
 #out_dir = "/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/Y2024"
 #out_dir = f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/{input_source}"
 out_dir = f"/discover/nobackup/projects/QEFM/data/rollout_outputs/FMGenCast/raw/exp"
-out_file_value = f"gencast-prediction-{input_source}_date-{date_str}_res-1.0_levels-13_steps-20_npl.nc"
+out_file_value = f"gencast-prediction-{input_source}v0_date-{date_str}_res-1.0_levels-13_steps-20.nc"
 out_file = os.path.join(out_dir, out_file_value)
 predictions.to_netcdf(out_file)
 print("Predictions computed for 10 days out_file:\n", out_file, "\n")

@@ -11,28 +11,23 @@ parser = argparse.ArgumentParser(description="Download GenCast input data")
 parser.add_argument("--year", "-y", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", type=str, help="Day of the data")
-parser.add_argument("--nsteps", "-n", default=22, type=str, help="Number of time steps")
+parser.add_argument("--nsteps", "-n", default=4, type=str, help="Number of time steps")
 parser.add_argument("--coarsen", "-c", default=True, type=bool, help="If True, coarsen the data to 1p0 degree")
 
 args = parser.parse_args()
 date_str = f"{args.year}-{args.month}-{args.day}"
 nsteps = int(args.nsteps) 
 start_time = f"{date_str}T00:00"
-time_steps = pd.date_range(start=start_time, periods=nsteps, freq="12h")
-#output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples")
+time_steps = pd.date_range(start=start_time, periods=nsteps, freq="6h")
+output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples")
 #output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/12hr/Y2024")
 #output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/0p25")
-output_dir = Path("/discover/nobackup/projects/QEFM/data/FMGenCast/test")
 
 
-#levs = np.array(
-#    [50,  100,  150,  200,  250,  \
-#     300,  400,  500,  600,  700, \
-#     850,  925,  1000])
 levs = np.array(
-    [70,  125,  150,  175,  225,  \
-     350,  450,  550,  650,  750, \
-     800,  900,  975])
+    [50,  100,  150,  200,  250,  \
+     300,  400,  500,  600,  700, \
+     850,  925,  1000])
 
 static = ["land_sea_mask",
           "geopotential_at_surface",]
@@ -96,7 +91,7 @@ ds = ds.rename({
 output_file = output_dir / \
 f"gencast-dataset-source-era5\
 _date-{date_str}_res-{str(res)}\
-_levels-{str(nlev)}_steps-{str(nsteps-2)}-npl.nc"
+_levels-{str(nlev)}_steps-{str(nsteps-2)}.nc"
 print(output_file)
 ds.to_netcdf(output_file)
 
