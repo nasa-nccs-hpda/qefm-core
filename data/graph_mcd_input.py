@@ -81,7 +81,10 @@ def main():
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
             # Assign time coordinate from ERA5 to MCD
-            mcd_ds_preprocessed = mcd_ds_preprocessed.assign_coords(time=era5_ds.time.values[:2])
+            mcd_ds_preprocessed[var] = mcd_ds_preprocessed[var].assign_coords(time=era5_ds.time.values[:2])
+            print(era5_ds[var])
+            print(mcd_ds_preprocessed[var])
+            exit()
             # Replace ERA5 variable with MCD variable
             era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
