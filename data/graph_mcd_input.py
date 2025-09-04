@@ -54,10 +54,10 @@ def preprocess_mcd_data(mcd_ds):
     return mcd_ds_regridded
 
 def scale_mcd_data(mcd_ds, era5_ds, var_name):
-    orig_min = mcd_ds[var_name].min().item()
-    orig_max = mcd_ds[var_name].max().item()
-    target_min = era5_ds[var_name].min().item()
-    target_max = era5_ds[var_name].max().item()
+    orig_min = mcd_ds[var_name].min(dim=("lat", "lon"))
+    orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
+    target_min = era5_ds[var_name].min(dim=("lat", "lon"))
+    target_max = era5_ds[var_name].max(dim=("lat", "lon"))
     scaled_data = (mcd_ds[var_name] - orig_min) / (orig_max - orig_min) * (target_max - target_min) + target_min
     return scaled_data
 
