@@ -68,13 +68,8 @@ print("dataset_file:\n", dataset_file, "\n")
 with open(dataset_file, "rb") as f:
     example_batch = xarray.load_dataset(f).compute()
 
-train_steps = 1
-eval_steps = 1
-print("params_filex: ", str(params_file))
-print("dataset_file: ", str(dataset_file))
-print("train_steps: ", str(train_steps))
-print("eval_steps: ", str(eval_steps))
-
+train_steps=1
+eval_steps=4
 train_inputs, train_targets, train_forcings = data_utils.extract_inputs_targets_forcings(
     example_batch, target_lead_times=slice("6h", f"{train_steps*6}h"),
     **dataclasses.asdict(task_config))
