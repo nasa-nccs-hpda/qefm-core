@@ -15,7 +15,7 @@ def load_era5_data(era5_file):
 
 def regrid_mcd_data(mcd_ds, res=1.0):
     target_lat = np.arange(-90, 90 + res, res)
-    target_lon = np.arange(0, 360 + res, res)
+    target_lon = np.arange(0, 359 + res, res)
     target_grid = xr.Dataset({'lat': (['lat'], target_lat),
                               'lon': (['lon'], target_lon)})
     
