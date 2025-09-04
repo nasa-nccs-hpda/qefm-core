@@ -58,6 +58,7 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
     orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
     target_min = era5_ds[var_name].min(dim=("lat", "lon"))
     target_max = era5_ds[var_name].max(dim=("lat", "lon"))
+    print(f"Scaling {var_name}: MCD min {orig_min.values}, max {orig_max.values}; ERA5 min {target_min.values}, max {target_max.values}")
     scaled_data = (mcd_ds[var_name] - orig_min) / (orig_max - orig_min) * (target_max - target_min) + target_min
     return scaled_data
 
@@ -80,7 +81,7 @@ def main():
     for var in swap_vars:
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
-            print(mcd_ds_preprocessed[var].values)
+            #print(mcd_ds_preprocessed[var].values)
             exit()
             # Assign time coordinate from ERA5 to MCD
             mcd_ds_preprocessed[var] = mcd_ds_preprocessed[var].assign_coords(time=era5_ds.time.values[:2])
