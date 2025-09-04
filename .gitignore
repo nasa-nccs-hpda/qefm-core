@@ -185,3 +185,13 @@ qefm/models/src/FMSfno/torch-harmonics/examples/checkpoints/sfno_sc2_layers4_e32
 qefm/models/src/FMZeusAI/.local-da/
 qefm/models/src/FMAardvarkWeather/aardvark-weather-public/trained_models/
 qefm/models/src/FMAardvarkWeather/aardvark-weather-public/trained_models
+data/rollout_outputs/graphcast-compare-discover.qgz
+data/rollout_outputs/graphcast-compare-explore.qgz
+data/rollout_outputs/graphcast-compare.qgz
+qefm/models/src/FMGraphCast/_fm_graphcast_era5_rollout_dynamic_layers.sh.bak
+qefm/models/src/FMGraphCast/_graphcast_input_2d.py
+qefm/models/src/FMGraphCast/_graphcast_input_3d.py
+qefm/models/src/FMGraphCast/_graphcast_input_aggregator.py
+qefm/models/src/FMGraphCast/bak
+qefm/models/src/FMGenCast/_fm_gencast_with_graphcast_chkpt.py
+qefm/models/src/FMGraphCast/_fm_graphcast_layers_worksfor20.py

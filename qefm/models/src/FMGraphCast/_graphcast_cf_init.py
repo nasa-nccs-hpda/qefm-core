@@ -11,7 +11,7 @@ parser.add_argument("--fmodel", default="FMGraphCast", type=str, help="Model nam
 parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
-parser.add_argument("--tsteps", "-t", default="20", type=str, help="Number of time steps")
+parser.add_argument("--tsteps", "-t", default="40", type=str, help="Number of time steps")
 args = parser.parse_args()
 print("arguments:", args._get_kwargs)
 
@@ -25,6 +25,7 @@ dd = args.day
 tsteps = args.tsteps
 
 files = sorted(file_path.glob(f"*{yyyy}-{mm}-{dd}_*{tsteps}.nc"))
+print(file_path, files)
 file = files[0]
 print(file_path, file)
 
@@ -42,7 +43,8 @@ ds_org = ds_org.squeeze(dim="batch")
 #tmp_file=f"/discover/nobackup/projects/QEFM/data/FMGraphCast/sim/graphcast-dataset-source-era5_date-2024-12-{dd}_res-0.25_levels-37_freq-6h_steps-{str(int(tsteps)+1)}.nc"
 #graphcast-prediction-era5_date-2024-12-31_res-0.25_levels-37_freq-6h_steps-20.nc
 #graphcast-dataset-source-era5_date-2024-12-30_res-0.25_levels-37_freq-6h_steps-20.nc
-tmp_file=f"/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024/graphcast-dataset-source-era5_date-2024-12-{dd}_res-0.25_levels-37_freq-6h_steps-{tsteps}.nc"
+tmp_file=f"/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024/var/v20240903/aggregated_graphcast-dataset-source-era5_date-2024-12-17_var-ALL_res-0.25_levels-37_freq-6h_steps-42.nc"
+#tmp_file=f"/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024/graphcast-dataset-source-era5_date-2024-12-{dd}_res-0.25_levels-37_freq-6h_steps-{tsteps}.nc"
 #source = Path("/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/_Y2024")
 # source_files = source.glob(f"*{yyyy}-{mm}-{dd}_*.nc")
 # print(source_files)

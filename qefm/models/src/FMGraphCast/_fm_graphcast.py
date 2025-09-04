@@ -44,7 +44,8 @@ var=f"{args.var}"
 output_dir=Path(f"{args.outdir}")
 print("arguments:", args._get_kwargs)
 #infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{nsteps}.nc"
-infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-20.nc"
+#infile=f"graphcast-dataset-source-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-20.nc"
+infile=f"aggregated_graphcast-dataset-source-era5_date-{date_str}_var-ALL_res-{res}_levels-{levs}_freq-{cfreq}h_steps-42.nc"
 predfile=f"graphcast-prediction-era5_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{nsteps}.nc"
 infile=f"{args.indir}/"+infile
 predfile=f"{args.outdir}/"+predfile
@@ -121,7 +122,6 @@ else:
   print("Eval Forcings: ", eval_forcings.dims.mapping)
   print("Eval eval_inputs.sizes[lon]: ", eval_inputs.sizes["lon"])
 
-  print("Eval linputs should match number of tie-steps, 20")
   relative_stddev_file = "../../checkpoints/graphcast/stats_stddev_by_level.nc"
   stddev_file = os.path.join(script_dir, relative_stddev_file)
   print("stddev_file: ", str(stddev_file))

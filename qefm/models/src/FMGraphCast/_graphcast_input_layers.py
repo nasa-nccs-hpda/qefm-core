@@ -5,11 +5,12 @@ from pathlib import Path
 import argparse
 import glob
 import warnings
+import os
 
 print("Download and subset ERA5 input data:")
 parser = argparse.ArgumentParser(description="Download and subset ERA5 input data:")
-parser.add_argument("--outdir", "-o", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024/var/v20240901", type=str, help="Output directory")
-parser.add_argument("--year", "-y", default="24", type=str, help="Year of the data")
+parser.add_argument("--outdir", "-o", default="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024/var/v20240902_1437", type=str, help="Output directory")
+parser.add_argument("--year", "-y", default="2024", type=str, help="Year of the data")
 parser.add_argument("--month", "-m", default="12", type=str, help="Month of the data")
 parser.add_argument("--day", "-d", default="01", type=str, help="Day of the data")
 parser.add_argument("--freq", "-f", default="6h", type=str, help="Frequency in hours")
@@ -51,6 +52,12 @@ else:
     levs=levs3
 #print(levs)
 
+# static = ["geopotential_at_surface",]
+
+# var_2d = ["2m_temperature",]
+
+# var_3d = ["geopotential",]
+
 static = ["land_sea_mask",
           "geopotential_at_surface",]
 
@@ -78,97 +85,188 @@ print("Subset 2D vars: ", var_list)
 
 for var in var_list:
     print("download 2D var:", var)
+    filename=f"{args.outdir}/graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
+    if os.path.exists(Path(filename)):
+        print("Source file already exists: ", filename)
+    else:
+        print("Source file doesn't exist: ", filename)
 
-    # get ear5 from gs
-    ds = xr.open_dataset(
-        "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
-        engine="zarr",
-        #chunks={},
-        storage_options={"token": None}  # Public dataset, so no authentication needed
-    )[var].sel(time=time_steps).isel(latitude=slice(None, None, -1))
+        # get ear5 from gs
+        ds = xr.open_dataset(
+            "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
+            engine="zarr",
+            #chunks={},
+            storage_options={"token": None}  # Public dataset, so no authentication needed
+        )[var].sel(time=time_steps).isel(latitude=slice(None, None, -1))
 
-    # coarsen the data & reverse the latitude
-    if args.coarsen:
-        ds = ds.isel(latitude=slice(None, None, 4), longitude=slice(None, None, 4))
-        res = 1.0
+        # coarsen the data & reverse the latitude
+        if args.coarsen:
+            ds = ds.isel(latitude=slice(None, None, 4), longitude=slice(None, None, 4))
+            res = 1.0
 
-    # change dimension names
-    ds = ds.rename({
-        "latitude": "lat",
-        "longitude": "lon",
-    })
+        # change dimension names
+        ds = ds.rename({
+            "latitude": "lat",
+            "longitude": "lon",
+        })
 
-    # change time coordinate to timedelta
-    ds = ds.assign_coords(datetime=ds["time"])
-    ds['time']=ds['time']-ds['time'].isel(time=0)
+        # change time coordinate to timedelta
+#        if var in (var_2d):
+        ds = ds.assign_coords(datetime=ds["time"])
+        
+        # change time coordinate to timedelta
+#        print(str(ds['time']))
+        ds['time']=ds['time']-ds['time'].isel(time=0)
+#        ds.time.encoding["units"] = "hours since 1900-01-01"
+#        print(str(ds['time']))
+    #    ds['datetime'] = ds['datetime'].expand_dims("batch")
+#        print(ds.datetime)
+        ds.datetime.expand_dims("batch")
+#        print(ds.datetime)
 
-    # drop the time dimension for land_sea_mask and geopotential_atmore _surface
-    if var == 'land_sea_mask':
-        ds.isel(time=0).drop_vars("time")
-    if var == 'geopotential_at_surface':
-         ds.isel(time=0).drop_vars("time")
+        # if var in (var_2d + var_3d):
+        #     if var in ds:
+        #         ds[var] = ds[var].expand_dims("batch")
+        #         print('expanded 2d dims early: ', var)    
 
-#    print(ds)
-    ds.expand_dims("batch")
-
-    # rename the precipitation variable
-    if var == 'total_precipitation1':
-        ds = ds.rename({"total_precipitation_6hr"})
-        print(ds)
-        var= "total_precipitation_6hr"
-
-    # writing to netcdf
-    output_file = output_dir / \
-    f"graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
-    print(output_file)
-    ds.to_netcdf(output_file)
+        # writing to netcdf
+        output_file = output_dir / \
+        f"graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
+        print(output_file)
+        ds.to_netcdf(output_file)
 
 var_list = var_3d
 print("Subset 3D vars: ", var_list)
 for var in var_list:
     print("download 3D var:", var)
+    filename=f"{args.outdir}/graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
+    if os.path.exists(Path(filename)):
+        print("Source file already exists: ", filename)
+    else:
+        print("Source file doesn't exist: ", filename)
 
-    # get ear5 from gs
-    ds = xr.open_dataset(
-        "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
-        engine="zarr",
-        #chunks={},
-        storage_options={"token": None}  # Public dataset, so no authentication needed
-    )[var].sel(time=time_steps, level=levs).isel(latitude=slice(None, None, -1))
+        # get ear5 from gs
+        ds = xr.open_dataset(
+            "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
+            engine="zarr",
+            #chunks={},
+            storage_options={"token": None}  # Public dataset, so no authentication needed
+        )[var].sel(time=time_steps, level=levs).isel(latitude=slice(None, None, -1))
 
-    # coarsen the data & reverse the latitude
-    if args.coarsen:
-        ds = ds.isel(latitude=slice(None, None, 4), longitude=slice(None, None, 4))
-        res = 1.0
+        # coarsen the data & reverse the latitude
+        if args.coarsen:
+            ds = ds.isel(latitude=slice(None, None, 4), longitude=slice(None, None, 4))
+            res = 1.0
 
-    # change dimension names
-    ds = ds.rename({
-        "latitude": "lat",
-        "longitude": "lon",
-    })
+        # change dimension names
+        ds = ds.rename({
+            "latitude": "lat",
+            "longitude": "lon",
+        })
 
-    # change time coordinate to timedelta
-    ds['time']=ds['time']-ds['time'].isel(time=0)
-    ds = ds.assign_coords(datetime=ds["time"])
-    ds.expand_dims("batch")
+        ds = ds.assign_coords(datetime=ds["time"])
+        
+        # change time coordinate to timedelta
+        ds['time']=ds['time']-ds['time'].isel(time=0)
+#        ds.time.encoding["units"] = "hours since 1900-01-01"
+        #ds['datetime'] = ds['datetime'].expand_dims("batch")
+#        print(ds.datetime)
+        ds.datetime.expand_dims("batch")
+#        print(ds.datetime)
 
-    # writing to netcdf
-    output_file = output_dir / \
-    f"graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
-    print(output_file)
-    ds.to_netcdf(output_file)
+        # if var in (var_2d + var_3d):
+        #     if var in ds:
+        #         ds[var] = ds[var].expand_dims("batch")
+        #         print('expanded 3d dims early: ', var)    
+
+        # writing to netcdf
+        output_file = output_dir / \
+        f"graphcast-dataset-source-era5_date-{date_str}_var-{var}_res-{str(res)}_levels-{str(nlev)}_freq-{str(cfreq)}_steps-{str(nsteps)}.nc"
+        print(output_file)
+        ds.to_netcdf(output_file)
 
 # Define the path to your NetCDF files, using a wildcard for multiple files
 # This assumes your files are named something like 'data_2000.nc', 'data_2001.nc', etc.
 # and contain 'time', 'level', 'lat', 'lon' dimensions.
-file_paths = glob.glob('/explore/nobackup/projects/ilab/projects/QEFM/qefm-core/data/FMGraphCast/var/gra*.nc')
+source = f"{args.outdir}/gr*{date_str}*.nc"
+file_paths = glob.glob(source)
+print(file_paths)
 
+def _preprocess_func(ds):
+    print("in stub preprocess_func", str(ds))
 
-def preprocess_func(ds):
+def preprocess_func(_ds):
     # Example: Rename a variable and add a new coordinate
+
+    # if 'time' in ds:
+    #     ds = ds.assign_coords(datetime=ds["time"])
+    #     ds['time']=ds['time']-ds['time'].isel(time=0)
+    # if 'datetime' in ds:
+    #     ds['datetime'] = ds['datetime'].expand_dims("batch")
+
+    # ds = _ds.drop_vars("datetime")
+    # # set/override datetime attributes 
+    # ds['datetime'].attrs['units'] = 'hours since 1900-01-01'
+    # ds['datetime'].attrs['calendar'] = 'proleptic_gregorian'
+
+    # print(ds['datetime'].values)
+    # ds['datetime'] = ds['datetime'].to_pandas()
+    # print(ds['datetime'].values)
+    # reference_date = pd.Timestamp('1900-01-01')
+    # time_delta = ds['datetime'] - reference_date
+    # hours_since_1900 = time_delta.dt.total_seconds() / 3600
+    # ds['time'] = hours_since_1900
+    # # Optionally, update attributes for clarity
+    # ds['time'].attrs['units'] = 'hours since 1900-01-01'
+    ds=_ds
+#    print(str(ds))
     if "total_precipitation" in ds:
         print("renaming total_precipitation to total_precipitation_6hr")
+        ds["total_precipitation"] = ds["total_precipitation"].expand_dims("batch")
         ds = ds.rename({"total_precipitation": "total_precipitation_6hr"})
+
+    if 'land_sea_mask' in ds:
+        ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars("time")
+#        del ds["land_sea_mask"].attrs["coordinates"]
+        print('dropped time var from geopotential_at_surface')
+    if 'geopotential_at_surface' in ds:
+        ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars("time")
+        print(ds["geopotential_at_surface"].attrs)
+        #del ds["geopotential_at_surface"].attrs["coordinates"]
+        print('dropped time var from geopotential_at_surface')
+
+    # if 'time' in ds:
+    #     print('found time: ', str(ds['time']))   
+
+    if 'datetime' in ds:
+#        print('expanding datetime: ', str(ds['datetime']))   
+        ds['datetime'] = ds['datetime'].expand_dims("batch")
+#        print('expanded datetime: ', str(ds['datetime']))    
+
+    for var in var_2d + var_3d:
+        if var in ds:
+            ds[var] = ds[var].expand_dims("batch")
+#            print('expanded dims for: ', var)   
+
+
+    # # To get hours since 1900-01-01 as a numerical value:
+    # reference_date = np.datetime64('1900-01-01T00:00:00')
+    # hours_since_ref = (ds['time'].values - reference_date) / np.timedelta64(1, 'h')
+    # print(hours_since_ref)
+    
+    # reference_date = np.datetime64('2024-12-01T00:00:00')
+    # hours_since_ref = (ds['time'].values - reference_date) / np.timedelta64(1, 'h')
+    # print(hours_since_ref)
+
+    # print(ds['datetime'])
+    # ds['datetime'].encoding['units'] = "hours since 1900-01-01"
+    # print(ds['datetime'])
+    
+    # set/override global attributes 
+    ds.attrs["valid_time_start"] = "1940-01-01"
+    ds.attrs["last_updated"] = "2025-07-29 01:45:36.622817+00:00"    
+    ds.attrs["valid_time_stop"] = "2025-04-30"
+    ds.attrs["valid_time_stop_era5t"] = "2025-07-23"
 
     return ds
 
@@ -189,8 +287,9 @@ with warnings.catch_warnings():
         parallel=False,
         #parallel=True,
         preprocess=preprocess_func,
-        chunks={'time': 10, 'level': 37, 'lat': 721, 'lon': 1440} # Example chunking
+        chunks={'time': 10, 'level': 37, 'lat': 721, 'lon': 1440}, # Example chunking
     #    chunks={'time': 10, 'level': 5, 'lat': 100, 'lon': 100} # Example chunking
+        decode_times=False
     )
 
 # Now you can work with the combined dataset

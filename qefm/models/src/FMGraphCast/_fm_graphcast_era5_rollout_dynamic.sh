@@ -14,17 +14,28 @@ current_dir=$(pwd)
 module load singularity
 YYYY=$1
 MM=$2
-freq=$3
-nsteps=$4
+D1=$3
+D2=$4
+freq=$5
+nsteps=$6
+nlevs=$7
+indir=$8
+outdir=$9
+
+vers=""
  
-for DD in {01..01}; do
-    filename="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/rollout_outputs/graphcast-prediction-era5_date-"$YYYY"-"$MM"-"$DD"_res-0.25_levels-37_eval_steps-"$nsteps".nc"
+for j in $(seq $D1 $D2); do
+    printf -v DD "%02d" "$j"
+    filename="$outdir"/"$vers"/aggregated_graphcast-dataset-source-era5_date-_"$YYYY"-"$MM"-"$DD"_var-ALL_res-0.25_levels-"$nlevs"_freq-"$freq"_steps-"$nsteps".nc" "
+
+#    filename="/explore/nobackup/projects/ilab/projects/QEFM/data/FMGraphCast/6h/Y2024/var/v20240901/graphcast-prediction-era5_date-"$YYYY"-"$MM"-"$DD"_res-0.25_levels-37_eval_steps-"$nsteps".nc"
     if [ -e $filename ]; then
         echo "$filename exists."
     else
         echo "$filename does not exist, so we'll create it."
 
-        cmd="singularity exec --nv -B /explore/nobackup/projects/ilab,/explore/nobackup/people/gtamkin/.nccstmp /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_fm_graphcast.py --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq" --esteps "$nsteps" "
+#        cmd="singularity exec --nv -B /explore/nobackup/projects/ilab,/explore/nobackup/people/gtamkin/.nccstmp /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-debian-all-aifs-20250609-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_fm_graphcast.py --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq" --esteps "$nsteps" --indir "$indir" --outdir "$outdir" "
+        cmd="singularity exec --nv -B /explore/nobackup/projects/ilab,/explore/nobackup/people/gtamkin/.nccstmp /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_fm_graphcast.py --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq" --esteps "$nsteps" --indir "$indir" --outdir "$outdir" "
         #cmd="singularity exec --nv -B /explore/nobackup/projects/ilab,/explore/nobackup/people/gtamkin /explore/nobackup/projects/ilab/projects/QEFM/containers/qefm-core-gencast-20250511-sandbox/  python /explore/nobackup/projects/ilab/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/_fm_graphcast.py --year "$YYYY" --month "$MM" --day "$DD" --freq "$freq" --esteps "$nsteps" "
         echo $fm: $cmd
         $cmd
