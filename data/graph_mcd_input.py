@@ -75,8 +75,6 @@ def main():
     mcd_files = [mcd_root.replace("hr00", f"hr{hr}") for hr in hrs]
     mcd_ds = load_mcd_data(mcd_files)
     era5_ds = load_era5_data(era5_file)
-    print("ERA5")
-    print(era5_ds)
 
     mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
     print("MCD_processed")
