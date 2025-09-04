@@ -54,6 +54,8 @@ def preprocess_mcd_data(mcd_ds):
     return mcd_ds_regridded
 
 def scale_mcd_data(mcd_ds, era5_ds, var_name):
+    print(mcd_ds[var_name].sizes)
+    print(era5_ds[var_name].sizes)
     orig_min = mcd_ds[var_name].min(dim=("lat", "lon"))
     orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
     target_min = era5_ds[var_name].isel(time=slice(0,2)).min(dim=("lat", "lon"))
@@ -77,7 +79,7 @@ def main():
     print("MCD_processed")
 
     # Scale MCD variables to match ERA5 ranges
-    swap_vars = ['toa_incident_solar_radiation']
+    swap_vars = ['2m_temperature']
     for var in swap_vars:
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
