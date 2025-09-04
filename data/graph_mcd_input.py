@@ -74,8 +74,6 @@ def main():
 
     mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
     print("MCD_processed")
-    print(mcd_ds_preprocessed)
-    exit()
 
     # Scale MCD variables to match ERA5 ranges
     swap_vars = ['toa_incident_solar_radiation']
@@ -83,7 +81,7 @@ def main():
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
             # Replace ERA5 variable with MCD variable
-            era5_ds[var][0,0,:,:] = mcd_ds_preprocessed[var][0,:,:]    
+            era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
     # Save to NetCDF
     era5_ds.to_netcdf(output_file)
