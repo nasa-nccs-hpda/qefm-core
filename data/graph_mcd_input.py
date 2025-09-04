@@ -59,7 +59,7 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
     orig_max = mcd_ds[var_name].max(dim=("lat", "lon")).values
     target_min = era5_sub.min(dim=("lat", "lon")).values
     target_max = era5_sub.max(dim=("lat", "lon")).values
-    print(f"Scaling {var_name}: MCD min {orig_min.values}, max {orig_max.values}; ERA5 min {target_min.values}, max {target_max.values}")
+    print(f"Scaling {var_name}: MCD min {orig_min}, max {orig_max}; ERA5 min {target_min}, max {target_max}")
     # Then index explicitly per timestep
     scaled_list = []
     for t in range(mcd_ds.sizes["time"]):
