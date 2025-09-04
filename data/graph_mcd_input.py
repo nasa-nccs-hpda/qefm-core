@@ -19,7 +19,7 @@ def regrid_mcd_data(mcd_ds, res=1.0):
     target_grid = xr.Dataset({'lat': (['lat'], target_lat),
                               'lon': (['lon'], target_lon)})
     
-    regridder = xe.Regridder(mcd_ds, target_grid, 'bilinear', periodic=True, reuse_weights=True, ignore_degenerate=True)
+    regridder = xe.Regridder(mcd_ds, target_grid, 'bilinear', periodic=True, ignore_degenerate=True)
 
     regridded_vars = {}
 
@@ -77,10 +77,12 @@ def main():
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
             # Replace ERA5 variable with MCD variable
-            era5_ds[var][0,:,:,:] = mcd_ds_preprocessed[var][0,:,:]    
+            era5_ds[var][0,0,:,:] = mcd_ds_preprocessed[var][0,:,:]    
 
     # Save to NetCDF
     #combined_ds.to_netcdf(output_file)
+    print("After modification")
+    print(era5_ds)
 
 if __name__ == "__main__":
     main()
