@@ -15,7 +15,7 @@ def load_era5_data(era5_file):
 
 def regrid_mcd_data(mcd_ds, res=1.0):
     target_lat = np.arange(-90, 90 + res, res)
-    target_lon = np.arange(-180, 180 + res, res)
+    target_lon = np.arange(0, 360 + res, res)
     target_grid = xr.Dataset({'lat': (['lat'], target_lat),
                               'lon': (['lon'], target_lon)})
     
@@ -44,7 +44,7 @@ def regrid_mcd_data(mcd_ds, res=1.0):
 
 def preprocess_mcd_data(mcd_ds):
     """Preprocess MCD data to match ERA5 resoltuion."""
-    # Longitude adjustment-180~180 to 0~360
+    # Longitude adjustment -180~180 to 0~360
     if mcd_ds.lon.min() < 0:
         mcd_ds = mcd_ds.assign_coords(lon=(((mcd_ds.lon + 360) % 360)))
         mcd_ds = mcd_ds.sortby(mcd_ds.lon)
