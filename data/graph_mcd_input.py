@@ -31,6 +31,8 @@ def regrid_mcd_data(mcd_ds, res=1.0):
             if dims == ("time", "lat", "lon"):
                 regridded = regridder(sub)
             else:
+                print('Variable:', var, 'Dims:', dims)
+                print(sub)
                 other_dims = [d for d in sub.dims if d not in ["lat", "lon"]]
                 stacked = sub.stack(z=other_dims)
                 regridded = regridder(stacked)
