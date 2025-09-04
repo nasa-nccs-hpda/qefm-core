@@ -55,12 +55,21 @@ def preprocess_mcd_data(mcd_ds):
 
 def scale_mcd_data(mcd_ds, era5_ds, var_name):
     era5_sub = era5_ds[var_name].isel(time=slice(0, 2), batch=0)
-    orig_min = mcd_ds[var_name].min(dim=("lat", "lon"))
-    orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
-    target_min = era5_sub.min(dim=("lat", "lon"))
-    target_max = era5_sub.max(dim=("lat", "lon"))
+    orig_min = mcd_ds[var_name].min(dim=("lat", "lon")).values
+    orig_max = mcd_ds[var_name].max(dim=("lat", "lon")).values
+    target_min = era5_sub.min(dim=("lat", "lon")).values
+    target_max = era5_sub.max(dim=("lat", "lon")).values
     print(f"Scaling {var_name}: MCD min {orig_min.values}, max {orig_max.values}; ERA5 min {target_min.values}, max {target_max.values}")
-    scaled_data = (mcd_ds[var_name] - orig_min) / (orig_max - orig_min) * (target_max - target_min) + target_min
+    # Then index explicitly per timestep
+    scaled_list = []
+    for t in range(mcd_ds.sizes["time"]):
+        scaled_list.append(
+            (mcd_ds[var_name].isel(time=t) - orig_min[t]) /
+            (orig_max[t] - orig_min[t]) *
+            (target_max[t] - target_min[t]) +
+            target_min[t]
+        )
+    scaled_data = xr.concat(scaled_list, dim="time")
     return scaled_data
 
 
