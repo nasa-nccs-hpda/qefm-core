@@ -15,29 +15,44 @@ def load_era5_data(era5_file):
 
 def regrid_mcd_data(mcd_ds, res=1.0):
     target_lat = np.arange(-90, 90 + res, res)
-    target_lon = np.arange(0, 359 + res, res)
+    target_lon = np.arange(0, 360, res)  # 0–360
     target_grid = xr.Dataset({'lat': (['lat'], target_lat),
                               'lon': (['lon'], target_lon)})
     
-    regridder = xe.Regridder(mcd_ds, target_grid, 'bilinear', periodic=True, ignore_degenerate=True)
+    regridder = xe.Regridder(mcd_ds, target_grid, 'bilinear',
+                             periodic=True, ignore_degenerate=True)
 
     regridded_vars = {}
 
     for var in mcd_ds.data_vars:
         dims = mcd_ds[var].dims
         if "lat" in dims and "lon" in dims:
-            # If 2D
-            if dims == ("lat", "lon"):
-                regridded_vars[var] = regridder(mcd_ds[var])
-            # If 3D+ (e.g., level, lat, lon)
+            # If has time dimension
+            if "time" in dims:
+                out_list = []
+                for t in mcd_ds.time:
+                    sub = mcd_ds[var].sel(time=t)
+                    if dims == ("time", "lat", "lon"):
+                        regridded = regridder(sub)
+                    else:
+                        other_dims = [d for d in sub.dims if d not in ["lat", "lon"]]
+                        stacked = sub.stack(z=other_dims)
+                        regridded = regridder(stacked)
+                        regridded = regridded.unstack("z")
+                        regridded = regridded.transpose(*other_dims, "lat", "lon")
+                    out_list.append(regridded.expand_dims(time=[t]))
+                regridded_vars[var] = xr.concat(out_list, dim="time")
+            
             else:
-                # Stack non-lat/lon dims
-                other_dims = [d for d in dims if d not in ["lat", "lon"]]
-                stacked = mcd_ds[var].stack(z=other_dims)  # shape: (z, lat, lon)
-                regridded = regridder(stacked)  # shape: (z, new_lat, new_lon)
-                unstacked = regridded.unstack("z")
-                regridded_vars[var] = unstacked.transpose(*other_dims, "lat", "lon")
-
+                # If no time dimension
+                if dims == ("lat", "lon"):
+                    regridded_vars[var] = regridder(mcd_ds[var])
+                else:
+                    other_dims = [d for d in dims if d not in ["lat", "lon"]]
+                    stacked = mcd_ds[var].stack(z=other_dims)
+                    regridded = regridder(stacked)
+                    regridded = regridded.unstack("z")
+                    regridded_vars[var] = regridded.transpose(*other_dims, "lat", "lon")
 
     ds_out = xr.Dataset(regridded_vars, coords={"lat": target_lat, "lon": target_lon})
     return ds_out
@@ -70,9 +85,6 @@ def main():
     hrs = ["00" , "06"]
     mcd_files = [mcd_root.replace("hr00", f"hr{hr}") for hr in hrs]
     mcd_ds = load_mcd_data(mcd_files)
-    print("MCD")
-    print(mcd_ds)
-    exit()
     era5_ds = load_era5_data(era5_file)
     print("ERA5")
     print(era5_ds)
@@ -80,6 +92,7 @@ def main():
     mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
     print("MCD_processed")
     print(mcd_ds_preprocessed)
+    exit()
 
     # Scale MCD variables to match ERA5 ranges
     swap_vars = ['toa_incident_solar_radiation']
