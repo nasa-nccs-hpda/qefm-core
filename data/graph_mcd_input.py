@@ -33,7 +33,7 @@ def regrid_mcd_data(mcd_ds, res=1.0):
             else:
                 # Stack non-lat/lon dims
                 other_dims = [d for d in dims if d not in ["lat", "lon"]]
-                stacked = ds[var].stack(z=other_dims)  # shape: (z, lat, lon)
+                stacked = mcd_ds[var].stack(z=other_dims)  # shape: (z, lat, lon)
                 regridded = regridder(stacked)  # shape: (z, new_lat, new_lon)
                 unstacked = regridded.unstack("z")
                 regridded_vars[var] = unstacked.transpose(*other_dims, "lat", "lon")
@@ -44,7 +44,12 @@ def regrid_mcd_data(mcd_ds, res=1.0):
 
 def preprocess_mcd_data(mcd_ds):
     """Preprocess MCD data to match ERA5 resoltuion."""
-    # Example: Regrid MCD data to 1-degree resolution
+    # Longitude adjustment-180~180 to 0~360
+    if mcd_ds.lon.min() < 0:
+        mcd_ds = mcd_ds.assign_coords(lon=(((mcd_ds.lon + 360) % 360)))
+        mcd_ds = mcd_ds.sortby(mcd_ds.lon)
+
+    # Regrid MCD data to 1-degree resolution
     mcd_ds_regridded = regrid_mcd_data(mcd_ds, res=1.0)
     return mcd_ds_regridded
 
@@ -58,7 +63,7 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
 
 
 def main():
-    mcd_file = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz/mcd_output_Ls285_hr12-rev-z.nc"
+    mcd_file = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz/mcd_output_Ls285_hr00-rev-z.nc"
     era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
     output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv1_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
 
