@@ -75,9 +75,11 @@ def main():
     print(era5_ds)
 
     mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
+    print("MCD_processed")
+    print(mcd_ds_preprocessed)
 
     # Scale MCD variables to match ERA5 ranges
-    swap_vars = ['2m_temperature', 'toa_solar_radiation']
+    swap_vars = ['toa_incident_solar_radiation']
     for var in swap_vars:
         if var in era5_ds.data_vars:
             mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
