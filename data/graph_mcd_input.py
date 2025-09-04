@@ -43,7 +43,7 @@ def regrid_mcd_data(mcd_ds, res=1.0):
                 regridded = regridded.transpose(*other_dims, "lat", "lon")
                 print('HERE')
                 print(regridded)
-            out_list.append(regridded.expand_dims(time=[t]))
+            out_list.append(regridded)
         regridded_vars[var] = xr.concat(out_list, dim="time")
         
     ds_out = xr.Dataset(regridded_vars, coords={"lat": target_lat, "lon": target_lon})
