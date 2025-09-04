@@ -82,5 +82,7 @@ def main():
     # Save to NetCDF
     #combined_ds.to_netcdf(output_file)
 
+if __name__ == "__main__":
+    main()
 
     
