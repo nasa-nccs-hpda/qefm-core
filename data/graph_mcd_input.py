@@ -23,37 +23,23 @@ def regrid_mcd_data(mcd_ds, res=1.0):
                              periodic=True, ignore_degenerate=True)
 
     regridded_vars = {}
-
     for var in mcd_ds.data_vars:
         dims = mcd_ds[var].dims
-        if "lat" in dims and "lon" in dims:
-            # If has time dimension
-            if "time" in dims:
-                out_list = []
-                for t in mcd_ds.time:
-                    sub = mcd_ds[var].sel(time=t)
-                    if dims == ("time", "lat", "lon"):
-                        regridded = regridder(sub)
-                    else:
-                        other_dims = [d for d in sub.dims if d not in ["lat", "lon"]]
-                        stacked = sub.stack(z=other_dims)
-                        regridded = regridder(stacked)
-                        regridded = regridded.unstack("z")
-                        regridded = regridded.transpose(*other_dims, "lat", "lon")
-                    out_list.append(regridded.expand_dims(time=[t]))
-                regridded_vars[var] = xr.concat(out_list, dim="time")
-            
+        out_list = []
+        for t in mcd_ds.time:
+            sub = mcd_ds[var].sel(time=t)
+            if dims == ("time", "lat", "lon"):
+                regridded = regridder(sub)
             else:
-                # If no time dimension
-                if dims == ("lat", "lon"):
-                    regridded_vars[var] = regridder(mcd_ds[var])
-                else:
-                    other_dims = [d for d in dims if d not in ["lat", "lon"]]
-                    stacked = mcd_ds[var].stack(z=other_dims)
-                    regridded = regridder(stacked)
-                    regridded = regridded.unstack("z")
-                    regridded_vars[var] = regridded.transpose(*other_dims, "lat", "lon")
-
+                other_dims = [d for d in sub.dims if d not in ["lat", "lon"]]
+                stacked = sub.stack(z=other_dims)
+                regridded = regridder(stacked)
+                regridded = regridded.unstack("z")
+                regridded = regridded.transpose(*other_dims, "lat", "lon")
+                print(regridded)
+            out_list.append(regridded.expand_dims(time=[t]))
+        regridded_vars[var] = xr.concat(out_list, dim="time")
+        
     ds_out = xr.Dataset(regridded_vars, coords={"lat": target_lat, "lon": target_lon})
     return ds_out
 
