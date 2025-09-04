@@ -28,6 +28,9 @@ def regrid_mcd_data(mcd_ds, res=1.0):
         out_list = []
         for t in mcd_ds.time:
             sub = mcd_ds[var].sel(time=t)
+            print('Variable:', var, 'Dims:', dims)
+            print(sub)
+
             if dims == ("time", "lat", "lon"):
                 regridded = regridder(sub)
             else:
