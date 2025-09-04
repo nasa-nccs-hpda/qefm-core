@@ -28,21 +28,14 @@ def regrid_mcd_data(mcd_ds, res=1.0):
         out_list = []
         for t in mcd_ds.time:
             sub = mcd_ds[var].sel(time=t)
-            print('Variable:', var, 'Dims:', dims)
-            print(sub)
-
             if dims == ("time", "lat", "lon"):
                 regridded = regridder(sub)
             else:
-                print('Variable:', var, 'Dims:', dims)
-                print(sub)
                 other_dims = [d for d in sub.dims if d not in ["lat", "lon"]]
                 stacked = sub.stack(z=other_dims)
                 regridded = regridder(stacked)
                 regridded = regridded.unstack("z")
                 regridded = regridded.transpose(*other_dims, "lat", "lon")
-                print('HERE')
-                print(regridded)
             out_list.append(regridded)
         regridded_vars[var] = xr.concat(out_list, dim="time")
         
