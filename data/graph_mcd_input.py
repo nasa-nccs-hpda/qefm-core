@@ -36,6 +36,7 @@ def regrid_mcd_data(mcd_ds, res=1.0):
                 regridded = regridder(stacked)
                 regridded = regridded.unstack("z")
                 regridded = regridded.transpose(*other_dims, "lat", "lon")
+                print('HERE')
                 print(regridded)
             out_list.append(regridded.expand_dims(time=[t]))
         regridded_vars[var] = xr.concat(out_list, dim="time")
