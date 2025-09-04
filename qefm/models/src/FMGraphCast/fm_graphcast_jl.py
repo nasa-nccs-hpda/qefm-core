@@ -26,101 +26,11 @@ from matplotlib import animation
 import numpy as np
 import xarray
 
+import os
 
 def parse_file_parts(file_name):
   return dict(part.split("-", 1) for part in file_name.split("_"))
 
-# @title Authenticate with Google Cloud Storage
-
-# gcs_client = storage.Client.create_anonymous_client()
-# gcs_bucket = gcs_client.get_bucket("dm_graphcast")
-
-# @title Plotting functions
-
-# def select(
-#     data: xarray.Dataset,
-#     variable: str,
-#     level: Optional[int] = None,
-#     max_steps: Optional[int] = None
-#     ) -> xarray.Dataset:
-#   data = data[variable]
-#   if "batch" in data.dims:
-#     data = data.isel(batch=0)
-#   if max_steps is not None and "time" in data.sizes and max_steps < data.sizes["time"]:
-#     data = data.isel(time=range(0, max_steps))
-#   if level is not None and "level" in data.coords:
-#     data = data.sel(level=level)
-#   return data
-
-# def scale(
-#     data: xarray.Dataset,
-#     center: Optional[float] = None,
-#     robust: bool = False,
-#     ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
-#   vmin = np.nanpercentile(data, (2 if robust else 0))
-#   vmax = np.nanpercentile(data, (98 if robust else 100))
-#   if center is not None:
-#     diff = max(vmax - center, center - vmin)
-#     vmin = center - diff
-#     vmax = center + diff
-#   return (data, matplotlib.colors.Normalize(vmin, vmax),
-#           ("RdBu_r" if center is not None else "viridis"))
-
-# def plot_data(
-#     data: dict[str, xarray.Dataset],
-#     fig_title: str,
-#     plot_size: float = 5,
-#     robust: bool = False,
-#     cols: int = 4
-#     ) -> tuple[xarray.Dataset, matplotlib.colors.Normalize, str]:
-
-  # first_data = next(iter(data.values()))[0]
-  # max_steps = first_data.sizes.get("time", 1)
-  # assert all(max_steps == d.sizes.get("time", 1) for d, _, _ in data.values())
-
-  # cols = min(cols, len(data))
-  # rows = math.ceil(len(data) / cols)
-  # figure = plt.figure(figsize=(plot_size * 2 * cols,
-  #                              plot_size * rows))
-  # figure.suptitle(fig_title, fontsize=16)
-  # figure.subplots_adjust(wspace=0, hspace=0)
-  # figure.tight_layout()
-
-  # images = []
-  # for i, (title, (plot_data, norm, cmap)) in enumerate(data.items()):
-  #   ax = figure.add_subplot(rows, cols, i+1)
-  #   ax.set_xticks([])
-  #   ax.set_yticks([])
-  #   ax.set_title(title)
-  #   im = ax.imshow(
-  #       plot_data.isel(time=0, missing_dims="ignore"), norm=norm,
-  #       origin="lower", cmap=cmap)
-  #   plt.colorbar(
-  #       mappable=im,
-  #       ax=ax,
-  #       orientation="vertical",
-  #       pad=0.02,
-  #       aspect=16,
-  #       shrink=0.75,
-  #       cmap=cmap,
-  #       extend=("both" if robust else "neither"))
-  #   images.append(im)
-
-  # def update(frame):
-  #   if "time" in first_data.dims:
-  #     td = datetime.timedelta(microseconds=first_data["time"][frame].item() / 1000)
-  #     figure.suptitle(f"{fig_title}, {td}", fontsize=16)
-  #   else:
-  #     figure.suptitle(fig_title, fontsize=16)
-  #   for im, (plot_data, norm, cmap) in zip(images, data.values()):
-  #     im.set_data(plot_data.isel(time=frame, missing_dims="ignore"))
-
-#   ani = animation.FuncAnimation(
-#       fig=figure, func=update, frames=max_steps, interval=250)
-#   plt.close(figure.number)
-#   return HTML(ani.to_jshtml())
-
-import os
 script_dir = os.path.dirname(os.path.abspath(__name__))
 print("script_dir:\n", script_dir, "\n")
 # relative_params_file = '../../checkpoints/graphcast/GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz"'
@@ -148,8 +58,9 @@ print("Model resolution:\n", model_config.resolution, "\n")
 print("Model description:\n", ckpt.description, "\n")
 print("Model license:\n", ckpt.license, "\n")
 
+source = 'mcdv1' # 'era5'
 #dataset_file = "source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
-relative_dataset_file = "../../checkpoints/graphcast/source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+relative_dataset_file = f"../../checkpoints/graphcast/source-{source}_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
 # relative_params_file = '../../checkpoints/graphcast/params_GraphCast_small.npz'
 dataset_file = os.path.join(script_dir, relative_dataset_file)
 print("dataset_file:\n", dataset_file, "\n")
@@ -301,3 +212,6 @@ predictions = rollout.chunked_prediction(
     forcings=eval_forcings)
 predictions
 print("predictions:\n", predictions)
+output_file = f"/discover/nobackup/jli30/mars/data/graph_output/fm_graphcast_jl_{source}_output.nc"
+predictions.to_netcdf(output_file)
+print(f"Saved predictions to {output_file}")
