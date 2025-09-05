@@ -76,7 +76,7 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
 def main():
     mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz/mcd_output_Ls285_hr00-rev-z.nc"
     era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
-    output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv1_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+    output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv2_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
 
     hrs = ["00" , "06"]
     mcd_files = [mcd_root.replace("hr00", f"hr{hr}") for hr in hrs]
@@ -98,7 +98,7 @@ def main():
             era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
     # Save to NetCDF
-    #era5_ds.to_netcdf(output_file)
+    era5_ds.to_netcdf(output_file)
     print("After modification")
     print(era5_ds)
 
