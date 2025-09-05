@@ -55,10 +55,10 @@ def preprocess_mcd_data(mcd_ds):
 
 def scale_mcd_data(mcd_ds, era5_ds, var_name):
     era5_sub = era5_ds[var_name].isel(time=slice(0, 2), batch=0)
-    orig_min = mcd_ds[var_name].min(dim=("lat", "lon")).values
-    orig_max = mcd_ds[var_name].max(dim=("lat", "lon")).values
-    target_min = era5_sub.min(dim=("lat", "lon")).values
-    target_max = era5_sub.max(dim=("lat", "lon")).values
+    orig_min = mcd_ds[var_name].min(dim=("lat", "lon"))
+    orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
+    target_min = era5_sub.min(dim=("lat", "lon"))
+    target_max = era5_sub.max(dim=("lat", "lon"))
     print(f"Scaling {var_name}: MCD min {orig_min}, max {orig_max}; ERA5 min {target_min}, max {target_max}")
     # Then index explicitly per timestep
     scaled_list = []
@@ -98,7 +98,7 @@ def main():
             era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
     # Save to NetCDF
-    era5_ds.to_netcdf(output_file)
+    #era5_ds.to_netcdf(output_file)
     print("After modification")
     print(era5_ds)
 
