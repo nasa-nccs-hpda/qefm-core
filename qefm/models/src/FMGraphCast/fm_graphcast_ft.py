@@ -197,21 +197,21 @@ assert model_config.resolution in (0, 360. / eval_inputs.sizes["lon"]), (
   "Model resolution doesn't match the data resolution. You likely want to "
   "re-filter the dataset list, and download the correct data.")
 
-print("Inputs:  ", eval_inputs.dims.mapping)
-print("Targets: ", eval_targets.dims.mapping)
-print("Forcings:", eval_forcings.dims.mapping)
+# print("Inputs:  ", eval_inputs.dims.mapping)
+# print("Targets: ", eval_targets.dims.mapping)
+# print("Forcings:", eval_forcings.dims.mapping)
 
-predictions = rollout.chunked_prediction(
-    run_forward_jitted,
-    rng=jax.random.PRNGKey(0),
-    inputs=eval_inputs,
-    targets_template=eval_targets * np.nan,
-    forcings=eval_forcings)
-predictions
-print("predictions:\n", predictions)
-output_file = f"/discover/nobackup/jli30/mars/data/graph_output/fm_graphcast_jl_{source}_output.nc"
-predictions.to_netcdf(output_file)
-print(f"Saved predictions to {output_file}")
+# predictions = rollout.chunked_prediction(
+#     run_forward_jitted,
+#     rng=jax.random.PRNGKey(0),
+#     inputs=eval_inputs,
+#     targets_template=eval_targets * np.nan,
+#     forcings=eval_forcings)
+# predictions
+# print("predictions:\n", predictions)
+# output_file = f"/discover/nobackup/jli30/mars/data/graph_output/fm_graphcast_jl_{source}_output.nc"
+# predictions.to_netcdf(output_file)
+# print(f"Saved predictions to {output_file}")
 
 dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
