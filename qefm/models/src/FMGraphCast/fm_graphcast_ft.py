@@ -175,7 +175,7 @@ def with_params(fn):
 # Our models aren't stateful, so the state is always empty, so just return the
 # predictions. This is requiredy by our rollout code, and generally simpler.
 def drop_state(fn):
-  return lambda **kw: fn(**kw)[0]
+  return lambda **kw: fn(rng=jax.random.PRNGKey(0), **kw)[0]
 
 init_jitted = jax.jit(with_configs(run_forward.init))
 
