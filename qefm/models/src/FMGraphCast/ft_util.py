@@ -30,7 +30,7 @@ def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, ta
 
         if len(batch) == batch_size:
            
-           yield continue(batch)
+           yield collate_batch(batch)
            batch = []
 
 
