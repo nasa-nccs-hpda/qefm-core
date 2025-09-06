@@ -216,20 +216,20 @@ assert model_config.resolution in (0, 360. / eval_inputs.sizes["lon"]), (
 dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
 num_epochs = 1
-batch_size = 2
+batch_size = 4
 target_lead_times = slice("6h", "12h")
 for epoch in range(num_epochs):
    print(f"Epoch {epoch + 1}/{num_epochs}")
 
    shuffled_files = np.random.permutation(file_list)
-   batched_inputs, batched_targets, batched_forcings = batch_data_loader(
-       shuffled_files,
-       task_config, 
-       batch_size,
-       target_lead_times)
-   loss, diagnostics, state, grads = grads_fn_jitted(
-      params, state, batched_inputs, batched_targets, batched_forcings)
-   print(f"Loss: {loss}")
+   data_loader = batch_data_loader(file_list, task_config, batch_size, target_lead_times)
+   for batched_inputs, batched_targets, batched_forcings in data_loader:
+      print("batched_inputs.sizes:", batched_inputs.sizes)
+      print("batched_targets.sizes:", batched_targets.sizes)
+      print("batched_forcings.sizes:", batched_forcings.sizes)
+  #  loss, diagnostics, state, grads = grads_fn_jitted(
+  #     params, state, batched_inputs, batched_targets, batched_forcings)
+  #  print(f"Loss: {loss}")
    
       
 
