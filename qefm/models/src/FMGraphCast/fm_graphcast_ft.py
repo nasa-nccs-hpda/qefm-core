@@ -230,7 +230,7 @@ for epoch in range(num_epochs):
       # loss, diagnostics, state, grads = grads_fn_jitted(
       #     params, model_config, task_config, 
       #     state, batched_inputs, batched_targets, batched_forcings)
-      loss, diagnostics = loss_fn_jitted()
+      loss, diagnostics = loss_fn_jitted(jax.random.PRNGKey(0))
       print("Loss:", float(loss))
       break
    
