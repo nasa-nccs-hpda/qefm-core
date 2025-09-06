@@ -37,9 +37,9 @@ def batch_data_loader(file_list: List[str], task_config, batch_size: int = 1, ta
 def collate_batch(batch: List[Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]]) -> Tuple[xarray.Dataset, xarray.Dataset, xarray.Dataset]:
     """Collates a list of examples into a single batch."""
     inputs, targets, forcings = zip(*batch)
-    # inputs = xarray.concat(inputs, dim="batch")
-    # targets = xarray.concat(targets, dim="batch")
-    # forcings = xarray.concat(forcings, dim="batch")
+    inputs = xarray.concat(inputs, dim="batch")
+    targets = xarray.concat(targets, dim="batch")
+    forcings = xarray.concat(forcings, dim="batch")
     return inputs, targets, forcings
 
 if __name__ == "__main__":
