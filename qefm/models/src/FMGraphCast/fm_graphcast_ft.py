@@ -217,7 +217,7 @@ dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
 num_epochs = 1
 batch_size = 2
-
+target_lead_times = slice("6h", "12h")
 for epoch in range(num_epochs):
    print(f"Epoch {epoch + 1}/{num_epochs}")
 
@@ -225,7 +225,8 @@ for epoch in range(num_epochs):
    batched_inputs, batched_targets, batched_forcings = batch_data_loader(
        shuffled_files,
        task_config, 
-       batch_size)
+       batch_size,
+       target_lead_times)
    loss, diagnostics, state, grads = grads_fn_jitted(
       params, state, batched_inputs, batched_targets, batched_forcings)
    print(f"Loss: {loss}")
