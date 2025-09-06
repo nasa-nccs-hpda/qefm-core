@@ -224,7 +224,7 @@ dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
 
 # Training config
-num_epochs = 100
+num_epochs = 10
 batch_size = 1
 target_lead_times = slice("6h", "12h")
 learning_rate = 1e-4
@@ -287,9 +287,6 @@ for epoch in range(num_epochs):
           print(f"New best model saved at step {global_step} with loss {best_loss}")
 
       global_step += 1
-
-      print("Loss:", float(loss))
-      break
    
       
 
