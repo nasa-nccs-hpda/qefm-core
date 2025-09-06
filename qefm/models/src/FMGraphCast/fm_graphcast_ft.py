@@ -231,7 +231,7 @@ learning_rate = 1e-4
 weight_decay = 1e-5
 
 # Optimizer
-optimizer = hk.optimizers.Adam(learning_rate=learning_rate, weight_decay=weight_decay)
+optimizer = optax.adamw(learning_rate=learning_rate, weight_decay=weight_decay)
 opt_state = optimizer.init(params)
 
 # CSV logging
