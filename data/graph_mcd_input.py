@@ -72,11 +72,22 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
     scaled_data = xr.concat(scaled_list, dim="time")
     return scaled_data
 
+def set_constants(era5_ds, var_name, value):
+    if var_name in era5_ds.data_vars:
+        era5_ds[var_name].values[:] = value
+    return era5_ds
+
+def constants_to_era5(era5_ds):
+
+    era5_ds = set_constants(era5_ds, 'land_sea_mask', 1)
+    era5_ds = set_constants(era5_ds, 'total_precipitation_6hr', 0.0)
+    era5_ds = set_constants(era5_ds, 'geopotantial_at_surface', 25.0)
+    return era5_ds
 
 def main():
     mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz/mcd_output_Ls285_hr00-rev-z.nc"
     era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
-    output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv2_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+    output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
 
     hrs = ["00" , "06"]
     mcd_files = [mcd_root.replace("hr00", f"hr{hr}") for hr in hrs]
@@ -97,6 +108,7 @@ def main():
             # Replace ERA5 variable with MCD variable
             era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
+    era5_ds = constants_to_era5(era5_ds)
     # Save to NetCDF
     era5_ds.to_netcdf(output_file)
     print("After modification")
