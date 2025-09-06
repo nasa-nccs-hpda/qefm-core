@@ -49,14 +49,14 @@ if __name__ == "__main__":
 
     # Example usage
     #config = config_lib.get_config()
-    task_config = graphcast.TASK
+    task_config = graphcast.TASK_13_PRECIP_OUT
 
     # Assuming you have a list of file paths
     input_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
     file_list = glob.glob(os.path.join(input_dir, "graph*2022*steps-4.nc"))  # Update with your data path
 
     batch_size = 4
-    target_lead_times = slice("6h", "6h")
+    target_lead_times = slice("6h", "12h")
 
     data_loader = batch_data_loader(file_list, task_config, batch_size, target_lead_times)
 
