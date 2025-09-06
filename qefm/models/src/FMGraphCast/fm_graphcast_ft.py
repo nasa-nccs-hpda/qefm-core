@@ -25,8 +25,10 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
 import xarray
-
+import glob
 import os
+
+from ft_util import batch_data_loader
 
 def parse_file_parts(file_name):
   return dict(part.split("-", 1) for part in file_name.split("_"))
@@ -210,3 +212,30 @@ print("predictions:\n", predictions)
 output_file = f"/discover/nobackup/jli30/mars/data/graph_output/fm_graphcast_jl_{source}_output.nc"
 predictions.to_netcdf(output_file)
 print(f"Saved predictions to {output_file}")
+
+dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
+file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
+num_epochs = 1
+batch_size = 2
+
+for epoch in range(num_epochs):
+   print(f"Epoch {epoch + 1}/{num_epochs}")
+
+   shuffled_files = np.random.permutation(file_list)
+   batched_inputs, batched_targets, batched_forcings = batch_data_loader(
+       shuffled_files,
+       task_config, 
+       batch_size)
+   loss, diagnostics, state, grads = grads_fn_jitted(
+      params, state, batched_inputs, batched_targets, batched_forcings)
+   print(f"Loss: {loss}")
+   
+      
+
+         
+     
+
+   
+
+
+     
