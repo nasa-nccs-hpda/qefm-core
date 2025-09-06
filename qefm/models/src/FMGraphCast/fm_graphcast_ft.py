@@ -227,10 +227,15 @@ for epoch in range(num_epochs):
       print("batched_inputs.sizes:", batched_inputs.sizes)
       print("batched_targets.sizes:", batched_targets.sizes)
       print("batched_forcings.sizes:", batched_forcings.sizes)
-      loss, diagnostics, state, grads = grads_fn_jitted(
-          params, model_config, task_config, 
-          state, batched_inputs, batched_targets, batched_forcings)
-      print(f"Loss: {loss}")
+      # loss, diagnostics, state, grads = grads_fn_jitted(
+      #     params, model_config, task_config, 
+      #     state, batched_inputs, batched_targets, batched_forcings)
+      loss, diagnostics = loss_fn_jitted(
+         jax.random.PRNGKey(0),
+         batched_inputs,
+         batched_targets,
+         batched_forcings)
+      print("Loss:", float(loss))
       break
    
       
