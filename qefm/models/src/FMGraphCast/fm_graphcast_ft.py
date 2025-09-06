@@ -228,7 +228,8 @@ for epoch in range(num_epochs):
       print("batched_targets.sizes:", batched_targets.sizes)
       print("batched_forcings.sizes:", batched_forcings.sizes)
       loss, diagnostics, state, grads = grads_fn_jitted(
-          params, state, batched_inputs, batched_targets, batched_forcings)
+          params, model_config, task_config, 
+          state, batched_inputs, batched_targets, batched_forcings)
       print(f"Loss: {loss}")
       break
    
