@@ -3,7 +3,7 @@ import datetime
 import functools
 import math
 import re
-from typing import Optional
+from typing import Optional, Any, Dict, Tuple, Iterator, List
 
 import cartopy.crs as ccrs
 # from google.cloud import storage
@@ -27,6 +27,8 @@ import numpy as np
 import xarray
 import glob
 import os
+import csv
+import optax
 
 from ft_util import batch_data_loader
 
@@ -197,42 +199,95 @@ assert model_config.resolution in (0, 360. / eval_inputs.sizes["lon"]), (
   "Model resolution doesn't match the data resolution. You likely want to "
   "re-filter the dataset list, and download the correct data.")
 
-# print("Inputs:  ", eval_inputs.dims.mapping)
-# print("Targets: ", eval_targets.dims.mapping)
-# print("Forcings:", eval_forcings.dims.mapping)
+def write_checkpoint(
+    path_scheme: str, 
+    step_number: int, 
+    params: dict[str, Any], 
+    description: str = ckpt.description,
+    license: str = ckpt.license,
+    task_config = ckpt.task_config,
+    model_config = ckpt.sampler_config,
+):
+    if step_number == -99:
+        checkpoint_filename = path_scheme
+    else:
+        checkpoint_filename = path_scheme.format(step_number=step_number)
+    with open(checkpoint_filename, 'wb') as cfile:
+        checkpoint.dump(cfile, graphcast.CheckPoint(params=params,
+                                                task_config=task_config,
+                                                model_config=model_config,
+                                                description=description,
+                                                license=license))
 
-# predictions = rollout.chunked_prediction(
-#     run_forward_jitted,
-#     rng=jax.random.PRNGKey(0),
-#     inputs=eval_inputs,
-#     targets_template=eval_targets * np.nan,
-#     forcings=eval_forcings)
-# predictions
-# print("predictions:\n", predictions)
-# output_file = f"/discover/nobackup/jli30/mars/data/graph_output/fm_graphcast_jl_{source}_output.nc"
-# predictions.to_netcdf(output_file)
-# print(f"Saved predictions to {output_file}")
-
+# Dataset
 dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
-num_epochs = 1
+
+# Training config
+num_epochs = 100
 batch_size = 1
 target_lead_times = slice("6h", "12h")
+learning_rate = 1e-4
+weight_decay = 1e-5
+
+# Optimizer
+optimizer = hk.optimizers.Adam(learning_rate=learning_rate, weight_decay=weight_decay)
+opt_state = optimizer.init(params)
+
+# CSV logging
+log_file = "training_log.csv"
+# Create header if file doesn't exist
+if not os.path.exists(log_file):
+    with open(log_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["step", "epoch", "batch", "loss"])
+
+global_step = 0
+best_loss = float('inf')
+save_every = 100
 for epoch in range(num_epochs):
    print(f"Epoch {epoch + 1}/{num_epochs}")
 
    shuffled_files = np.random.permutation(file_list)
    data_loader = batch_data_loader(file_list, task_config, batch_size, target_lead_times)
-   for batched_inputs, batched_targets, batched_forcings in data_loader:
-      print("batched_inputs.sizes:", batched_inputs.sizes)
-      print("batched_targets.sizes:", batched_targets.sizes)
-      print("batched_forcings.sizes:", batched_forcings.sizes)
-      # loss, diagnostics, state, grads = grads_fn_jitted(
-      #     params, model_config, task_config, 
-      #     state, batched_inputs, batched_targets, batched_forcings)
+
+   for step, (batched_inputs, batched_targets, batched_forcings) in enumerate(data_loader):
+      # print("batched_inputs.sizes:", batched_inputs.sizes)
+      # print("batched_targets.sizes:", batched_targets.sizes)
+      # print("batched_forcings.sizes:", batched_forcings.sizes)
       loss, diagnostics, next_state, grads = grads_fn_jitted(
          inputs=batched_inputs, targets=batched_targets, forcings=batched_forcings
       )
+
+      # Apply optimizer update
+      updates, opt_state = optimizer.update(grads, opt_state, params)
+      params = optax.apply_updates(params, updates)
+
+      # Update state
+      state = next_state
+
+      # Log to CSV
+      with open(log_file, "a", newline="") as f:
+          writer = csv.writer(f)
+          writer.writerow([global_step, epoch + 1, step + 1, float(loss)])
+
+      if step % 10 == 0:
+          print(f" Step {step + 1}, Loss: {float(loss)}")
+        
+      # Periodic checkpointing
+      if global_step % save_every == 0 and global_step > 0:
+          path_scheme = "./checkpoints/GraphCast.1p0deg.step.{step_number:05d}.npz"
+          write_checkpoint(path_scheme, global_step + 1, params)
+          print(f"Checkpoint saved at step {global_step}")
+      
+      if float(loss) < best_loss:
+          best_loss = float(loss)
+          path_scheme = "./checkpoints/GraphCast.1p0deg.best.npz"
+          write_checkpoint(path_scheme, -99, params)
+          print(f"New best model saved at step {global_step} with loss {best_loss}")
+
+      global_step += 1
+
       print("Loss:", float(loss))
       break
    
