@@ -16,7 +16,7 @@ from graphcast import normalization
 from graphcast import rollout
 from graphcast import xarray_jax
 from graphcast import xarray_tree
-from IPython.display import HTML
+#from IPython.display import HTML
 #import ipywidgets as widgets
 import haiku as hk
 import jax
@@ -58,7 +58,7 @@ print("Model resolution:\n", model_config.resolution, "\n")
 print("Model description:\n", ckpt.description, "\n")
 print("Model license:\n", ckpt.license, "\n")
 
-source = 'era5' #'era5-mcdv1' # 'era5'
+source = 'era5-mcdv3' #'era5-mcdv1' # 'era5'
 #dataset_file = "source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
 relative_dataset_file = f"../../checkpoints/graphcast/source-{source}_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
 # relative_params_file = '../../checkpoints/graphcast/params_GraphCast_small.npz'
