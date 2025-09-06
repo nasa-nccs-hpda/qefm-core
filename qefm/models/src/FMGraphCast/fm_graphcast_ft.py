@@ -216,7 +216,7 @@ assert model_config.resolution in (0, 360. / eval_inputs.sizes["lon"]), (
 dataset_dir = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/graph/"
 file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
 num_epochs = 1
-batch_size = 2
+batch_size = 1
 target_lead_times = slice("6h", "12h")
 for epoch in range(num_epochs):
    print(f"Epoch {epoch + 1}/{num_epochs}")
