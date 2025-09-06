@@ -206,7 +206,7 @@ def write_checkpoint(
     description: str = ckpt.description,
     license: str = ckpt.license,
     task_config = ckpt.task_config,
-    model_config = ckpt.sampler_config,
+    model_config = ckpt.model_config,
 ):
     if step_number == -99:
         checkpoint_filename = path_scheme
