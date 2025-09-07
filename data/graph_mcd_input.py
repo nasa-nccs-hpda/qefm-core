@@ -60,7 +60,6 @@ def scale_mcd_data(mcd_ds, era5_ds, var_name):
     orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
     target_min = era5_sub.min(dim=("lat", "lon"))
     target_max = era5_sub.max(dim=("lat", "lon"))
-    print(f"Scaling {var_name}: MCD min {orig_min}, max {orig_max}; ERA5 min {target_min}, max {target_max}")
     # Then index explicitly per timestep
     scaled_list = []
     for t in range(mcd_ds.sizes["time"]):
@@ -104,7 +103,6 @@ def main():
         hrs = ["00" , "06"]
         mcd_files = [mcd_scheme.replace("hr00", f"hr{hr}") for hr in hrs]
         mcd_ds = load_mcd_data(mcd_files)
-        print(mcd_ds)
 
         # Load ERA5 data
         era5_file = os.path.join(graph_root, "graph", f"graphcast-dataset-source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
@@ -119,13 +117,13 @@ def main():
         for var in swap_vars:
             if var in era5_ds.data_vars:
                 mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
-                print(mcd_ds_preprocessed[var].values)
                 # Replace ERA5 variable with MCD variable
                 era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
 
         era5_ds = constants_to_era5(era5_ds)
         # Save to NetCDF
         era5_ds.to_netcdf(output_file)
+        print(f"Saved merged data to {output_file}")
 
 if __name__ == "__main__":
     main()
