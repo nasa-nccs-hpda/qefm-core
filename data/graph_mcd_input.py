@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 def load_mcd_data(mcd_file):
     """Load MCD data from a NetCDF file."""
-    return xr.open_mfdataset(mcd_file)
+    return xr.open_mfdataset(mcd_file, engine='netcdf4')
 
 def load_era5_data(era5_file):
     """Load ERA5 data from a NetCDF file."""
@@ -104,6 +104,7 @@ def main():
         hrs = ["00" , "06"]
         mcd_files = [mcd_scheme.replace("hr00", f"hr{hr}") for hr in hrs]
         mcd_ds = load_mcd_data(mcd_files)
+        print(mcd_ds)
 
         # Load ERA5 data
         era5_file = os.path.join(graph_root, "graph", f"graphcast_dataset_source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
