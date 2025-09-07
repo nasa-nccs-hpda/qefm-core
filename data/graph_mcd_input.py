@@ -99,7 +99,7 @@ def main():
     series = np.arange(285, 361, 5).tolist() + np.arange(0, 286, 5).tolist()
     for idx, Ls in enumerate(series[:n]):
         # Load MCD data
-        mcd_scheme = os.path.join(mcd_root, f"mcd_output_Ls{Ls:02d}_hr00-rev-z.n")
+        mcd_scheme = os.path.join(mcd_root, f"mcd_output_Ls{Ls:02d}_hr00-rev-z.nc")
 
         hrs = ["00" , "06"]
         mcd_files = [mcd_scheme.replace("hr00", f"hr{hr}") for hr in hrs]
