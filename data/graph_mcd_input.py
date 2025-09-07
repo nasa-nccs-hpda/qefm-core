@@ -55,7 +55,7 @@ def preprocess_mcd_data(mcd_ds):
     return mcd_ds_regridded
 
 def scale_mcd_data(mcd_ds, era5_ds, var_name):
-    era5_sub = era5_ds[var_name].isel(time=slice(0, 2), batch=0)
+    era5_sub = era5_ds[var_name].isel(time=slice(0, 4), batch=0)
     orig_min = mcd_ds[var_name].min(dim=("lat", "lon"))
     orig_max = mcd_ds[var_name].max(dim=("lat", "lon"))
     target_min = era5_sub.min(dim=("lat", "lon"))
@@ -100,7 +100,7 @@ def main():
         # Load MCD data
         mcd_scheme = os.path.join(mcd_root, f"mcd_output_Ls{Ls:02d}_hr00-rev-z.nc")
 
-        hrs = ["00" , "06"]
+        hrs = ["00" , "06", "12", "18"]
         mcd_files = [mcd_scheme.replace("hr00", f"hr{hr}") for hr in hrs]
         mcd_ds = load_mcd_data(mcd_files)
 
@@ -109,7 +109,7 @@ def main():
         era5_ds = load_era5_data(era5_file)
         output_file = os.path.join(graph_root, "mcd", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
 
-        mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:2])
+        mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:4])
         mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
 
         # Scale MCD variables to match ERA5 ranges
@@ -118,7 +118,7 @@ def main():
             if var in era5_ds.data_vars:
                 mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
                 # Replace ERA5 variable with MCD variable
-                era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
+                era5_ds[var][0,0:4,:,:] = mcd_ds_preprocessed[var][0:4,:,:]    
 
         era5_ds = constants_to_era5(era5_ds)
         # Save to NetCDF
