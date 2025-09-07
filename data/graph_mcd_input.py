@@ -4,6 +4,7 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 import xesmf as xe
+from datetime import datetime, timedelta
 
 def load_mcd_data(mcd_file):
     """Load MCD data from a NetCDF file."""
@@ -85,34 +86,45 @@ def constants_to_era5(era5_ds):
     return era5_ds
 
 def main():
-    mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz/mcd_output_Ls285_hr00-rev-z.nc"
-    era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
-    output_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+    graph_root = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples"
+    mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz"
+    #era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+    #output_root = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
+    output_root = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/mcd"
 
-    hrs = ["00" , "06"]
-    mcd_files = [mcd_root.replace("hr00", f"hr{hr}") for hr in hrs]
-    mcd_ds = load_mcd_data(mcd_files)
-    era5_ds = load_era5_data(era5_file)
+    n  = 3
+    start_date = datetime(2022, 1, 1)
+    dates = [(start_date + timedelta(days=5*i)).strftime('%Y-%m-%d') for i in range(n)]
 
-    mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:2])
-    print(mcd_ds.time)
-    mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
-    print("MCD_processed")
+    series = np.arange(285, 361, 5).tolist() + np.arange(0, 286, 5).tolist()
+    for idx, Ls in enumerate(series[:n]):
+        # Load MCD data
+        mcd_scheme = os.path.join(mcd_root, f"mcd_output_Ls{Ls:02d}_hr00-rev-z.n")
 
-    # Scale MCD variables to match ERA5 ranges
-    swap_vars = ['2m_temperature', 'temperature']
-    for var in swap_vars:
-        if var in era5_ds.data_vars:
-            mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
-            print(mcd_ds_preprocessed[var].values)
-            # Replace ERA5 variable with MCD variable
-            era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
+        hrs = ["00" , "06"]
+        mcd_files = [mcd_scheme.replace("hr00", f"hr{hr}") for hr in hrs]
+        mcd_ds = load_mcd_data(mcd_files)
 
-    era5_ds = constants_to_era5(era5_ds)
-    # Save to NetCDF
-    era5_ds.to_netcdf(output_file)
-    print("After modification")
-    print(era5_ds)
+        # Load ERA5 data
+        era5_file = os.path.join(graph_root, "graph", f"graphcast_dataset_source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
+        era5_ds = load_era5_data(era5_file)
+        output_file = os.path.join(graph_root, "mcd", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
+
+        mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:2])
+        mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
+
+        # Scale MCD variables to match ERA5 ranges
+        swap_vars = ['2m_temperature', 'temperature']
+        for var in swap_vars:
+            if var in era5_ds.data_vars:
+                mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
+                print(mcd_ds_preprocessed[var].values)
+                # Replace ERA5 variable with MCD variable
+                era5_ds[var][0,0:2,:,:] = mcd_ds_preprocessed[var][0:2,:,:]    
+
+        era5_ds = constants_to_era5(era5_ds)
+        # Save to NetCDF
+        era5_ds.to_netcdf(output_file)
 
 if __name__ == "__main__":
     main()
