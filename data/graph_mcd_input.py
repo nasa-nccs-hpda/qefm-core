@@ -107,7 +107,7 @@ def main():
         print(mcd_ds)
 
         # Load ERA5 data
-        era5_file = os.path.join(graph_root, "graph", f"graphcast_dataset_source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
+        era5_file = os.path.join(graph_root, "graph", f"graphcast-dataset-source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
         era5_ds = load_era5_data(era5_file)
         output_file = os.path.join(graph_root, "mcd", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
 
