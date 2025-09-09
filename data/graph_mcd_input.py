@@ -110,9 +110,9 @@ def main():
     mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz"
     #era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
     #output_root = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
-    output_root = "/discover/nobackup/projects/QEFM/data/FMGenCast/6hr/samples/mcd"
+    output_root = "/explore/nobackup/projects/ilab/data/qefm/graphcast/mcd_mean_v2"
 
-    n  = 73
+    n  = 3
     start_date = datetime(2022, 1, 1)
     dates = [(start_date + timedelta(days=5*i)).strftime('%Y-%m-%d') for i in range(n)]
 
@@ -128,8 +128,8 @@ def main():
         # Load ERA5 data
         era5_file = os.path.join(graph_root, "graph", f"graphcast-dataset-source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
         era5_ds = load_era5_data(era5_file)
-        output_file = os.path.join(graph_root, "mcd_mean", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
-
+        
+        
         mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:4])
         mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
 
@@ -145,8 +145,12 @@ def main():
         era5_ds = era5_to_mean(era5_ds)
         era5_ds = constants_to_era5(era5_ds)
         # Save to NetCDF
-        era5_ds.to_netcdf(output_file)
-        print(f"Saved merged data to {output_file}")
+        for i in range(2):
+            output_file = os.path.join(output_root, f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}-T{hrs[i]}_res-1.0_levels-13_steps-3.nc")
+            era5_ds.isel(time=slice(i*3, i*3+3)).to_netcdf(output_file)
+#        era5_ds['time'][i] = pd.to_datetime(era5_ds['time'][i].values).strftime('%Y-%m-%dT%H:%M:%SZ')
+#        era5_ds.to_netcdf(output_file)
+            print(f"Saved merged data to {output_file}")
 
 if __name__ == "__main__":
     main()
