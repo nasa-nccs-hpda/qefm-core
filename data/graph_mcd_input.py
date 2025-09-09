@@ -112,7 +112,7 @@ def main():
     #output_root = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
     output_root = "/explore/nobackup/projects/ilab/data/qefm/graphcast/mcd_mean_v2"
 
-    n  = 3
+    n  = 73
     start_date = datetime(2022, 1, 1)
     dates = [(start_date + timedelta(days=5*i)).strftime('%Y-%m-%d') for i in range(n)]
 
