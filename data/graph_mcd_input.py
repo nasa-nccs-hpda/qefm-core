@@ -80,8 +80,29 @@ def set_constants(era5_ds, var_name, value):
 def constants_to_era5(era5_ds):
 
     era5_ds = set_constants(era5_ds, 'land_sea_mask', 1)
-    era5_ds = set_constants(era5_ds, 'total_precipitation_6hr', 0.0)
-    era5_ds = set_constants(era5_ds, 'geopotantial_at_surface', 25.0)
+    #era5_ds = set_constants(era5_ds, 'total_precipitation_6hr', 0.0)
+    #era5_ds = set_constants(era5_ds, 'geopotantial_at_surface', 25.0)
+    return era5_ds
+
+def era5_to_mean(era5_ds):
+    mean_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/stats_mean_by_level.nc"
+    mean_ds = xr.open_dataset(mean_file)
+    for var in set(era5_ds.data_vars).intersection(mean_ds.data_vars):
+        if var in ["2m_temperature", "temperature", "toa_incident_solar_radiation"]:
+            continue
+
+        da = era5_ds[var]
+        mean_da = mean_ds[var]
+
+        if "level" in da.dims:
+            # Ensure levels match
+            common_levels = set(da.level.values).intersection(mean_da.level.values)
+            for lev in common_levels:
+                era5_ds[var].loc[dict(level=lev)] = mean_da.sel(level=lev).values
+        else:
+            # No level: assign scalar mean value
+            era5_ds[var].values[:] = mean_da.values
+
     return era5_ds
 
 def main():
@@ -107,7 +128,7 @@ def main():
         # Load ERA5 data
         era5_file = os.path.join(graph_root, "graph", f"graphcast-dataset-source-era5_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
         era5_ds = load_era5_data(era5_file)
-        output_file = os.path.join(graph_root, "mcd", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
+        output_file = os.path.join(graph_root, "mcd_mean", f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}_res-1.0_levels-13_steps-4.nc")
 
         mcd_ds = mcd_ds.assign_coords(time=era5_ds.time.values[:4])
         mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
@@ -118,8 +139,10 @@ def main():
             if var in era5_ds.data_vars:
                 mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
                 # Replace ERA5 variable with MCD variable
-                era5_ds[var][0,0:4,:,:] = mcd_ds_preprocessed[var][0:4,:,:]    
+                era5_ds[var][0,0:4,:,:] = mcd_ds_preprocessed[var][0:4,:,:]
 
+        # Set variables to constants or means
+        era5_ds = era5_to_mean(era5_ds)
         era5_ds = constants_to_era5(era5_ds)
         # Save to NetCDF
         era5_ds.to_netcdf(output_file)
