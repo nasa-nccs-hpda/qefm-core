@@ -147,7 +147,7 @@ def main():
         # Save to NetCDF
         for i in range(2):
             output_file = os.path.join(output_root, f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}-T{hrs[i]}_res-1.0_levels-13_steps-3.nc")
-            era5_ds.isel(time=slice(i*3, i*3+3)).to_netcdf(output_file)
+            era5_ds.isel(time=slice(i, i+3)).to_netcdf(output_file)
 #        era5_ds['time'][i] = pd.to_datetime(era5_ds['time'][i].values).strftime('%Y-%m-%dT%H:%M:%SZ')
 #        era5_ds.to_netcdf(output_file)
             print(f"Saved merged data to {output_file}")
