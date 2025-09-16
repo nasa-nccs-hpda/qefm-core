@@ -77,19 +77,20 @@ def set_constants(era5_ds, var_name, value):
         era5_ds[var_name].values[:] = value
     return era5_ds
 
-def constants_to_era5(era5_ds):
-
-    era5_ds = set_constants(era5_ds, 'land_sea_mask', 1)
-    #era5_ds = set_constants(era5_ds, 'total_precipitation_6hr', 0.0)
-    #era5_ds = set_constants(era5_ds, 'geopotantial_at_surface', 25.0)
+def constants_to_era5(era5_ds, var_names=None, var_values=None):
+    for var, value in zip(var_names or [], var_values or []):
+        era5_ds = set_constants(era5_ds, var, value)
+    # era5_ds = set_constants(era5_ds, 'land_sea_mask', 1)
+    # era5_ds = set_constants(era5_ds, 'total_precipitation_6hr', 0.0)
+    # era5_ds = set_constants(era5_ds, 'geopotantial_at_surface', 25.0)
     return era5_ds
 
-def era5_to_mean(era5_ds):
+def era5_to_mean(era5_ds, var_names=None):
     mean_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/stats_mean_by_level.nc"
     mean_ds = xr.open_dataset(mean_file)
-    for var in set(era5_ds.data_vars).intersection(mean_ds.data_vars):
-        if var in ["2m_temperature", "temperature", "toa_incident_solar_radiation"]:
-            continue
+    for var in var_names:
+    #    if var in ["2m_temperature", "temperature", "toa_incident_solar_radiation"]:
+    #        continue
 
         da = era5_ds[var]
         mean_da = mean_ds[var]
@@ -110,7 +111,7 @@ def main():
     mcd_root = "/discover/nobackup/projects/nccs_interns/mvu2/jli/data/revz"
     #era5_file = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/graphcast_dataset_source-era5_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
     #output_root = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
-    output_root = "/explore/nobackup/projects/ilab/data/qefm/graphcast/mcd_mean_v2"
+    output_root = "/explore/nobackup/projects/ilab/data/qefm/graphcast/mcd_v2"
 
     n  = 73
     start_date = datetime(2022, 1, 1)
@@ -134,16 +135,20 @@ def main():
         mcd_ds_preprocessed = preprocess_mcd_data(mcd_ds)
 
         # Scale MCD variables to match ERA5 ranges
-        swap_vars = ['2m_temperature', 'temperature']
-        for var in swap_vars:
-            if var in era5_ds.data_vars:
+        #
+        #
+        keep_vars = ['land_sea_mask', 'geopotential_at_surface', 'geopotential', 'total_precipitation_6hr', 'specific_humidity']
+
+        #swap_vars = ['2m_temperature', 'temperature', ]
+        for var in mcd_ds_preprocessed.data_vars:
+            if var in era5_ds.data_vars and var not in keep_vars:
                 mcd_ds_preprocessed[var] = scale_mcd_data(mcd_ds_preprocessed, era5_ds, var)
                 # Replace ERA5 variable with MCD variable
                 era5_ds[var][0,0:4,:,:] = mcd_ds_preprocessed[var][0:4,:,:]
 
         # Set variables to constants or means
-        era5_ds = era5_to_mean(era5_ds)
-        era5_ds = constants_to_era5(era5_ds)
+        #era5_ds = era5_to_mean(era5_ds, varnames=None)
+        era5_ds = constants_to_era5(era5_ds, var_names=keep_vars, var_values=[1, 25.0, 300.0, 0.0, 0.002]), 
         # Save to NetCDF
         for i in range(2):
             output_file = os.path.join(output_root, f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}-T{hrs[i]}_res-1.0_levels-13_steps-3.nc")
