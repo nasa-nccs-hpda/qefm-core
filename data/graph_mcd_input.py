@@ -113,7 +113,7 @@ def main():
     #output_root = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/checkpoints/graphcast/source-era5-mcdv3_date-2022-01-01_res-1.0_levels-13_steps-04.nc"
     output_root = "/explore/nobackup/projects/ilab/data/qefm/graphcast/mcd_v2"
 
-    n  = 73
+    n  = 3
     start_date = datetime(2022, 1, 1)
     dates = [(start_date + timedelta(days=5*i)).strftime('%Y-%m-%d') for i in range(n)]
 
@@ -148,7 +148,7 @@ def main():
 
         # Set variables to constants or means
         #era5_ds = era5_to_mean(era5_ds, varnames=None)
-        era5_ds = constants_to_era5(era5_ds, var_names=keep_vars, var_values=[1, 25.0, 300.0, 0.0, 0.002]), 
+        era5_ds = constants_to_era5(era5_ds, var_names=keep_vars, var_values=[1, 25.0, 300.0, 0.0, 0.002]) 
         # Save to NetCDF
         for i in range(2):
             output_file = os.path.join(output_root, f"graphcast_dataset_source-era5-mcd_date-{dates[idx]}-T{hrs[i]}_res-1.0_levels-13_steps-3.nc")
