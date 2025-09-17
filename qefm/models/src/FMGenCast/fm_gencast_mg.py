@@ -325,7 +325,6 @@ print("Global device count:", jax.device_count())
 
 # The number of ensemble members should be a multiple of the number of devices.
 print(f"Number of local devices {len(jax.local_devices())}")
-exit()
 
 # @title Autoregressive rollout (loop in python)
 
