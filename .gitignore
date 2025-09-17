@@ -200,3 +200,6 @@ qefm/models/src/FMGraphCast/_fm_graphcast_era5_rollout_dynamic_layers_discovery.
 qefm/models/src/FMGraphCast/_fm_graphcast_era5_rollout_dynamic_layers_explore.sh
 .gitignore
 qefm/models/src/FMGraphCast/_fm_graphcast_multi.py
+qefm/models/src/5day/
+qefm/models/src/graphcast-2050804/
+qefm/models/src/qefm-core-graphcast-rollouts-20250804/
