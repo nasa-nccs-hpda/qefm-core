@@ -226,7 +226,7 @@ file_list = glob.glob(os.path.join(dataset_dir, "graph*2022*steps-4.nc"))
 # Training config
 num_epochs = 10
 batch_size = 1
-target_lead_times = slice("6h", "12h")
+target_lead_times = slice("6h", "6h")
 learning_rate = 1e-4
 weight_decay = 1e-5
 
@@ -258,7 +258,9 @@ for epoch in range(num_epochs):
       loss, diagnostics, next_state, grads = grads_fn_jitted(
          inputs=batched_inputs, targets=batched_targets, forcings=batched_forcings
       )
-
+      print("diagnostics:", diagnostics)
+      print("loss:", loss)
+      exit()
       # Apply optimizer update
       updates, opt_state = optimizer.update(grads, opt_state, params)
       params = optax.apply_updates(params, updates)
