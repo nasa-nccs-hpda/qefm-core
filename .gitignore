@@ -195,3 +195,8 @@ qefm/models/src/FMGraphCast/_graphcast_input_aggregator.py
 qefm/models/src/FMGraphCast/bak
 qefm/models/src/FMGenCast/_fm_gencast_with_graphcast_chkpt.py
 qefm/models/src/FMGraphCast/_fm_graphcast_layers_worksfor20.py
+qefm/models/src/FMGraphCast/works0902/
+qefm/models/src/FMGraphCast/_fm_graphcast_era5_rollout_dynamic_layers_discovery.sh
+qefm/models/src/FMGraphCast/_fm_graphcast_era5_rollout_dynamic_layers_explore.sh
+.gitignore
+qefm/models/src/FMGraphCast/_fm_graphcast_multi.py
