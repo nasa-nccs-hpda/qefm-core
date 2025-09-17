@@ -64,7 +64,10 @@ from graphcast import nan_cleaning
 # # Load the Data and initialize the model
 
 import os
-script_dir = os.path.dirname(os.path.abspath(__name__))
+#
+# 
+# script_dir = os.path.dirname(os.path.abspath(__name__))
+script_dir = "/discover/nobackup/jli30/QEFM/qefm-core/qefm/models/src/FMGenCast"
 print("script_dir:\n", script_dir, "\n")
 dir_prefix = "gencast/"
 
