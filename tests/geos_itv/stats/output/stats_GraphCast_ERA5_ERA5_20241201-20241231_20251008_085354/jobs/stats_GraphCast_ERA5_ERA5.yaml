@@ -1,0 +1,78 @@
+# stats.yaml
+
+parameters:
+  # length and dates form inclusive ranges:
+    fcst_length: 10 # days (whole numbers only)
+    fcst_interval: 12 # hours (whole numbers only)
+    fcst_spacing: 1 # days between forecasts beginning on start_date
+    start_date: 20241201 # YYYYMMDD
+    end_date: 20241231 # YYYYMMDD
+
+  # stats options [comma-separated lists]
+    levels: [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100] # pressure levels hPa
+    3d_vars_default: [H, Q, T, U, V] # chosen from among [H, Q, T, U, V]
+    2d_vars_default: [P] # chosen from among [P]
+    2d_vars_slices:  [T2m, U10m, V10m] # chosen from among [Q2m, T2m, U10m, V10m, D2m]
+    regions: [GLO, NHE, TRO, SHE, NPO, SPO, XPO, CUS, LND, NHL, TRL, SHL] # chosen from among [GLO, NHE, TRO, SHE, NWQ, NEQ, SWQ, SEQ, NAM, EUR, NPO, SPO, XPO, CUS, LND, NHL, TRL, SHL]
+
+  # run stats_regional (for corcmp) and/or stats_global (for syscmp)? [regional, global, both, or none]
+    stats_types: none
+  # optional location(s) to search for pre-existing processed fcst/ana/clim datasets [comma-separated list]
+  # dir_loc: [/discover/nobackup/projects/gmao/geos_itv/mefrazer/stats/output]
+    dir_loc: [/discover/nobackup/projects/QEFM/qefm-core/tests/geos_itv/stats/output]
+  
+  # fcst/ana/clim directories/templates should reference initiation and valid dates/times using tags
+  # acceptable tags are: init and vaild _YYYY, _MM, _DD, _HH, _YYYYMMDD, _YYYYMMDDHH
+  # shifts in hours can be included like: {init_YYYYMMDD,shift=-3h}
+  # templates for slices are optional; if not present or left blank will be assumed to be the same as default
+  # expver and verify are scorecard tags, e.g., gmao or ecmwf; only used with stats_global which writes the scorecard input files
+
+    fcst_model: GraphCast
+    fcst_input_dir: /discover/nobackup/projects/QEFM/data/rollout_outputs/FMGraphCast/v20240903/cf/FMGraphCast
+    fcst_input_template_default: Y{init_YYYY}/M{init_MM}/D{init_DD}/*initial*{valid_YYYY}-{valid_MM}-{valid_DD}T{valid_HH}*.nc, Y{init_YYYY}/M{init_MM}/D{init_DD}/*prediction*{valid_YYYY}-{valid_MM}-{valid_DD}T{valid_HH}*.nc
+    fcst_input_template_slices:
+    ana_model: ERA5
+    ana_input_dir: /css/era5
+    ana_input_template_default: pressure_level_hourly/Y{valid_YYYY}/M{valid_MM}/era5_pl-allvar.{valid_YYYYMMDD}_{valid_HH}z.nc4
+    ana_input_template_slices: surface_hourly/inst/Y{valid_YYYY}/M{valid_MM}/era5_surface-inst_allvar_{valid_YYYYMMDD}_{valid_HH}z.nc
+    clim_model: ERA5
+    clim_input_dir: /discover/nobackup/projects/gmao/geos_itv/mefrazer/METplus/clim/trimmed
+    clim_input_template_default: era5_mnth.mrg1_avg.1440x0721.Y1985-2014.T{valid_HH}z.nc4
+    expver: gmao
+    verify: ecmwf
+
+  # output grid (fcst/ana/clim will be all be re-gridded to this):
+    Nlat: 91        # number of lat points
+    Nlon: 144       # number of lon points
+    delta_lat: 2.0  # latitude increment
+    delta_lon: 2.5  # longitude increment
+  
+  # add to these case-insensitive alias lists if your fcst/ana/clim variables have names that aren't already listed
+    H_alias: [h, hght, hgtprs, hgt, gh, z]
+    Q_alias: [q, qv, sphu]
+    T_alias: [t, tmpu, tmpprs, tmp]
+    U_alias: [u, uwnd, ugrdprs, ugrd]
+    V_alias: [v, vwnd, vgrdprs, vgrd]
+    P_alias: [slp, slprs, prmslmsl, msl]
+    T2m_alias: [t2m, t2]
+    Q2m_alias: [q2m, q2, qv2m, qv2]
+    U10m_alias: [u10m, u10]
+    V10m_alias: [v10m, v10]
+    D2m_alias: [d2m, d2, dwpt, td]
+    PS_alias: [ps, sp]
+
+  # SBATCH parameters
+  # #SBATCH --mail-type=ALL        # send email when job begins
+  # #SBATCH --partition=gpu_a100
+  # #SBATCH --constraint=rome
+  # #SBATCH --qos=8n_a100
+  # #SBATCH --mail-user=caleb.s.spradlin@nasa.gov
+    account: ilab
+    partition: gpu_a100
+    qos: 8n_a100
+    mail-type: ALL
+    mail-user: glenn.s.tamkin@nasa.gov
+    constraint: rome
+      # account: g0620
+      # partition: packable
+      # qos: qkst_pk
