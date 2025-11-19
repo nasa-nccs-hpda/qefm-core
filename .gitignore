@@ -203,3 +203,4 @@ qefm/models/src/FMGraphCast/_fm_graphcast_multi.py
 qefm/models/src/5day/
 qefm/models/src/graphcast-2050804/
 qefm/models/src/qefm-core-graphcast-rollouts-20250804/
+tests/diff-bands-fm.ipynb
