@@ -124,11 +124,18 @@ def plot_data(
 # Thank you, for doing the test. Here is the checkpoint on ADAPT /explore/nobackup/people/jli30/workspace/graph_mcd/checkpoints/GraphCast.1p0deg.batch1.mcd_Temp_wohr.ep1000.best.npz
  
 # Input is here: /explore/nobackup/people/jli30/workspace/graph_mcd/qefm-core-local/qefm/models/checkpoints/graphcast/graphcast_dataset_source-mcd_Temp_wohr_date-2022-10-28-T00_res-1.0_levels-13_steps-40.nc
+import sys
+arg1 = sys.argv[1]
+arg2 = sys.argv[2]
+print(f"Arguments passed: {arg1}, {arg2}")
  
 
 import os
-script_dir = os.path.dirname(os.path.abspath(__name__))
+script_dir = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast"
 print("script_dir:\n", script_dir, "\n")
+
+#script_dir = os.path.dirname(os.path.abspath(__name__))
+#print("script_dir:\n", script_dir, "\n")
 # relative_params_file = '../../checkpoints/graphcast/GraphCast_small - ERA5 1979-2015 - resolution 1.0 - pressure levels 13 - mesh 2to5 - precipitation input and output.npz"'
 relative_params_file = '../../checkpoints/graphcast/params_GraphCast_small.npz'
 absolute_path = os.path.join(script_dir, relative_params_file)
@@ -159,9 +166,7 @@ print("Model license:\n", ckpt.license, "\n")
 # relative_params_file = '../../checkpoints/graphcast/params_GraphCast_small.npz'
 #dataset_file = os.path.join(script_dir, relative_dataset_file)
 nse = True
-dataset_file = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/../../checkpoints/graphcast/source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
-if (nse == True):
-  dataset_file = "/discover/nobackup/projects/QEFM/qefm-core/data/NSE/output/graphcast/_source-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
+dataset_file = arg1
 print("dataset_file:\n", dataset_file, "\n")
 # with gcs_bucket.blob(f"dataset/{dataset_file}").open("rb") as f:
 with open(dataset_file, "rb") as f:
@@ -314,9 +319,7 @@ print("predictions:\n", predictions)
 print(predictions['2m_temperature'].isel(batch=0).squeeze().to_numpy())
 
 from pathlib import Path
-out_file_value = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/../../checkpoints/graphcast/pred-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
-if (nse == True):
-  out_file_value = "/discover/nobackup/projects/QEFM/qefm-core/qefm/models/src/FMGraphCast/../../checkpoints/graphcast/_pred-era5_date-2022-01-01_res-1.0_levels-13_steps-01.nc"
+out_file_value = arg2
 #out_file_value = Path("/explore/nobackup/people/gtamkin/share/graphcast_nse/v20251215/graphcast_dataset_pred-mcd_Temp_wohr_date-2022-10-28-T00_res-1.0_levels-13_steps-40.nc")
 #out_file_value = f"graphcast-prediction-{input_source}_date-{date_str}_res-{res}_levels-{levs}_freq-{cfreq}h_steps-{eval_steps}.nc"
 #out_file = os.path.join(out_dir, out_file_value)
