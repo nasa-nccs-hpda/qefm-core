@@ -19,7 +19,8 @@ RUN apt-get update && \
 RUN --mount=type=ssh,id=default \
     mkdir -p ~/.ssh && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-    git clone git@github.com:fact-sealevel/facts-total.git ${APP_HOME} && \
+    git clone https://github.com/fact-sealevel/facts-total.git ${APP_HOME} && \
+#    git clone git@github.com:fact-sealevel/facts-total.git ${APP_HOME} && \
     rm -rf ~/.ssh
 
 # Install the application dependencies into a local virtual environment, compiling to bytecode.
