@@ -204,3 +204,10 @@ qefm/models/src/5day/
 qefm/models/src/graphcast-2050804/
 qefm/models/src/qefm-core-graphcast-rollouts-20250804/
 tests/diff-bands-fm.ipynb
+data/NSE/output/e5303_m21c_jan18.diag_conv_t_ges.20210101_00z_gridded_levels.nc4
+data/NSE/output/e5303_m21c_jan18.diag_conv_t_ges.20210101_00z_gridded.nc4
+data/rollout_outputs/NSE.qgz
+tests/geos_itv/*
+qefm/models/src/FMHealDA/earth2studio/*
+qefm/models/src/FMHealDA/22*
+qefm/models/src/FMHealDA/diag_mhs_metop-a_ges.2023123118_control.nc4
