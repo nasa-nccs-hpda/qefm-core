@@ -211,3 +211,5 @@ tests/geos_itv/*
 qefm/models/src/FMHealDA/earth2studio/*
 qefm/models/src/FMHealDA/22*
 qefm/models/src/FMHealDA/diag_mhs_metop-a_ges.2023123118_control.nc4
+qefm/models/src/FMHealDA/outputs/*
+qefm/models/src/FMHealDA/netcdf_comparison_output/*
