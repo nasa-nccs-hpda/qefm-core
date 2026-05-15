@@ -632,6 +632,7 @@ elif not args.skip_healda:
             # In data-only mode, use default schema
             logger.info("Data-only mode: using default observation schema")
 
+            # Specify conventional variables and satellite instruments of interest here
             if args.use_merra21c:
                 # MERRA-21c schema
                 conv_schema = {
