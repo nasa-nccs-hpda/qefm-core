@@ -1,5 +1,5 @@
 
-name: Facts 2.0 Total Docker Image Build and Push
+name: Facts 2.0 Fair Docker Image Build and Push
 on:
   workflow_dispatch:
 
