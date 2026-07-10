@@ -1,0 +1,54 @@
+# FACTS Workflow Orchestrator Container
+FROM python:3.11-slim
+
+# Metadata
+LABEL maintainer="gtamkin"
+LABEL version="1.0"
+LABEL description="FACTS Workflow Orchestrator and Benchmarking System"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8 \
+    PATH=/opt/facts:$PATH
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    curl \
+    vim \
+    git \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create application directory
+WORKDIR /opt/facts
+
+# Copy Python scripts
+COPY run_facts.py /opt/facts/run_facts.py
+COPY facts_benchmark.py /opt/facts/facts_benchmark.py
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    pyyaml \
+    numpy \
+    matplotlib \
+    pandas \
+    seaborn
+
+# Make scripts executable
+RUN chmod +x /opt/facts/run_facts.py && \
+    chmod +x /opt/facts/facts_benchmark.py
+
+# Create standard mount points
+RUN mkdir -p /input /output /data /mnt/data_in /mnt/data_out /mnt/fair
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)" || exit 1
+
+# Default command
+ENTRYPOINT ["python", "/opt/facts/run_facts.py"]
+CMD ["--help"]
