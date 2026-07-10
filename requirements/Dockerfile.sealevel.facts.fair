@@ -39,8 +39,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     seaborn
 
 # Make scripts executable
-RUN chmod +x /opt/facts/run_facts.py && \
-    chmod +x /opt/facts/facts_benchmark.py
+#RUN chmod +x /opt/facts/run_facts.py && \
+#    chmod +x /opt/facts/facts_benchmark.py
 
 # Create standard mount points
 RUN mkdir -p /input /output /data /mnt/data_in /mnt/data_out /mnt/fair
