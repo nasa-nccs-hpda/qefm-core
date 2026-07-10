@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /opt/facts
 
 # Copy Python scripts
-COPY run_facts.py /opt/facts/run_facts.py
-COPY facts_benchmark.py /opt/facts/facts_benchmark.py
+# COPY run_facts.py /opt/facts/run_facts.py
+# COPY facts_benchmark.py /opt/facts/facts_benchmark.py
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
